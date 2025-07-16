@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
-import { getLivrosComCapas } from "@/mocks/livros";
+import { useState } from "react";
+import { useLivros } from "./useLivros";
 import { ListaLivros } from "@/components/catalogo/ListaLivros";
 import { historicoEmprestimos as historicoMock } from "@/mocks/historicoEmprestimos";
 import { TabelaHistoricoEmprestimos } from "@/components/historico/TabelaHistoricoEmprestimos";
@@ -18,11 +18,8 @@ import { ModalDevolucao } from "@/components/emprestimos/ModalDevolucao";
 import { toast } from "sonner";
 
 export function BibliotecarioDashboard() {
-  const [livros, setLivros] = useState<Livro[]>([]);
+  const [livros, setLivros] = useState<Livro[]>(useLivros());
 
-  useEffect(() => {
-    getLivrosComCapas().then(setLivros);
-  }, []);
   const [historico, setHistorico] = useState<HistoricoEmprestimo[]>(historicoMock);
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
   const [isDevolucaoModalOpen, setIsDevolucaoModalOpen] = useState(false);

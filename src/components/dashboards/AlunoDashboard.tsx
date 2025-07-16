@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
-import { getLivrosComCapas } from "@/mocks/livros";
+import { useState } from "react";
+import { livrosBase } from "@/mocks/livros";
 import { ListaLivros } from "@/components/catalogo/ListaLivros";
 import { historicoEmprestimos as historicoMock } from "@/mocks/historicoEmprestimos";
 import { TabelaHistoricoEmprestimos } from "@/components/historico/TabelaHistoricoEmprestimos";
@@ -10,7 +10,7 @@ import Image from "next/image";
 import { BookDetailModal } from "@/components/catalogo/BookDetailModal";
 
 export function AlunoDashboard() {
-  const [livros, setLivros] = useState<Livro[]>([]);
+  const [livros, setLivros] = useState<Livro[]>(livrosBase);
   const [historico, setHistorico] = useState<HistoricoEmprestimo[]>(
     historicoMock.filter((h) => h.codigo_simade === 1001)
   );
@@ -18,9 +18,7 @@ export function AlunoDashboard() {
   const [modalLivro, setModalLivro] = useState<Livro | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  useEffect(() => {
-    getLivrosComCapas().then(setLivros);
-  }, []);
+  // useEffect removido: livrosBase já está disponível localmente
 
   function handleReservarLivro(livro: Livro) {
     setLivros((prev) =>
@@ -87,7 +85,7 @@ export function AlunoDashboard() {
                 src={destaques[carouselIndex].url_capa || "/placeholder-cover.svg"}
                 alt={destaques[carouselIndex].titulo}
                 fill
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "contain", background: "#fff" }}
                 className="cursor-pointer"
                 onClick={() => {
                   setModalLivro(destaques[carouselIndex]);

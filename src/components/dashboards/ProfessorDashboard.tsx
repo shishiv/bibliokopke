@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
-import { getLivrosComCapas } from "@/mocks/livros";
+import { useState } from "react";
+import { useLivros } from "./useLivros";
 import { ListaLivros } from "@/components/catalogo/ListaLivros";
 import { RecommendationManager } from "@/components/catalogo/RecommendationManager";
 import { historicoEmprestimos as historicoMock } from "@/mocks/historicoEmprestimos";
@@ -9,15 +9,12 @@ import { Livro, HistoricoEmprestimo } from "@/types/entities";
 import { toast } from "sonner";
 
 export function ProfessorDashboard() {
-  const [livros, setLivros] = useState<Livro[]>([]);
+  const livros = useLivros();
   const [recommended, setRecommended] = useState<{ [id: number]: string[] }>({});
   const [historico] = useState<HistoricoEmprestimo[]>(
     historicoMock.filter((h) => h.codigo_simade === 2001)
   );
 
-  useEffect(() => {
-    getLivrosComCapas().then(setLivros);
-  }, []);
 
   function handleSolicitarReserva(livro: Livro) {
     toast.info(`Solicitação de reserva para "${livro.titulo}" enviada para a biblioteca.`);

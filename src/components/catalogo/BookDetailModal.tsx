@@ -2,6 +2,7 @@ import { Livro } from "@/types/entities";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { useBookCover } from "./useBookCover";
 
 interface BookDetailModalProps {
   livro: Livro | null;
@@ -11,6 +12,8 @@ interface BookDetailModalProps {
 }
 
 export function BookDetailModal({ livro, open, onOpenChange, onReservar }: BookDetailModalProps) {
+  const coverUrl = useBookCover(livro);
+
   if (!livro) return null;
 
   return (
@@ -22,12 +25,12 @@ export function BookDetailModal({ livro, open, onOpenChange, onReservar }: BookD
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-shrink-0 w-full md:w-40 h-60 relative">
             <Image
-              src={livro.url_capa || "/placeholder-cover.svg"}
+              src={coverUrl}
               alt={`Capa do livro ${livro.titulo}`}
               fill
-              style={{ objectFit: "cover", borderRadius: 8 }}
+              style={{ objectFit: "contain", borderRadius: 8, background: "#fff" }}
               sizes="(max-width: 768px) 100vw, 40vw"
-              priority
+              loading="lazy"
             />
           </div>
           <div className="flex-1 flex flex-col gap-2">

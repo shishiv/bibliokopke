@@ -2,7 +2,7 @@ import { Livro, StatusLivro } from "@/types/entities";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useBookCover } from "./useBookCover";
 
 interface LivroCardProps {
   livro: Livro;
@@ -10,35 +10,17 @@ interface LivroCardProps {
 }
 
 export function LivroCard({ livro, onReservar }: LivroCardProps) {
-  const [coverUrl, setCoverUrl] = useState<string | null>(livro.url_capa || null);
-
-  useEffect(() => {
-    let isMounted = true;
-    async function fetchCover() {
-      if (!livro.url_capa) {
-        try {
-          const res = await fetch(`/api/book-cover?title=${encodeURIComponent(livro.titulo)}`);
-          if (res.ok) {
-            const data = await res.json();
-            if (data.coverUrl && isMounted) setCoverUrl(data.coverUrl);
-          }
-        } catch {
-          // ignore
-        }
-      }
-    }
-    fetchCover();
-    return () => { isMounted = false; };
-  }, [livro.url_capa, livro.titulo]);
+  const coverUrl = useBookCover(livro);
 
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
       <div className="relative h-48 w-full">
         <Image
-          src={coverUrl || "/placeholder-cover.svg"} // Placeholder se não houver capa
+          src={coverUrl}
           alt={`Capa do livro ${livro.titulo}`}
           fill
-          style={{ objectFit: "cover" }}
+          style={{ objectFit: "contain", background: "#fff" }}
+          loading="lazy"
         />
       </div>
       <CardContent className="p-4">

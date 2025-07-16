@@ -8,7 +8,7 @@ export function Header() {
   return (
     <header className="bg-white shadow-md p-4 flex justify-between items-center">
       <Link href="/" className="text-2xl font-bold text-blue-600">
-        Biblioteca Fronteira
+        BiblioKopke
       </Link>
       <div className="flex-1 max-w-xl mx-4">
         <div className="relative">

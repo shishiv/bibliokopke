@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Book, GraduationCap, Briefcase } from "lucide-react";
 
@@ -10,6 +11,16 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <section className="text-center mb-12">
+        <div className="flex justify-center mb-4">
+          <Image
+            src="/bibliokopke_full.png"
+            alt="Logo BiblioKopke"
+            width={320}
+            height={80}
+            style={{ height: "auto", maxWidth: "100%" }}
+            priority
+          />
+        </div>
         <h1 className="text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
           Bem-vindo à Biblioteca João Kopke
         </h1>
