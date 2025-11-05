@@ -85,5 +85,24 @@ namespace BibliotecaJK.BLL
                 "Este e um recurso de seguranca integrado."
             );
         }
+
+        /// <summary>
+        /// Cancela agendamento de backup automatico
+        /// ALIAS de RemoverAgendamento() - mantido para compatibilidade com FormBackup
+        /// </summary>
+        public ResultadoOperacao CancelarBackupAutomatico()
+        {
+            return RemoverAgendamento();
+        }
+
+        /// <summary>
+        /// Verifica se backup automatico esta agendado
+        /// NOTA: Com Supabase, backups sempre estao ativos (automaticos)
+        /// </summary>
+        public bool VerificarSeEstaAgendado()
+        {
+            // Supabase sempre tem backup automatico ativo
+            return true;
+        }
     }
 }
