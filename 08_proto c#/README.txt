@@ -1,6 +1,6 @@
 ========================================================
-  PROTÓTIPO C# - Sistema BibliotecaJK v2.0
-  COMPLETO: Model + DAL + BLL
+  PROTÓTIPO C# - Sistema BibliotecaJK v3.0
+  COMPLETO: Model + DAL + BLL + WinForms UI
 ========================================================
 
 📁 ESTRUTURA DO PROJETO
@@ -22,7 +22,7 @@ DAL/
   ├── ReservaDAL.cs       → CRUD completo de reservas
   └── LogAcaoDAL.cs       → CRUD completo de logs
 
-BLL/ ⭐ NOVO!
+BLL/
   ├── ResultadoOperacao.cs → Padronização de retornos
   ├── Exceptions.cs        → Exceções personalizadas
   ├── Validadores.cs       → Validações (CPF, ISBN, Email)
@@ -33,26 +33,40 @@ BLL/ ⭐ NOVO!
   ├── AlunoService.cs      → Gerenciamento de alunos
   └── README_BLL.md        → Documentação da camada BLL
 
+Forms/ ⭐ NOVO!
+  ├── FormLogin.cs                → Autenticação de funcionários
+  ├── FormPrincipal.cs            → Menu principal e dashboard
+  ├── FormCadastroAluno.cs        → CRUD de alunos
+  ├── FormCadastroLivro.cs        → CRUD de livros
+  ├── FormEmprestimo.cs           → Registro de empréstimos
+  ├── FormDevolucao.cs            → Devolução com cálculo de multas
+  ├── FormReserva.cs              → Sistema de reservas (FIFO)
+  └── FormConsultaEmprestimos.cs  → Consultas e relatórios
+
 Conexao.cs                → Gerenciador de conexões MySQL
-Program.cs                → Menu interativo para testar BLL
+Program.cs                → Ponto de entrada WinForms
 schema.sql                → Script de criação do banco de dados
-BibliotecaJK.csproj       → Configuração do projeto (.NET 8.0)
+BibliotecaJK.csproj       → Configuração do projeto (.NET 8.0-windows)
 
 🎯 CARACTERÍSTICAS
 ------------------------------------------------------------
-✅ Arquitetura em 3 camadas (Model → DAL → BLL)
+✅ Arquitetura em 4 camadas (Model → DAL → BLL → UI)
 ✅ Herança OOP com classe base Pessoa
 ✅ CRUD completo para todas as entidades (DAL)
 ✅ Lógica de negócio completa (BLL)
+✅ Interface gráfica WinForms completa e funcional
 ✅ Regras de empréstimo (prazo 7 dias, máx 3 simultâneos, multa R$ 2/dia)
 ✅ Sistema de reservas com fila FIFO
 ✅ Validações (CPF, ISBN, Email, Matrícula)
 ✅ Sistema de logs e auditoria
+✅ Dashboard com estatísticas em tempo real
+✅ Autenticação de funcionários com login/senha
+✅ Cálculo automático de multas por atraso
+✅ Consultas e relatórios interativos
 ✅ Tratamento de valores nulos (Nullable types)
 ✅ Uso de using statements para gerenciamento de recursos
 ✅ Connection pooling com criação de novas conexões
 ✅ Prepared statements para prevenir SQL Injection
-✅ Menu interativo para testes de BLL
 
 🚀 COMO USAR
 ------------------------------------------------------------
@@ -62,14 +76,17 @@ BibliotecaJK.csproj       → Configuração do projeto (.NET 8.0)
    - Isso criará o banco 'bibliokopke' com dados de teste
 
 2. CONFIGURAR O PROJETO
-   - Abra o projeto no Visual Studio 2022 ou VS Code
+   - Abra o projeto no Visual Studio 2022 (recomendado para WinForms)
    - Restaure os pacotes NuGet: dotnet restore
    - Ajuste a connection string em Conexao.cs se necessário
 
-3. EXECUTAR O PROTÓTIPO
+3. EXECUTAR A APLICAÇÃO
    - Compile: dotnet build
    - Execute: dotnet run
-   - Use o menu interativo para testar as funcionalidades
+   - Login padrão (conforme schema.sql):
+     * Login: admin
+     * Senha: admin123
+   - Use a interface gráfica para gerenciar o sistema
 
 ⚙️ CONFIGURAÇÃO
 ------------------------------------------------------------
@@ -102,13 +119,29 @@ Views:
 🔧 TECNOLOGIAS UTILIZADAS
 ------------------------------------------------------------
 - C# 12 (.NET 8.0)
+- Windows Forms (WinForms)
 - ADO.NET
 - MySQL 8.0
 - MySql.Data 9.0.0
 
 📝 MELHORIAS IMPLEMENTADAS
 ------------------------------------------------------------
-v2.0 (Atual):
+v3.0 (Atual): ⭐ INTERFACE GRÁFICA COMPLETA
+  ✅ Interface WinForms completa com 8 formulários
+  ✅ FormLogin - Autenticação de funcionários
+  ✅ FormPrincipal - Dashboard com estatísticas em tempo real
+  ✅ FormCadastroAluno - CRUD completo de alunos
+  ✅ FormCadastroLivro - CRUD completo de livros
+  ✅ FormEmprestimo - Registro de empréstimos com validações
+  ✅ FormDevolucao - Devolução com cálculo automático de multas
+  ✅ FormReserva - Sistema de reservas FIFO com 2 abas
+  ✅ FormConsultaEmprestimos - Consultas com 5 abas de relatórios
+  ✅ Integração completa com camada BLL
+  ✅ Design responsivo e user-friendly
+  ✅ Coloração de linhas (atrasados em vermelho)
+  ✅ Busca em tempo real nos formulários
+
+v2.0:
   ✅ Implementada camada BLL completa (Lógica de Negócio)
   ✅ EmprestimoService com todas regras de negócio
   ✅ ReservaService com sistema de fila FIFO
