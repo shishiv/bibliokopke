@@ -37,11 +37,11 @@ namespace BibliotecaJK.DAL
                 {
                     lista.Add(new Reserva
                     {
-                        Id = reader.GetInt32("id_reserva"),
-                        IdAluno = reader.GetInt32("id_aluno"),
-                        IdLivro = reader.GetInt32("id_livro"),
-                        DataReserva = reader.GetDateTime("data_reserva"),
-                        Status = reader.GetString("status")
+                        Id = reader.GetInt32(reader.GetOrdinal("id_reserva")),
+                        IdAluno = reader.GetInt32(reader.GetOrdinal("id_aluno")),
+                        IdLivro = reader.GetInt32(reader.GetOrdinal("id_livro")),
+                        DataReserva = reader.GetDateTime(reader.GetOrdinal("data_reserva")),
+                        Status = reader.GetString(reader.GetOrdinal("status"))
                     });
                 }
                 conn.Close();
@@ -62,11 +62,11 @@ namespace BibliotecaJK.DAL
                 {
                     var r = new Reserva
                     {
-                        Id = reader.GetInt32("id_reserva"),
-                        IdAluno = reader.GetInt32("id_aluno"),
-                        IdLivro = reader.GetInt32("id_livro"),
-                        DataReserva = reader.GetDateTime("data_reserva"),
-                        Status = reader.GetString("status")
+                        Id = reader.GetInt32(reader.GetOrdinal("id_reserva")),
+                        IdAluno = reader.GetInt32(reader.GetOrdinal("id_aluno")),
+                        IdLivro = reader.GetInt32(reader.GetOrdinal("id_livro")),
+                        DataReserva = reader.GetDateTime(reader.GetOrdinal("data_reserva")),
+                        Status = reader.GetString(reader.GetOrdinal("status"))
                     };
                     conn.Close();
                     return r;

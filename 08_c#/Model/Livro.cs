@@ -8,6 +8,7 @@ namespace BibliotecaJK.Model
         public string? ISBN { get; set; }
         public string? Editora { get; set; }
         public int? AnoPublicacao { get; set; }
+        public string? Categoria { get; set; }
         public int QuantidadeTotal { get; set; }
         public int QuantidadeDisponivel { get; set; }
         public string? Localizacao { get; set; }

@@ -40,13 +40,13 @@ namespace BibliotecaJK.DAL
                 {
                     lista.Add(new Emprestimo
                     {
-                        Id = reader.GetInt32("id_emprestimo"),
-                        IdAluno = reader.GetInt32("id_aluno"),
-                        IdLivro = reader.GetInt32("id_livro"),
-                        DataEmprestimo = reader.GetDateTime("data_emprestimo"),
-                        DataPrevista = reader.GetDateTime("data_prevista"),
-                        DataDevolucao = reader.IsDBNull(reader.GetOrdinal("data_devolucao")) ? (DateTime?)null : reader.GetDateTime("data_devolucao"),
-                        Multa = reader.GetDecimal("multa")
+                        Id = reader.GetInt32(reader.GetOrdinal("id_emprestimo")),
+                        IdAluno = reader.GetInt32(reader.GetOrdinal("id_aluno")),
+                        IdLivro = reader.GetInt32(reader.GetOrdinal("id_livro")),
+                        DataEmprestimo = reader.GetDateTime(reader.GetOrdinal("data_emprestimo")),
+                        DataPrevista = reader.GetDateTime(reader.GetOrdinal("data_prevista")),
+                        DataDevolucao = reader.IsDBNull(reader.GetOrdinal("data_devolucao")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("data_devolucao")),
+                        Multa = reader.GetDecimal(reader.GetOrdinal("multa"))
                     });
                 }
                 conn.Close();
@@ -67,13 +67,13 @@ namespace BibliotecaJK.DAL
                 {
                     var e = new Emprestimo
                     {
-                        Id = reader.GetInt32("id_emprestimo"),
-                        IdAluno = reader.GetInt32("id_aluno"),
-                        IdLivro = reader.GetInt32("id_livro"),
-                        DataEmprestimo = reader.GetDateTime("data_emprestimo"),
-                        DataPrevista = reader.GetDateTime("data_prevista"),
-                        DataDevolucao = reader.IsDBNull(reader.GetOrdinal("data_devolucao")) ? (DateTime?)null : reader.GetDateTime("data_devolucao"),
-                        Multa = reader.GetDecimal("multa")
+                        Id = reader.GetInt32(reader.GetOrdinal("id_emprestimo")),
+                        IdAluno = reader.GetInt32(reader.GetOrdinal("id_aluno")),
+                        IdLivro = reader.GetInt32(reader.GetOrdinal("id_livro")),
+                        DataEmprestimo = reader.GetDateTime(reader.GetOrdinal("data_emprestimo")),
+                        DataPrevista = reader.GetDateTime(reader.GetOrdinal("data_prevista")),
+                        DataDevolucao = reader.IsDBNull(reader.GetOrdinal("data_devolucao")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("data_devolucao")),
+                        Multa = reader.GetDecimal(reader.GetOrdinal("multa"))
                     };
                     conn.Close();
                     return e;
