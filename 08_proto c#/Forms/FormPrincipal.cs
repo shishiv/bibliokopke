@@ -63,6 +63,11 @@ namespace BibliotecaJK.Forms
             menuReservas.DropDownItems.Add("Gerenciar Reservas", null, (s, e) => AbrirReservas());
             menuStrip.Items.Add(menuReservas);
 
+            // Menu Relatórios
+            var menuRelatorios = new ToolStripMenuItem("Relatórios");
+            menuRelatorios.DropDownItems.Add("Relatórios Gerenciais", null, (s, e) => AbrirRelatorios());
+            menuStrip.Items.Add(menuRelatorios);
+
             // Menu Sair
             var menuSair = new ToolStripMenuItem("Sair");
             menuSair.Click += (s, e) => this.Close();
@@ -294,6 +299,13 @@ namespace BibliotecaJK.Forms
         private void AbrirReservas()
         {
             var form = new FormReserva(_funcionarioLogado);
+            form.ShowDialog();
+            AtualizarDashboard();
+        }
+
+        private void AbrirRelatorios()
+        {
+            var form = new FormRelatorios(_funcionarioLogado);
             form.ShowDialog();
             AtualizarDashboard();
         }
