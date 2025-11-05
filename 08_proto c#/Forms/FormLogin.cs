@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using BibliotecaJK.DAL;
 using BibliotecaJK.Model;
 using BibliotecaJK.BLL;
+using Npgsql;
 
 namespace BibliotecaJK.Forms
 {
@@ -190,18 +191,8 @@ namespace BibliotecaJK.Forms
                     return;
                 }
 
-                // Validar senha com BCrypt (hash seguro)
-                bool senhaValida;
-                try
-                {
-                    senhaValida = BCrypt.Net.BCrypt.Verify(txtSenha.Text, funcionario.SenhaHash);
-                }
-                catch
-                {
-                    // Se o hash não for BCrypt (dados antigos), tentar comparação direta
-                    // TEMPORÁRIO: para compatibilidade com dados de teste antigos
-                    senhaValida = funcionario.SenhaHash == txtSenha.Text;
-                }
+                // Validar senha usando função PostgreSQL verificar_senha()
+                bool senhaValida = VerificarSenhaPostgreSQL(txtSenha.Text, funcionario.SenhaHash);
 
                 if (!senhaValida)
                 {
@@ -247,6 +238,32 @@ namespace BibliotecaJK.Forms
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        /// <summary>
+        /// Verifica senha usando a função PostgreSQL verificar_senha()
+        /// </summary>
+        private bool VerificarSenhaPostgreSQL(string senhaTexto, string senhaHash)
+        {
+            try
+            {
+                using var conn = Conexao.GetConnection();
+                conn.Open();
+
+                string sql = "SELECT verificar_senha(@senha, @hash)";
+                using var cmd = new NpgsqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@senha", senhaTexto);
+                cmd.Parameters.AddWithValue("@hash", senhaHash);
+
+                var result = cmd.ExecuteScalar();
+                return result != null && (bool)result;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao verificar senha: {ex.Message}", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
     }
 }
