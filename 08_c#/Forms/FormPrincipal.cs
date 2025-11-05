@@ -1,7 +1,9 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using BibliotecaJK.Model;
 using BibliotecaJK.BLL;
+using BibliotecaJK.DAL;
 
 namespace BibliotecaJK.Forms
 {
@@ -15,6 +17,9 @@ namespace BibliotecaJK.Forms
         private readonly EmprestimoService _emprestimoService;
         private readonly LivroService _livroService;
         private readonly AlunoService _alunoService;
+        private readonly NotificacaoDAL _notificacaoDAL;
+        private Label lblNotificacaoBadge = new Label();
+        private Timer timerNotificacoes = new Timer();
 
         public FormPrincipal(Funcionario funcionario)
         {
@@ -22,164 +27,361 @@ namespace BibliotecaJK.Forms
             _emprestimoService = new EmprestimoService();
             _livroService = new LivroService();
             _alunoService = new AlunoService();
+            _notificacaoDAL = new NotificacaoDAL();
 
             InitializeComponent();
             AtualizarDashboard();
+            AtualizarNotificacoes();
+
+            // Atualizar notificações a cada 1 minuto
+            timerNotificacoes.Interval = 60000;
+            timerNotificacoes.Tick += (s, e) => AtualizarNotificacoes();
+            timerNotificacoes.Start();
         }
 
         private void InitializeComponent()
         {
             this.SuspendLayout();
 
-            // FormPrincipal
-            this.ClientSize = new System.Drawing.Size(1000, 700);
+            // FormPrincipal - Tamanho maior e moderno
+            this.ClientSize = new Size(1400, 800);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "BibliotecaJK - Sistema de Gerenciamento";
-            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.BackColor = Color.FromArgb(245, 245, 250);
+            this.MinimumSize = new Size(1200, 700);
 
-            // Menu Superior
-            var menuStrip = new MenuStrip
+            // ==================== SIDEBAR ====================
+            var pnlSidebar = new Panel
             {
-                BackColor = System.Drawing.Color.DarkSlateBlue,
-                ForeColor = System.Drawing.Color.White,
-                Font = new System.Drawing.Font("Segoe UI", 10F)
+                Location = new Point(0, 0),
+                Size = new Size(250, 800),
+                BackColor = Color.FromArgb(45, 52, 71),
+                Dock = DockStyle.Left
             };
 
-            // Menu Cadastros
-            var menuCadastros = new ToolStripMenuItem("Cadastros");
-            menuCadastros.DropDownItems.Add("Alunos", null, (s, e) => AbrirCadastroAlunos());
-            menuCadastros.DropDownItems.Add("Livros", null, (s, e) => AbrirCadastroLivros());
-            menuStrip.Items.Add(menuCadastros);
+            // Logo e Título
+            var lblLogo = new Label
+            {
+                Text = "📚 BibliotecaJK",
+                Font = new Font("Segoe UI", 16F, FontStyle.Bold),
+                ForeColor = Color.White,
+                Location = new Point(10, 20),
+                Size = new Size(230, 40),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            pnlSidebar.Controls.Add(lblLogo);
 
-            // Menu Empréstimos
-            var menuEmprestimos = new ToolStripMenuItem("Empréstimos");
-            menuEmprestimos.DropDownItems.Add("Novo Empréstimo", null, (s, e) => AbrirNovoEmprestimo());
-            menuEmprestimos.DropDownItems.Add("Devoluções", null, (s, e) => AbrirDevolucoes());
-            menuEmprestimos.DropDownItems.Add("Consultar Empréstimos", null, (s, e) => AbrirConsultaEmprestimos());
-            menuStrip.Items.Add(menuEmprestimos);
+            // Separador
+            var sep1 = new Panel
+            {
+                Location = new Point(20, 70),
+                Size = new Size(210, 1),
+                BackColor = Color.FromArgb(100, 100, 120)
+            };
+            pnlSidebar.Controls.Add(sep1);
 
-            // Menu Reservas
-            var menuReservas = new ToolStripMenuItem("Reservas");
-            menuReservas.DropDownItems.Add("Gerenciar Reservas", null, (s, e) => AbrirReservas());
-            menuStrip.Items.Add(menuReservas);
+            int btnY = 90;
+            int btnHeight = 50;
+            int btnSpacing = 5;
 
-            // Menu Relatórios
-            var menuRelatorios = new ToolStripMenuItem("Relatórios");
-            menuRelatorios.DropDownItems.Add("Relatórios Gerenciais", null, (s, e) => AbrirRelatorios());
-            menuStrip.Items.Add(menuRelatorios);
+            // Botão Dashboard
+            var btnDashboard = CriarBotaoSidebar("🏠  Dashboard", btnY);
+            btnDashboard.Click += (s, e) => AtualizarDashboard();
+            pnlSidebar.Controls.Add(btnDashboard);
+            btnY += btnHeight + btnSpacing;
 
-            // Menu Ferramentas
-            var menuFerramentas = new ToolStripMenuItem("Ferramentas");
-            menuFerramentas.DropDownItems.Add("Backup e Restauração", null, (s, e) => AbrirBackup());
-            menuStrip.Items.Add(menuFerramentas);
+            // Botão Notificações com Badge
+            var btnNotificacoes = CriarBotaoSidebar("🔔  Notificações", btnY);
+            btnNotificacoes.Click += (s, e) => AbrirNotificacoes();
+            pnlSidebar.Controls.Add(btnNotificacoes);
 
-            // Menu Sair
-            var menuSair = new ToolStripMenuItem("Sair");
-            menuSair.Click += (s, e) => this.Close();
-            menuStrip.Items.Add(menuSair);
+            // Badge de notificações
+            lblNotificacaoBadge = new Label
+            {
+                Font = new Font("Segoe UI", 8F, FontStyle.Bold),
+                ForeColor = Color.White,
+                Location = new Point(190, btnY + 15),
+                Size = new Size(40, 20),
+                TextAlign = ContentAlignment.MiddleCenter,
+                BackColor = Color.FromArgb(244, 67, 54),
+                Visible = false
+            };
+            pnlSidebar.Controls.Add(lblNotificacaoBadge);
+            btnY += btnHeight + btnSpacing;
 
-            this.Controls.Add(menuStrip);
-            this.MainMenuStrip = menuStrip;
+            // Separador
+            var sep2 = new Panel
+            {
+                Location = new Point(20, btnY),
+                Size = new Size(210, 1),
+                BackColor = Color.FromArgb(100, 100, 120)
+            };
+            pnlSidebar.Controls.Add(sep2);
+            btnY += 15;
 
-            // Panel de Boas-vindas
+            // Botão Alunos
+            var btnAlunos = CriarBotaoSidebar("👥  Alunos", btnY);
+            btnAlunos.Click += (s, e) => AbrirCadastroAlunos();
+            pnlSidebar.Controls.Add(btnAlunos);
+            btnY += btnHeight + btnSpacing;
+
+            // Botão Livros
+            var btnLivros = CriarBotaoSidebar("📖  Livros", btnY);
+            btnLivros.Click += (s, e) => AbrirCadastroLivros();
+            pnlSidebar.Controls.Add(btnLivros);
+            btnY += btnHeight + btnSpacing;
+
+            // Separador
+            var sep3 = new Panel
+            {
+                Location = new Point(20, btnY),
+                Size = new Size(210, 1),
+                BackColor = Color.FromArgb(100, 100, 120)
+            };
+            pnlSidebar.Controls.Add(sep3);
+            btnY += 15;
+
+            // Botão Novo Empréstimo
+            var btnNovoEmprestimo = CriarBotaoSidebar("📤  Novo Empréstimo", btnY);
+            btnNovoEmprestimo.Click += (s, e) => AbrirNovoEmprestimo();
+            pnlSidebar.Controls.Add(btnNovoEmprestimo);
+            btnY += btnHeight + btnSpacing;
+
+            // Botão Devoluções
+            var btnDevolucoes = CriarBotaoSidebar("📥  Devoluções", btnY);
+            btnDevolucoes.Click += (s, e) => AbrirDevolucoes();
+            pnlSidebar.Controls.Add(btnDevolucoes);
+            btnY += btnHeight + btnSpacing;
+
+            // Botão Empréstimos
+            var btnEmprestimos = CriarBotaoSidebar("📋  Consultar Empréstimos", btnY);
+            btnEmprestimos.Click += (s, e) => AbrirConsultaEmprestimos();
+            pnlSidebar.Controls.Add(btnEmprestimos);
+            btnY += btnHeight + btnSpacing;
+
+            // Botão Reservas
+            var btnReservas = CriarBotaoSidebar("⏳  Reservas", btnY);
+            btnReservas.Click += (s, e) => AbrirReservas();
+            pnlSidebar.Controls.Add(btnReservas);
+            btnY += btnHeight + btnSpacing;
+
+            // Separador
+            var sep4 = new Panel
+            {
+                Location = new Point(20, btnY),
+                Size = new Size(210, 1),
+                BackColor = Color.FromArgb(100, 100, 120)
+            };
+            pnlSidebar.Controls.Add(sep4);
+            btnY += 15;
+
+            // Botão Relatórios
+            var btnRelatorios = CriarBotaoSidebar("📊  Relatórios", btnY);
+            btnRelatorios.Click += (s, e) => AbrirRelatorios();
+            pnlSidebar.Controls.Add(btnRelatorios);
+            btnY += btnHeight + btnSpacing;
+
+            // Botão Backup
+            var btnBackup = CriarBotaoSidebar("💾  Backup", btnY);
+            btnBackup.Click += (s, e) => AbrirBackup();
+            pnlSidebar.Controls.Add(btnBackup);
+            btnY += btnHeight + btnSpacing;
+
+            // Botão Sair (no final)
+            var btnSair = CriarBotaoSidebar("🚪  Sair", 720);
+            btnSair.BackColor = Color.FromArgb(183, 28, 28);
+            btnSair.Click += (s, e) => {
+                if (MessageBox.Show("Deseja realmente sair?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    this.Close();
+            };
+            pnlSidebar.Controls.Add(btnSair);
+
+            this.Controls.Add(pnlSidebar);
+
+            // ==================== HEADER ====================
             var pnlHeader = new Panel
             {
-                Location = new System.Drawing.Point(0, 28),
-                Size = new System.Drawing.Size(1000, 80),
-                BackColor = System.Drawing.Color.White
+                Location = new Point(250, 0),
+                Size = new Size(1150, 80),
+                BackColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle
             };
 
             lblBoasVindas = new Label
             {
-                Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
-                ForeColor = System.Drawing.Color.DarkSlateBlue,
-                Location = new System.Drawing.Point(20, 15),
-                Size = new System.Drawing.Size(600, 30)
+                Font = new Font("Segoe UI", 16F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(63, 81, 181),
+                Location = new Point(30, 15),
+                Size = new Size(800, 30),
+                AutoSize = true
             };
             pnlHeader.Controls.Add(lblBoasVindas);
 
             lblPerfil = new Label
             {
-                Font = new System.Drawing.Font("Segoe UI", 10F),
-                ForeColor = System.Drawing.Color.Gray,
-                Location = new System.Drawing.Point(20, 45),
-                Size = new System.Drawing.Size(600, 25)
+                Font = new Font("Segoe UI", 10F),
+                ForeColor = Color.Gray,
+                Location = new Point(30, 45),
+                Size = new Size(800, 25),
+                AutoSize = true
             };
             pnlHeader.Controls.Add(lblPerfil);
 
             this.Controls.Add(pnlHeader);
 
-            // Panel de Dashboard
+            // ==================== ÁREA DE CONTEÚDO ====================
+            var pnlContent = new Panel
+            {
+                Location = new Point(250, 80),
+                Size = new Size(1150, 720),
+                BackColor = Color.FromArgb(245, 245, 250),
+                AutoScroll = true
+            };
+
+            // Dashboard Cards Container
             var pnlDashboard = new Panel
             {
-                Location = new System.Drawing.Point(20, 130),
-                Size = new System.Drawing.Size(960, 540),
-                BackColor = System.Drawing.Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                Location = new Point(20, 20),
+                Size = new Size(1110, 680),
+                BackColor = Color.Transparent
             };
 
             // Título Dashboard
             var lblTituloDashboard = new Label
             {
-                Text = "DASHBOARD - ESTATÍSTICAS DO SISTEMA",
-                Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold),
-                ForeColor = System.Drawing.Color.DarkSlateBlue,
-                Location = new System.Drawing.Point(20, 15),
-                Size = new System.Drawing.Size(920, 30)
+                Text = "ESTATÍSTICAS DO SISTEMA",
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(63, 81, 181),
+                Location = new Point(0, 0),
+                Size = new Size(1110, 30)
             };
             pnlDashboard.Controls.Add(lblTituloDashboard);
 
-            // Cards de Estatísticas
-            int cardY = 60;
-            int cardSpacing = 140;
+            // Cards Grid - 4 colunas
+            int cardWidth = 260;
+            int cardHeight = 140;
+            int cardMargin = 20;
 
             // Card 1: Empréstimos
-            var cardEmprestimos = CriarCard("EMPRÉSTIMOS", cardY, System.Drawing.Color.MediumSeaGreen);
-            lblEmprestimosAtivos = CriarLabelCard("0", 35, cardEmprestimos);
-            CriarLabelCard("Ativos", 65, cardEmprestimos, 9F);
-            lblEmprestimosAtrasados = CriarLabelCard("0 atrasados", 85, cardEmprestimos, 8F, System.Drawing.Color.OrangeRed);
+            var cardEmprestimos = CriarCardModerno("EMPRÉSTIMOS ATIVOS", 0, 50, cardWidth, cardHeight, Color.FromArgb(76, 175, 80));
+            lblEmprestimosAtivos = CriarLabelCardModerno("0", 40, cardEmprestimos, 32F);
+            lblEmprestimosAtrasados = CriarLabelCardModerno("0 atrasados", 90, cardEmprestimos, 11F, Color.FromArgb(255, 87, 34));
             pnlDashboard.Controls.Add(cardEmprestimos);
 
             // Card 2: Livros
-            var cardLivros = CriarCard("LIVROS", cardY + cardSpacing, System.Drawing.Color.SteelBlue);
-            lblTotalLivros = CriarLabelCard("0", 35, cardLivros);
-            lblLivrosDisponiveis = CriarLabelCard("0 disponíveis", 65, cardLivros, 9F);
-            lblLivrosEmprestados = CriarLabelCard("0 emprestados", 85, cardLivros, 8F, System.Drawing.Color.Gray);
+            var cardLivros = CriarCardModerno("LIVROS CADASTRADOS", cardWidth + cardMargin, 50, cardWidth, cardHeight, Color.FromArgb(33, 150, 243));
+            lblTotalLivros = CriarLabelCardModerno("0", 40, cardLivros, 32F);
+            lblLivrosDisponiveis = CriarLabelCardModerno("0 disponíveis", 90, cardLivros, 11F, Color.FromArgb(100, 181, 246));
             pnlDashboard.Controls.Add(cardLivros);
 
             // Card 3: Alunos
-            var cardAlunos = CriarCard("ALUNOS", cardY + (cardSpacing * 2), System.Drawing.Color.MediumPurple);
-            lblTotalAlunos = CriarLabelCard("0", 35, cardAlunos);
-            lblAlunosComEmprestimos = CriarLabelCard("0 c/ empréstimos", 65, cardAlunos, 9F);
-            lblAlunosComAtrasos = CriarLabelCard("0 c/ atrasos", 85, cardAlunos, 8F, System.Drawing.Color.OrangeRed);
+            var cardAlunos = CriarCardModerno("ALUNOS CADASTRADOS", (cardWidth + cardMargin) * 2, 50, cardWidth, cardHeight, Color.FromArgb(156, 39, 176));
+            lblTotalAlunos = CriarLabelCardModerno("0", 40, cardAlunos, 32F);
+            lblAlunosComEmprestimos = CriarLabelCardModerno("0 c/ empréstimos", 90, cardAlunos, 11F, Color.FromArgb(186, 104, 200));
             pnlDashboard.Controls.Add(cardAlunos);
 
             // Card 4: Multas
-            var cardMultas = CriarCard("MULTAS", cardY + (cardSpacing * 3), System.Drawing.Color.Crimson);
-            lblMultaTotal = CriarLabelCard("R$ 0,00", 35, cardMultas);
-            CriarLabelCard("Total Acumulado", 65, cardMultas, 9F);
+            var cardMultas = CriarCardModerno("MULTAS ACUMULADAS", (cardWidth + cardMargin) * 3, 50, cardWidth, cardHeight, Color.FromArgb(244, 67, 54));
+            lblMultaTotal = CriarLabelCardModerno("R$ 0,00", 40, cardMultas, 28F);
+            CriarLabelCardModerno("Total pendente", 90, cardMultas, 11F, Color.FromArgb(255, 138, 128));
             pnlDashboard.Controls.Add(cardMultas);
 
-            // Botão Atualizar
+            // Segunda linha de cards
+            int row2Y = 50 + cardHeight + cardMargin;
+
+            // Card 5: Livros Emprestados
+            var cardEmprestados = CriarCardModerno("LIVROS EMPRESTADOS", 0, row2Y, cardWidth, cardHeight, Color.FromArgb(255, 152, 0));
+            lblLivrosEmprestados = CriarLabelCardModerno("0", 40, cardEmprestados, 32F);
+            CriarLabelCardModerno("Exemplares em uso", 90, cardEmprestados, 11F, Color.FromArgb(255, 183, 77));
+            pnlDashboard.Controls.Add(cardEmprestados);
+
+            // Card 6: Alunos com Atrasos
+            var cardAtrasos = CriarCardModerno("ALUNOS C/ ATRASOS", cardWidth + cardMargin, row2Y, cardWidth, cardHeight, Color.FromArgb(255, 87, 34));
+            lblAlunosComAtrasos = CriarLabelCardModerno("0", 40, cardAtrasos, 32F);
+            CriarLabelCardModerno("Necessitam atenção", 90, cardAtrasos, 11F, Color.FromArgb(255, 138, 101));
+            pnlDashboard.Controls.Add(cardAtrasos);
+
+            // Botão Atualizar Dashboard
             var btnAtualizar = new Button
             {
                 Text = "🔄 Atualizar Dashboard",
-                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
-                Location = new System.Drawing.Point(740, 490),
-                Size = new System.Drawing.Size(200, 35),
-                BackColor = System.Drawing.Color.DarkSlateBlue,
-                ForeColor = System.Drawing.Color.White,
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                Location = new Point((cardWidth + cardMargin) * 2, row2Y + 50),
+                Size = new Size(280, 45),
+                BackColor = Color.FromArgb(63, 81, 181),
+                ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Cursor = Cursors.Hand
             };
             btnAtualizar.FlatAppearance.BorderSize = 0;
+            btnAtualizar.FlatAppearance.MouseOverBackColor = Color.FromArgb(83, 101, 201);
             btnAtualizar.Click += (s, e) => AtualizarDashboard();
             pnlDashboard.Controls.Add(btnAtualizar);
 
-            this.Controls.Add(pnlDashboard);
+            pnlContent.Controls.Add(pnlDashboard);
+            this.Controls.Add(pnlContent);
 
             this.ResumeLayout(false);
             this.PerformLayout();
+        }
+
+        private Button CriarBotaoSidebar(string texto, int y)
+        {
+            var btn = new Button
+            {
+                Text = texto,
+                Font = new Font("Segoe UI", 10F),
+                ForeColor = Color.White,
+                Location = new Point(10, y),
+                Size = new Size(230, 50),
+                BackColor = Color.FromArgb(60, 67, 86),
+                FlatStyle = FlatStyle.Flat,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Cursor = Cursors.Hand
+            };
+            btn.FlatAppearance.BorderSize = 0;
+            btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(70, 77, 96);
+            btn.FlatAppearance.MouseDownBackColor = Color.FromArgb(80, 87, 106);
+            return btn;
+        }
+
+        private Panel CriarCardModerno(string titulo, int x, int y, int width, int height, Color cor)
+        {
+            var card = new Panel
+            {
+                Location = new Point(x, y),
+                Size = new Size(width, height),
+                BackColor = cor,
+                BorderStyle = BorderStyle.None
+            };
+
+            var lblTitulo = new Label
+            {
+                Text = titulo,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.White,
+                Location = new Point(15, 15),
+                Size = new Size(width - 30, 20),
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            card.Controls.Add(lblTitulo);
+
+            return card;
+        }
+
+        private Label CriarLabelCardModerno(string texto, int y, Panel card, float fontSize = 14F, Color? cor = null)
+        {
+            var lbl = new Label
+            {
+                Text = texto,
+                Font = new Font("Segoe UI", fontSize, FontStyle.Bold),
+                ForeColor = cor ?? Color.White,
+                Location = new Point(15, y),
+                Size = new Size(card.Width - 30, (int)(fontSize * 2)),
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            card.Controls.Add(lbl);
+            return lbl;
         }
 
         private Label lblBoasVindas = new Label();
@@ -194,44 +396,33 @@ namespace BibliotecaJK.Forms
         private Label lblAlunosComAtrasos = new Label();
         private Label lblMultaTotal = new Label();
 
-        private Panel CriarCard(string titulo, int y, System.Drawing.Color cor)
+        private void AtualizarNotificacoes()
         {
-            var card = new Panel
+            try
             {
-                Location = new System.Drawing.Point(20, y),
-                Size = new System.Drawing.Size(900, 120),
-                BackColor = cor,
-                BorderStyle = BorderStyle.None
-            };
+                int naoLidas = _notificacaoDAL.ContarNaoLidas();
 
-            var lblTitulo = new Label
+                if (naoLidas > 0)
+                {
+                    lblNotificacaoBadge.Text = naoLidas > 99 ? "99+" : naoLidas.ToString();
+                    lblNotificacaoBadge.Visible = true;
+                }
+                else
+                {
+                    lblNotificacaoBadge.Visible = false;
+                }
+            }
+            catch
             {
-                Text = titulo,
-                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
-                ForeColor = System.Drawing.Color.White,
-                Location = new System.Drawing.Point(15, 10),
-                Size = new System.Drawing.Size(870, 20),
-                TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-            };
-            card.Controls.Add(lblTitulo);
-
-            return card;
+                // Silenciar erros de atualização de notificações
+            }
         }
 
-        private Label CriarLabelCard(string texto, int y, Panel card,
-            float fontSize = 18F, System.Drawing.Color? cor = null)
+        private void AbrirNotificacoes()
         {
-            var lbl = new Label
-            {
-                Text = texto,
-                Font = new System.Drawing.Font("Segoe UI", fontSize, System.Drawing.FontStyle.Bold),
-                ForeColor = cor ?? System.Drawing.Color.White,
-                Location = new System.Drawing.Point(15, y),
-                Size = new System.Drawing.Size(870, 20),
-                TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-            };
-            card.Controls.Add(lbl);
-            return lbl;
+            var form = new FormNotificacoes();
+            form.FormClosed += (s, e) => AtualizarNotificacoes();
+            form.ShowDialog();
         }
 
         private void AtualizarDashboard()

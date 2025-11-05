@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using BibliotecaJK.Model;
 using BibliotecaJK.DAL;
+using Npgsql;
 
 namespace BibliotecaJK.Forms
 {
@@ -317,8 +318,8 @@ namespace BibliotecaJK.Forms
                     return;
                 }
 
-                // Verificar senha atual
-                if (!BCrypt.Net.BCrypt.Verify(txtSenhaAtual.Text, _funcionario.SenhaHash))
+                // Verificar senha atual usando função PostgreSQL
+                if (!VerificarSenhaPostgreSQL(txtSenhaAtual.Text, _funcionario.SenhaHash))
                 {
                     MessageBox.Show("Senha atual incorreta.", "Erro",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -328,7 +329,7 @@ namespace BibliotecaJK.Forms
                 }
 
                 // Verificar se a nova senha é diferente da atual
-                if (BCrypt.Net.BCrypt.Verify(txtNovaSenha.Text, _funcionario.SenhaHash))
+                if (VerificarSenhaPostgreSQL(txtNovaSenha.Text, _funcionario.SenhaHash))
                 {
                     MessageBox.Show("A nova senha deve ser diferente da senha atual.", "Atenção",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -336,11 +337,8 @@ namespace BibliotecaJK.Forms
                     return;
                 }
 
-                // Gerar hash da nova senha
-                string novoHash = BCrypt.Net.BCrypt.HashPassword(txtNovaSenha.Text, 11);
-
-                // Atualizar no banco
-                _funcionario.SenhaHash = novoHash;
+                // Atualizar no banco (o trigger hash_senha_funcionario irá hashear automaticamente)
+                _funcionario.SenhaHash = txtNovaSenha.Text; // Enviar texto plano - será hasheado pelo trigger
                 _funcionario.PrimeiroLogin = false;
 
                 var dal = new FuncionarioDAL();
@@ -384,6 +382,32 @@ namespace BibliotecaJK.Forms
             {
                 this.DialogResult = DialogResult.Cancel;
                 this.Close();
+            }
+        }
+
+        /// <summary>
+        /// Verifica senha usando a função PostgreSQL verificar_senha()
+        /// </summary>
+        private bool VerificarSenhaPostgreSQL(string senhaTexto, string senhaHash)
+        {
+            try
+            {
+                using var conn = Conexao.GetConnection();
+                conn.Open();
+
+                string sql = "SELECT verificar_senha(@senha, @hash)";
+                using var cmd = new NpgsqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@senha", senhaTexto);
+                cmd.Parameters.AddWithValue("@hash", senhaHash);
+
+                var result = cmd.ExecuteScalar();
+                return result != null && (bool)result;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao verificar senha: {ex.Message}", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
         }
     }
