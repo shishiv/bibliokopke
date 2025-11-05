@@ -23,7 +23,7 @@ namespace BibliotecaJK.Forms
         private Button btnAtualizar = new Button();
         private Label lblTotal = new Label();
         private Label lblNaoLidas = new Label();
-        private Timer timerAtualizacao = new Timer();
+        private System.Windows.Forms.Timer timerAtualizacao = new System.Windows.Forms.Timer();
 
         public FormNotificacoes()
         {

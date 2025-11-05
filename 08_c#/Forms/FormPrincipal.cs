@@ -19,7 +19,7 @@ namespace BibliotecaJK.Forms
         private readonly AlunoService _alunoService;
         private readonly NotificacaoDAL _notificacaoDAL;
         private Label lblNotificacaoBadge = new Label();
-        private Timer timerNotificacoes = new Timer();
+        private System.Windows.Forms.Timer timerNotificacoes = new System.Windows.Forms.Timer();
 
         public FormPrincipal(Funcionario funcionario)
         {
