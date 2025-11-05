@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS Funcionario (
     login VARCHAR(50) NOT NULL UNIQUE,
     senha_hash VARCHAR(255) NOT NULL,
     perfil VARCHAR(50) NOT NULL DEFAULT 'OPERADOR', -- ADMIN, BIBLIOTECARIO, OPERADOR
+    primeiro_login BOOLEAN NOT NULL DEFAULT TRUE,
     data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -82,6 +83,7 @@ CREATE TABLE IF NOT EXISTS Livro (
     isbn VARCHAR(17) NULL UNIQUE,
     editora VARCHAR(100) NULL,
     ano_publicacao INT NULL,
+    categoria VARCHAR(100) NULL,
     quantidade_total INT NOT NULL DEFAULT 1,
     quantidade_disponivel INT NOT NULL DEFAULT 1,
     localizacao VARCHAR(50) NULL,
@@ -92,6 +94,7 @@ CREATE TABLE IF NOT EXISTS Livro (
 CREATE INDEX IF NOT EXISTS idx_livro_titulo ON Livro(titulo);
 CREATE INDEX IF NOT EXISTS idx_livro_autor ON Livro(autor);
 CREATE INDEX IF NOT EXISTS idx_livro_isbn ON Livro(isbn);
+CREATE INDEX IF NOT EXISTS idx_livro_categoria ON Livro(categoria);
 
 COMMENT ON TABLE Livro IS 'Tabela de livros do acervo';
 
@@ -184,12 +187,12 @@ INSERT INTO Aluno (nome, cpf, matricula, turma, telefone, email) VALUES
 ON CONFLICT (cpf) DO NOTHING;
 
 -- Inserir alguns livros de exemplo
-INSERT INTO Livro (titulo, autor, isbn, editora, ano_publicacao, quantidade_total, quantidade_disponivel, localizacao) VALUES
-('Dom Casmurro', 'Machado de Assis', '978-85-7326-981-6', 'Editora Garnier', 1899, 3, 3, 'A-001'),
-('O Cortico', 'Aluisio Azevedo', '978-85-08-12345-6', 'Editora Atica', 1890, 2, 2, 'A-002'),
-('1984', 'George Orwell', '978-85-359-0277-4', 'Companhia das Letras', 1949, 5, 5, 'B-001'),
-('O Pequeno Principe', 'Antoine de Saint-Exupery', '978-85-220-0826-7', 'Editora Agir', 1943, 4, 4, 'C-001'),
-('Matematica Basica', 'Jose Silva', '978-85-16-12345-8', 'Editora Moderna', 2020, 10, 10, 'D-001')
+INSERT INTO Livro (titulo, autor, isbn, editora, ano_publicacao, categoria, quantidade_total, quantidade_disponivel, localizacao) VALUES
+('Dom Casmurro', 'Machado de Assis', '978-85-7326-981-6', 'Editora Garnier', 1899, 'Literatura Brasileira', 3, 3, 'A-001'),
+('O Cortico', 'Aluisio Azevedo', '978-85-08-12345-6', 'Editora Atica', 1890, 'Literatura Brasileira', 2, 2, 'A-002'),
+('1984', 'George Orwell', '978-85-359-0277-4', 'Companhia das Letras', 1949, 'Ficcao Cientifica', 5, 5, 'B-001'),
+('O Pequeno Principe', 'Antoine de Saint-Exupery', '978-85-220-0826-7', 'Editora Agir', 1943, 'Literatura Infantil', 4, 4, 'C-001'),
+('Matematica Basica', 'Jose Silva', '978-85-16-12345-8', 'Editora Moderna', 2020, 'Didatico', 10, 10, 'D-001')
 ON CONFLICT (isbn) DO NOTHING;
 
 -- ================================================
@@ -227,6 +230,7 @@ SELECT
     isbn,
     editora,
     ano_publicacao,
+    categoria,
     quantidade_total,
     quantidade_disponivel,
     localizacao

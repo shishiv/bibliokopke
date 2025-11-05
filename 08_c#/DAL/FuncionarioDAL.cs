@@ -9,7 +9,7 @@ namespace BibliotecaJK.DAL
         public void Inserir(Funcionario f)
         {
             var conn = Conexao.GetConnection();
-            string sql = "INSERT INTO Funcionario (nome, cpf, cargo, login, senha_hash, perfil) VALUES (@nome,@cpf,@cargo,@login,@senha,@perfil)";
+            string sql = "INSERT INTO Funcionario (nome, cpf, cargo, login, senha_hash, perfil, primeiro_login) VALUES (@nome,@cpf,@cargo,@login,@senha,@perfil,@primeiro)";
             using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@nome", f.Nome);
@@ -18,6 +18,7 @@ namespace BibliotecaJK.DAL
                 cmd.Parameters.AddWithValue("@login", f.Login);
                 cmd.Parameters.AddWithValue("@senha", f.SenhaHash);
                 cmd.Parameters.AddWithValue("@perfil", f.Perfil);
+                cmd.Parameters.AddWithValue("@primeiro", f.PrimeiroLogin);
 
                 conn.Open();
                 cmd.ExecuteNonQuery();
@@ -44,7 +45,8 @@ namespace BibliotecaJK.DAL
                         Cargo = reader.IsDBNull(reader.GetOrdinal("cargo")) ? null : reader.GetString(reader.GetOrdinal("cargo")),
                         Login = reader.GetString(reader.GetOrdinal("login")),
                         SenhaHash = reader.GetString(reader.GetOrdinal("senha_hash")),
-                        Perfil = reader.GetString(reader.GetOrdinal("perfil"))
+                        Perfil = reader.GetString(reader.GetOrdinal("perfil")),
+                        PrimeiroLogin = reader.GetBoolean(reader.GetOrdinal("primeiro_login"))
                     });
                 }
                 conn.Close();
@@ -71,7 +73,8 @@ namespace BibliotecaJK.DAL
                         Cargo = reader.IsDBNull(reader.GetOrdinal("cargo")) ? null : reader.GetString(reader.GetOrdinal("cargo")),
                         Login = reader.GetString(reader.GetOrdinal("login")),
                         SenhaHash = reader.GetString(reader.GetOrdinal("senha_hash")),
-                        Perfil = reader.GetString(reader.GetOrdinal("perfil"))
+                        Perfil = reader.GetString(reader.GetOrdinal("perfil")),
+                        PrimeiroLogin = reader.GetBoolean(reader.GetOrdinal("primeiro_login"))
                     };
                     conn.Close();
                     return f;
@@ -84,7 +87,7 @@ namespace BibliotecaJK.DAL
         public void Atualizar(Funcionario f)
         {
             var conn = Conexao.GetConnection();
-            string sql = "UPDATE Funcionario SET nome=@nome, cpf=@cpf, cargo=@cargo, login=@login, senha_hash=@senha, perfil=@perfil WHERE id_funcionario=@id";
+            string sql = "UPDATE Funcionario SET nome=@nome, cpf=@cpf, cargo=@cargo, login=@login, senha_hash=@senha, perfil=@perfil, primeiro_login=@primeiro WHERE id_funcionario=@id";
             using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@nome", f.Nome);
@@ -93,6 +96,7 @@ namespace BibliotecaJK.DAL
                 cmd.Parameters.AddWithValue("@login", f.Login);
                 cmd.Parameters.AddWithValue("@senha", f.SenhaHash);
                 cmd.Parameters.AddWithValue("@perfil", f.Perfil);
+                cmd.Parameters.AddWithValue("@primeiro", f.PrimeiroLogin);
                 cmd.Parameters.AddWithValue("@id", f.Id);
 
                 conn.Open();
