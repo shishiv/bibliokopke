@@ -15,6 +15,7 @@ namespace BibliotecaJK.Forms
         private readonly LogService _logService;
 
         public Funcionario? FuncionarioLogado { get; private set; }
+        public bool PrecisaTrocarSenha { get; private set; } = false;
 
         public FormLogin()
         {
@@ -217,6 +218,20 @@ namespace BibliotecaJK.Forms
                 FuncionarioLogado = funcionario;
                 _logService.Registrar(funcionario.Id, "LOGIN_SUCESSO",
                     $"Funcionário {funcionario.Nome} autenticado com sucesso");
+
+                // Verificar se é primeiro login
+                if (funcionario.PrimeiroLogin)
+                {
+                    MessageBox.Show(
+                        $"Bem-vindo, {funcionario.Nome}!\n\n" +
+                        "Este é seu primeiro acesso ao sistema.\n" +
+                        "Por segurança, você deve alterar sua senha antes de continuar.",
+                        "Primeiro Acesso",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+
+                    PrecisaTrocarSenha = true;
+                }
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();

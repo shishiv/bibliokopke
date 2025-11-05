@@ -83,26 +83,72 @@ namespace BibliotecaJK
                 }
             }
 
+            // Conexao OK - Verificar se o schema esta instalado
+            var resultSetup = MessageBox.Show(
+                "Conexao estabelecida com sucesso!\n\n" +
+                "Deseja verificar se o banco de dados esta configurado corretamente?\n" +
+                "(Verifica se as tabelas existem e oferece criar automaticamente)",
+                "Setup do Banco de Dados",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (resultSetup == DialogResult.Yes)
+            {
+                string connStr = Conexao.GetConnectionString();
+                using var formSetup = new FormSetupInicial(connStr);
+                if (formSetup.ShowDialog() != DialogResult.OK)
+                {
+                    var sair = MessageBox.Show(
+                        "Setup nao concluido.\n\n" +
+                        "Deseja sair do sistema?",
+                        "Setup Cancelado",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning);
+
+                    if (sair == DialogResult.Yes)
+                    {
+                        return;
+                    }
+                }
+            }
+
             // Exibir tela de login
             using (var formLogin = new FormLogin())
             {
                 if (formLogin.ShowDialog() == DialogResult.OK)
                 {
-                    // Login bem-sucedido, abrir formulario principal
+                    // Login bem-sucedido
                     var funcionarioLogado = formLogin.FuncionarioLogado;
 
-                    if (funcionarioLogado != null)
-                    {
-                        Application.Run(new FormPrincipal(funcionarioLogado));
-                    }
-                    else
+                    if (funcionarioLogado == null)
                     {
                         MessageBox.Show(
                             "Erro ao recuperar dados do funcionario logado.",
                             "Erro",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
+                        return;
                     }
+
+                    // Verificar se precisa trocar senha
+                    if (formLogin.PrecisaTrocarSenha)
+                    {
+                        using var formTrocaSenha = new FormTrocaSenha(funcionarioLogado, obrigatorio: true);
+                        if (formTrocaSenha.ShowDialog() != DialogResult.OK)
+                        {
+                            // Usuario cancelou a troca de senha obrigatoria
+                            MessageBox.Show(
+                                "Troca de senha cancelada.\n\n" +
+                                "Voce nao pode acessar o sistema sem alterar a senha padrao.",
+                                "Acesso Negado",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+                            return;
+                        }
+                    }
+
+                    // Abrir formulario principal
+                    Application.Run(new FormPrincipal(funcionarioLogado));
                 }
             }
         }
