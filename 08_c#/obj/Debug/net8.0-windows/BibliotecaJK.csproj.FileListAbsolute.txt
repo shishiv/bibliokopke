@@ -1,0 +1,6 @@
+C:\Repos\bibliokopke\08_c#\obj\Debug\net8.0-windows\BibliotecaJK.csproj.AssemblyReference.cache
+C:\Repos\bibliokopke\08_c#\obj\Debug\net8.0-windows\BibliotecaJK.GeneratedMSBuildEditorConfig.editorconfig
+C:\Repos\bibliokopke\08_c#\obj\Debug\net8.0-windows\BibliotecaJK.AssemblyInfoInputs.cache
+C:\Repos\bibliokopke\08_c#\obj\Debug\net8.0-windows\BibliotecaJK.AssemblyInfo.cs
+C:\Repos\bibliokopke\08_c#\obj\Debug\net8.0-windows\BibliotecaJK.csproj.CoreCompileInputs.cache
+C:\Repos\bibliokopke\08_c#\obj\Debug\net8.0-windows\BibliotecaJK.sourcelink.json
