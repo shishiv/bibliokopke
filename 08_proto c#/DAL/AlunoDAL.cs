@@ -38,13 +38,13 @@ namespace BibliotecaJK.DAL
                 {
                     lista.Add(new Aluno
                     {
-                        Id = reader.GetInt32("id_aluno"),
-                        Nome = reader.GetString("nome"),
-                        CPF = reader.GetString("cpf"),
-                        Matricula = reader.GetString("matricula"),
-                        Turma = reader.IsDBNull(reader.GetOrdinal("turma")) ? null : reader.GetString("turma"),
-                        Telefone = reader.IsDBNull(reader.GetOrdinal("telefone")) ? null : reader.GetString("telefone"),
-                        Email = reader.IsDBNull(reader.GetOrdinal("email")) ? null : reader.GetString("email")
+                        Id = reader.GetInt32(reader.GetOrdinal("id_aluno")),
+                        Nome = reader.GetString(reader.GetOrdinal("nome")),
+                        CPF = reader.GetString(reader.GetOrdinal("cpf")),
+                        Matricula = reader.GetString(reader.GetOrdinal("matricula")),
+                        Turma = reader.IsDBNull(reader.GetOrdinal("turma")) ? null : reader.GetString(reader.GetOrdinal("turma")),
+                        Telefone = reader.IsDBNull(reader.GetOrdinal("telefone")) ? null : reader.GetString(reader.GetOrdinal("telefone")),
+                        Email = reader.IsDBNull(reader.GetOrdinal("email")) ? null : reader.GetString(reader.GetOrdinal("email"))
                     });
                 }
                 conn.Close();
@@ -65,13 +65,13 @@ namespace BibliotecaJK.DAL
                 {
                     var a = new Aluno
                     {
-                        Id = reader.GetInt32("id_aluno"),
-                        Nome = reader.GetString("nome"),
-                        CPF = reader.GetString("cpf"),
-                        Matricula = reader.GetString("matricula"),
-                        Turma = reader.IsDBNull(reader.GetOrdinal("turma")) ? null : reader.GetString("turma"),
-                        Telefone = reader.IsDBNull(reader.GetOrdinal("telefone")) ? null : reader.GetString("telefone"),
-                        Email = reader.IsDBNull(reader.GetOrdinal("email")) ? null : reader.GetString("email")
+                        Id = reader.GetInt32(reader.GetOrdinal("id_aluno")),
+                        Nome = reader.GetString(reader.GetOrdinal("nome")),
+                        CPF = reader.GetString(reader.GetOrdinal("cpf")),
+                        Matricula = reader.GetString(reader.GetOrdinal("matricula")),
+                        Turma = reader.IsDBNull(reader.GetOrdinal("turma")) ? null : reader.GetString(reader.GetOrdinal("turma")),
+                        Telefone = reader.IsDBNull(reader.GetOrdinal("telefone")) ? null : reader.GetString(reader.GetOrdinal("telefone")),
+                        Email = reader.IsDBNull(reader.GetOrdinal("email")) ? null : reader.GetString(reader.GetOrdinal("email"))
                     };
                     conn.Close();
                     return a;

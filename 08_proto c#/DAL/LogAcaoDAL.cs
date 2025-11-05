@@ -37,11 +37,11 @@ namespace BibliotecaJK.DAL
                 {
                     lista.Add(new LogAcao
                     {
-                        Id = reader.GetInt32("id_log"),
-                        IdFuncionario = reader.IsDBNull(reader.GetOrdinal("id_funcionario")) ? (int?)null : reader.GetInt32("id_funcionario"),
-                        Acao = reader.IsDBNull(reader.GetOrdinal("acao")) ? null : reader.GetString("acao"),
-                        Descricao = reader.IsDBNull(reader.GetOrdinal("descricao")) ? null : reader.GetString("descricao"),
-                        DataHora = reader.GetDateTime("data_hora")
+                        Id = reader.GetInt32(reader.GetOrdinal("id_log")),
+                        IdFuncionario = reader.IsDBNull(reader.GetOrdinal("id_funcionario")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("id_funcionario")),
+                        Acao = reader.IsDBNull(reader.GetOrdinal("acao")) ? null : reader.GetString(reader.GetOrdinal("acao")),
+                        Descricao = reader.IsDBNull(reader.GetOrdinal("descricao")) ? null : reader.GetString(reader.GetOrdinal("descricao")),
+                        DataHora = reader.GetDateTime(reader.GetOrdinal("data_hora"))
                     });
                 }
                 conn.Close();
@@ -62,11 +62,11 @@ namespace BibliotecaJK.DAL
                 {
                     var l = new LogAcao
                     {
-                        Id = reader.GetInt32("id_log"),
-                        IdFuncionario = reader.IsDBNull(reader.GetOrdinal("id_funcionario")) ? (int?)null : reader.GetInt32("id_funcionario"),
-                        Acao = reader.IsDBNull(reader.GetOrdinal("acao")) ? null : reader.GetString("acao"),
-                        Descricao = reader.IsDBNull(reader.GetOrdinal("descricao")) ? null : reader.GetString("descricao"),
-                        DataHora = reader.GetDateTime("data_hora")
+                        Id = reader.GetInt32(reader.GetOrdinal("id_log")),
+                        IdFuncionario = reader.IsDBNull(reader.GetOrdinal("id_funcionario")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("id_funcionario")),
+                        Acao = reader.IsDBNull(reader.GetOrdinal("acao")) ? null : reader.GetString(reader.GetOrdinal("acao")),
+                        Descricao = reader.IsDBNull(reader.GetOrdinal("descricao")) ? null : reader.GetString(reader.GetOrdinal("descricao")),
+                        DataHora = reader.GetDateTime(reader.GetOrdinal("data_hora"))
                     };
                     conn.Close();
                     return l;

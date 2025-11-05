@@ -38,13 +38,13 @@ namespace BibliotecaJK.DAL
                 {
                     lista.Add(new Funcionario
                     {
-                        Id = reader.GetInt32("id_funcionario"),
-                        Nome = reader.GetString("nome"),
-                        CPF = reader.GetString("cpf"),
-                        Cargo = reader.IsDBNull(reader.GetOrdinal("cargo")) ? null : reader.GetString("cargo"),
-                        Login = reader.GetString("login"),
-                        SenhaHash = reader.GetString("senha_hash"),
-                        Perfil = reader.GetString("perfil")
+                        Id = reader.GetInt32(reader.GetOrdinal("id_funcionario")),
+                        Nome = reader.GetString(reader.GetOrdinal("nome")),
+                        CPF = reader.GetString(reader.GetOrdinal("cpf")),
+                        Cargo = reader.IsDBNull(reader.GetOrdinal("cargo")) ? null : reader.GetString(reader.GetOrdinal("cargo")),
+                        Login = reader.GetString(reader.GetOrdinal("login")),
+                        SenhaHash = reader.GetString(reader.GetOrdinal("senha_hash")),
+                        Perfil = reader.GetString(reader.GetOrdinal("perfil"))
                     });
                 }
                 conn.Close();
@@ -65,13 +65,13 @@ namespace BibliotecaJK.DAL
                 {
                     var f = new Funcionario
                     {
-                        Id = reader.GetInt32("id_funcionario"),
-                        Nome = reader.GetString("nome"),
-                        CPF = reader.GetString("cpf"),
-                        Cargo = reader.IsDBNull(reader.GetOrdinal("cargo")) ? null : reader.GetString("cargo"),
-                        Login = reader.GetString("login"),
-                        SenhaHash = reader.GetString("senha_hash"),
-                        Perfil = reader.GetString("perfil")
+                        Id = reader.GetInt32(reader.GetOrdinal("id_funcionario")),
+                        Nome = reader.GetString(reader.GetOrdinal("nome")),
+                        CPF = reader.GetString(reader.GetOrdinal("cpf")),
+                        Cargo = reader.IsDBNull(reader.GetOrdinal("cargo")) ? null : reader.GetString(reader.GetOrdinal("cargo")),
+                        Login = reader.GetString(reader.GetOrdinal("login")),
+                        SenhaHash = reader.GetString(reader.GetOrdinal("senha_hash")),
+                        Perfil = reader.GetString(reader.GetOrdinal("perfil"))
                     };
                     conn.Close();
                     return f;

@@ -271,12 +271,12 @@ namespace BibliotecaJK.Forms
                     .Take(20)
                     .ToList();
 
-                var dados = livrosAgrupados.Select(lg =>
+                var dados = livrosAgrupados.Select((lg, index) =>
                 {
                     var livro = _livroDAL.ObterPorId(lg.IdLivro);
                     return new
                     {
-                        Posição = livrosAgrupados.IndexOf(lg) + 1,
+                        Posição = index + 1,
                         Título = livro?.Titulo ?? "N/A",
                         Autor = livro?.Autor ?? "N/A",
                         Categoria = livro?.Categoria ?? "N/A",
@@ -286,9 +286,9 @@ namespace BibliotecaJK.Forms
                 }).ToList();
 
                 dgvRelatorio.DataSource = dados;
-                btnExportar.Enabled = dados.Count > 0;
+                btnExportar.Enabled = dados.Count() > 0;
 
-                MessageBox.Show($"Relatório gerado: Top {dados.Count} livros mais emprestados.", "Sucesso",
+                MessageBox.Show($"Relatório gerado: Top {dados.Count()} livros mais emprestados.", "Sucesso",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -320,12 +320,12 @@ namespace BibliotecaJK.Forms
                     .Take(20)
                     .ToList();
 
-                var dados = alunosAgrupados.Select(ag =>
+                var dados = alunosAgrupados.Select((ag, index) =>
                 {
                     var aluno = _alunoDAL.ObterPorId(ag.IdAluno);
                     return new
                     {
-                        Posição = alunosAgrupados.IndexOf(ag) + 1,
+                        Posição = index + 1,
                         Nome = aluno?.Nome ?? "N/A",
                         Matrícula = aluno?.Matricula ?? "N/A",
                         TotalEmpréstimos = ag.TotalEmprestimos,
@@ -335,9 +335,9 @@ namespace BibliotecaJK.Forms
                 }).ToList();
 
                 dgvRelatorio.DataSource = dados;
-                btnExportar.Enabled = dados.Count > 0;
+                btnExportar.Enabled = dados.Count() > 0;
 
-                MessageBox.Show($"Relatório gerado: Top {dados.Count} alunos mais ativos.", "Sucesso",
+                MessageBox.Show($"Relatório gerado: Top {dados.Count()} alunos mais ativos.", "Sucesso",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)

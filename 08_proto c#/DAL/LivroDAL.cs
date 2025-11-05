@@ -9,8 +9,8 @@ namespace BibliotecaJK.DAL
         public void Inserir(Livro livro)
         {
             var conn = Conexao.GetConnection();
-            string sql = "INSERT INTO Livro (titulo, autor, isbn, editora, ano_publicacao, quantidade_total, quantidade_disponivel, localizacao) " +
-                         "VALUES (@titulo, @autor, @isbn, @editora, @ano, @total, @disp, @loc)";
+            string sql = "INSERT INTO Livro (titulo, autor, isbn, editora, ano_publicacao, categoria, quantidade_total, quantidade_disponivel, localizacao) " +
+                         "VALUES (@titulo, @autor, @isbn, @editora, @ano, @categoria, @total, @disp, @loc)";
             using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@titulo", livro.Titulo);
@@ -18,6 +18,7 @@ namespace BibliotecaJK.DAL
                 cmd.Parameters.AddWithValue("@isbn", (object?)livro.ISBN ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@editora", (object?)livro.Editora ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@ano", (object?)livro.AnoPublicacao ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@categoria", (object?)livro.Categoria ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@total", livro.QuantidadeTotal);
                 cmd.Parameters.AddWithValue("@disp", livro.QuantidadeDisponivel);
                 cmd.Parameters.AddWithValue("@loc", (object?)livro.Localizacao ?? DBNull.Value);
@@ -41,15 +42,16 @@ namespace BibliotecaJK.DAL
                 {
                     lista.Add(new Livro
                     {
-                        Id = reader.GetInt32("id_livro"),
-                        Titulo = reader.GetString("titulo"),
-                        Autor = reader.IsDBNull(reader.GetOrdinal("autor")) ? null : reader.GetString("autor"),
-                        ISBN = reader.IsDBNull(reader.GetOrdinal("isbn")) ? null : reader.GetString("isbn"),
-                        Editora = reader.IsDBNull(reader.GetOrdinal("editora")) ? null : reader.GetString("editora"),
-                        AnoPublicacao = reader.IsDBNull(reader.GetOrdinal("ano_publicacao")) ? null : reader.GetInt32("ano_publicacao"),
-                        QuantidadeTotal = reader.GetInt32("quantidade_total"),
-                        QuantidadeDisponivel = reader.GetInt32("quantidade_disponivel"),
-                        Localizacao = reader.IsDBNull(reader.GetOrdinal("localizacao")) ? null : reader.GetString("localizacao")
+                        Id = reader.GetInt32(reader.GetOrdinal("id_livro")),
+                        Titulo = reader.GetString(reader.GetOrdinal("titulo")),
+                        Autor = reader.IsDBNull(reader.GetOrdinal("autor")) ? null : reader.GetString(reader.GetOrdinal("autor")),
+                        ISBN = reader.IsDBNull(reader.GetOrdinal("isbn")) ? null : reader.GetString(reader.GetOrdinal("isbn")),
+                        Editora = reader.IsDBNull(reader.GetOrdinal("editora")) ? null : reader.GetString(reader.GetOrdinal("editora")),
+                        AnoPublicacao = reader.IsDBNull(reader.GetOrdinal("ano_publicacao")) ? null : reader.GetInt32(reader.GetOrdinal("ano_publicacao")),
+                        Categoria = reader.IsDBNull(reader.GetOrdinal("categoria")) ? null : reader.GetString(reader.GetOrdinal("categoria")),
+                        QuantidadeTotal = reader.GetInt32(reader.GetOrdinal("quantidade_total")),
+                        QuantidadeDisponivel = reader.GetInt32(reader.GetOrdinal("quantidade_disponivel")),
+                        Localizacao = reader.IsDBNull(reader.GetOrdinal("localizacao")) ? null : reader.GetString(reader.GetOrdinal("localizacao"))
                     });
                 }
                 conn.Close();
@@ -70,15 +72,16 @@ namespace BibliotecaJK.DAL
                 {
                     var l = new Livro
                     {
-                        Id = reader.GetInt32("id_livro"),
-                        Titulo = reader.GetString("titulo"),
-                        Autor = reader.IsDBNull(reader.GetOrdinal("autor")) ? null : reader.GetString("autor"),
-                        ISBN = reader.IsDBNull(reader.GetOrdinal("isbn")) ? null : reader.GetString("isbn"),
-                        Editora = reader.IsDBNull(reader.GetOrdinal("editora")) ? null : reader.GetString("editora"),
-                        AnoPublicacao = reader.IsDBNull(reader.GetOrdinal("ano_publicacao")) ? null : reader.GetInt32("ano_publicacao"),
-                        QuantidadeTotal = reader.GetInt32("quantidade_total"),
-                        QuantidadeDisponivel = reader.GetInt32("quantidade_disponivel"),
-                        Localizacao = reader.IsDBNull(reader.GetOrdinal("localizacao")) ? null : reader.GetString("localizacao")
+                        Id = reader.GetInt32(reader.GetOrdinal("id_livro")),
+                        Titulo = reader.GetString(reader.GetOrdinal("titulo")),
+                        Autor = reader.IsDBNull(reader.GetOrdinal("autor")) ? null : reader.GetString(reader.GetOrdinal("autor")),
+                        ISBN = reader.IsDBNull(reader.GetOrdinal("isbn")) ? null : reader.GetString(reader.GetOrdinal("isbn")),
+                        Editora = reader.IsDBNull(reader.GetOrdinal("editora")) ? null : reader.GetString(reader.GetOrdinal("editora")),
+                        AnoPublicacao = reader.IsDBNull(reader.GetOrdinal("ano_publicacao")) ? null : reader.GetInt32(reader.GetOrdinal("ano_publicacao")),
+                        Categoria = reader.IsDBNull(reader.GetOrdinal("categoria")) ? null : reader.GetString(reader.GetOrdinal("categoria")),
+                        QuantidadeTotal = reader.GetInt32(reader.GetOrdinal("quantidade_total")),
+                        QuantidadeDisponivel = reader.GetInt32(reader.GetOrdinal("quantidade_disponivel")),
+                        Localizacao = reader.IsDBNull(reader.GetOrdinal("localizacao")) ? null : reader.GetString(reader.GetOrdinal("localizacao"))
                     };
                     conn.Close();
                     return l;
@@ -91,7 +94,7 @@ namespace BibliotecaJK.DAL
         public void Atualizar(Livro livro)
         {
             var conn = Conexao.GetConnection();
-            string sql = "UPDATE Livro SET titulo=@titulo, autor=@autor, isbn=@isbn, editora=@editora, ano_publicacao=@ano, " +
+            string sql = "UPDATE Livro SET titulo=@titulo, autor=@autor, isbn=@isbn, editora=@editora, ano_publicacao=@ano, categoria=@categoria, " +
                          "quantidade_total=@total, quantidade_disponivel=@disp, localizacao=@loc WHERE id_livro=@id";
             using (var cmd = new NpgsqlCommand(sql, conn))
             {
@@ -100,6 +103,7 @@ namespace BibliotecaJK.DAL
                 cmd.Parameters.AddWithValue("@isbn", (object?)livro.ISBN ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@editora", (object?)livro.Editora ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@ano", (object?)livro.AnoPublicacao ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@categoria", (object?)livro.Categoria ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@total", livro.QuantidadeTotal);
                 cmd.Parameters.AddWithValue("@disp", livro.QuantidadeDisponivel);
                 cmd.Parameters.AddWithValue("@loc", (object?)livro.Localizacao ?? DBNull.Value);
