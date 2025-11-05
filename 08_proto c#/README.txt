@@ -1,5 +1,6 @@
 ========================================================
-  PROTÓTIPO C# - Sistema BibliotecaJK v1.0
+  PROTÓTIPO C# - Sistema BibliotecaJK v2.0
+  COMPLETO: Model + DAL + BLL
 ========================================================
 
 📁 ESTRUTURA DO PROJETO
@@ -21,21 +22,37 @@ DAL/
   ├── ReservaDAL.cs       → CRUD completo de reservas
   └── LogAcaoDAL.cs       → CRUD completo de logs
 
+BLL/ ⭐ NOVO!
+  ├── ResultadoOperacao.cs → Padronização de retornos
+  ├── Exceptions.cs        → Exceções personalizadas
+  ├── Validadores.cs       → Validações (CPF, ISBN, Email)
+  ├── LogService.cs        → Gerenciamento de logs
+  ├── EmprestimoService.cs → Regras de empréstimos ⭐
+  ├── ReservaService.cs    → Sistema de reservas (fila FIFO)
+  ├── LivroService.cs      → Gerenciamento de livros
+  ├── AlunoService.cs      → Gerenciamento de alunos
+  └── README_BLL.md        → Documentação da camada BLL
+
 Conexao.cs                → Gerenciador de conexões MySQL
-Program.cs                → Menu interativo para testar o sistema
+Program.cs                → Menu interativo para testar BLL
 schema.sql                → Script de criação do banco de dados
 BibliotecaJK.csproj       → Configuração do projeto (.NET 8.0)
 
 🎯 CARACTERÍSTICAS
 ------------------------------------------------------------
-✅ Arquitetura em camadas (Model → DAL)
+✅ Arquitetura em 3 camadas (Model → DAL → BLL)
 ✅ Herança OOP com classe base Pessoa
-✅ CRUD completo para todas as entidades
+✅ CRUD completo para todas as entidades (DAL)
+✅ Lógica de negócio completa (BLL)
+✅ Regras de empréstimo (prazo 7 dias, máx 3 simultâneos, multa R$ 2/dia)
+✅ Sistema de reservas com fila FIFO
+✅ Validações (CPF, ISBN, Email, Matrícula)
+✅ Sistema de logs e auditoria
 ✅ Tratamento de valores nulos (Nullable types)
 ✅ Uso de using statements para gerenciamento de recursos
 ✅ Connection pooling com criação de novas conexões
 ✅ Prepared statements para prevenir SQL Injection
-✅ Menu interativo para testes
+✅ Menu interativo para testes de BLL
 
 🚀 COMO USAR
 ------------------------------------------------------------
@@ -91,7 +108,17 @@ Views:
 
 📝 MELHORIAS IMPLEMENTADAS
 ------------------------------------------------------------
-v1.0 (Atual):
+v2.0 (Atual):
+  ✅ Implementada camada BLL completa (Lógica de Negócio)
+  ✅ EmprestimoService com todas regras de negócio
+  ✅ ReservaService com sistema de fila FIFO
+  ✅ LivroService e AlunoService com validações
+  ✅ Validadores (CPF, ISBN, Email)
+  ✅ Sistema de logs e auditoria
+  ✅ Program.cs atualizado para testar BLL
+  ✅ Documentação completa (README_BLL.md)
+
+v1.0:
   ✅ Implementada herança com classe Pessoa
   ✅ Corrigido padrão de conexão (não reutiliza instância)
   ✅ Criado script SQL completo do protótipo
