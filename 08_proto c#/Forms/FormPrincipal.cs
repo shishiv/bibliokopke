@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using BibliotecaJK.Model;
 using BibliotecaJK.BLL;
 using BibliotecaJK.DAL;
+using BibliotecaJK.Components;
 
 namespace BibliotecaJK.Forms
 {
@@ -20,6 +21,18 @@ namespace BibliotecaJK.Forms
         private readonly NotificacaoDAL _notificacaoDAL;
         private Label lblNotificacaoBadge = new Label();
         private System.Windows.Forms.Timer timerNotificacoes = new System.Windows.Forms.Timer();
+        private KeyboardShortcutManager _shortcutManager;
+        private ToolTip _tooltip = new ToolTip();
+        private StatusStrip _statusStrip = new StatusStrip();
+        private ToolStripStatusLabel _lblStatus;
+        private ToolStripStatusLabel _lblUsuario;
+        private ToolStripStatusLabel _lblHora;
+        private Panel cardEmprestimos;
+        private Panel cardLivros;
+        private Panel cardAlunos;
+        private Panel cardMultas;
+        private Panel cardEmprestados;
+        private Panel cardAtrasos;
 
         public FormPrincipal(Funcionario funcionario)
         {
@@ -30,6 +43,9 @@ namespace BibliotecaJK.Forms
             _notificacaoDAL = new NotificacaoDAL();
 
             InitializeComponent();
+            ConfigurarAtalhosTeclado();
+            ConfigurarTooltips();
+            ConfigurarStatusBar();
             AtualizarDashboard();
             AtualizarNotificacoes();
 
@@ -37,6 +53,9 @@ namespace BibliotecaJK.Forms
             timerNotificacoes.Interval = 60000;
             timerNotificacoes.Tick += (s, e) => AtualizarNotificacoes();
             timerNotificacoes.Start();
+
+            // Toast de boas-vindas
+            ToastNotification.Info($"Bem-vindo(a), {_funcionarioLogado.Nome}!");
         }
 
         private void InitializeComponent()
@@ -187,6 +206,30 @@ namespace BibliotecaJK.Forms
             pnlSidebar.Controls.Add(btnBackup);
             btnY += btnHeight + btnSpacing;
 
+            // Separador
+            var sep5 = new Panel
+            {
+                Location = new Point(20, btnY),
+                Size = new Size(210, 1),
+                BackColor = Color.FromArgb(100, 100, 120)
+            };
+            pnlSidebar.Controls.Add(sep5);
+            btnY += 15;
+
+            // Botão Modo Escuro
+            var btnModoEscuro = ThemeManager.CreateThemeToggleButton();
+            btnModoEscuro.Location = new Point(10, btnY);
+            btnModoEscuro.Size = new Size(230, 45);
+            btnModoEscuro.BackColor = Color.FromArgb(100, 67, 86);
+            pnlSidebar.Controls.Add(btnModoEscuro);
+            btnY += 50;
+
+            // Botão Ajuda/Atalhos
+            var btnAjuda = CriarBotaoSidebar("❓  Atalhos (F1)", btnY);
+            btnAjuda.Click += (s, e) => _shortcutManager?.ShowShortcutsHelp();
+            pnlSidebar.Controls.Add(btnAjuda);
+            btnY += btnHeight + btnSpacing;
+
             // Botão Sair (no final)
             var btnSair = CriarBotaoSidebar("🚪  Sair", 720);
             btnSair.BackColor = Color.FromArgb(183, 28, 28);
@@ -262,43 +305,61 @@ namespace BibliotecaJK.Forms
             int cardHeight = 140;
             int cardMargin = 20;
 
-            // Card 1: Empréstimos
-            var cardEmprestimos = CriarCardModerno("EMPRÉSTIMOS ATIVOS", 0, 50, cardWidth, cardHeight, Color.FromArgb(76, 175, 80));
+            // Card 1: Empréstimos (clicável)
+            cardEmprestimos = CriarCardModerno("EMPRÉSTIMOS ATIVOS", 0, 50, cardWidth, cardHeight, Color.FromArgb(76, 175, 80));
             lblEmprestimosAtivos = CriarLabelCardModerno("0", 40, cardEmprestimos, 32F);
             lblEmprestimosAtrasados = CriarLabelCardModerno("0 atrasados", 90, cardEmprestimos, 11F, Color.FromArgb(255, 87, 34));
+            cardEmprestimos.Cursor = Cursors.Hand;
+            cardEmprestimos.Click += (s, e) => AbrirConsultaEmprestimos();
+            TornarCardClicavel(cardEmprestimos);
             pnlDashboard.Controls.Add(cardEmprestimos);
 
-            // Card 2: Livros
-            var cardLivros = CriarCardModerno("LIVROS CADASTRADOS", cardWidth + cardMargin, 50, cardWidth, cardHeight, Color.FromArgb(33, 150, 243));
+            // Card 2: Livros (clicável)
+            cardLivros = CriarCardModerno("LIVROS CADASTRADOS", cardWidth + cardMargin, 50, cardWidth, cardHeight, Color.FromArgb(33, 150, 243));
             lblTotalLivros = CriarLabelCardModerno("0", 40, cardLivros, 32F);
             lblLivrosDisponiveis = CriarLabelCardModerno("0 disponíveis", 90, cardLivros, 11F, Color.FromArgb(100, 181, 246));
+            cardLivros.Cursor = Cursors.Hand;
+            cardLivros.Click += (s, e) => AbrirCadastroLivros();
+            TornarCardClicavel(cardLivros);
             pnlDashboard.Controls.Add(cardLivros);
 
-            // Card 3: Alunos
-            var cardAlunos = CriarCardModerno("ALUNOS CADASTRADOS", (cardWidth + cardMargin) * 2, 50, cardWidth, cardHeight, Color.FromArgb(156, 39, 176));
+            // Card 3: Alunos (clicável)
+            cardAlunos = CriarCardModerno("ALUNOS CADASTRADOS", (cardWidth + cardMargin) * 2, 50, cardWidth, cardHeight, Color.FromArgb(156, 39, 176));
             lblTotalAlunos = CriarLabelCardModerno("0", 40, cardAlunos, 32F);
             lblAlunosComEmprestimos = CriarLabelCardModerno("0 c/ empréstimos", 90, cardAlunos, 11F, Color.FromArgb(186, 104, 200));
+            cardAlunos.Cursor = Cursors.Hand;
+            cardAlunos.Click += (s, e) => AbrirCadastroAlunos();
+            TornarCardClicavel(cardAlunos);
             pnlDashboard.Controls.Add(cardAlunos);
 
-            // Card 4: Multas
-            var cardMultas = CriarCardModerno("MULTAS ACUMULADAS", (cardWidth + cardMargin) * 3, 50, cardWidth, cardHeight, Color.FromArgb(244, 67, 54));
+            // Card 4: Multas (clicável)
+            cardMultas = CriarCardModerno("MULTAS ACUMULADAS", (cardWidth + cardMargin) * 3, 50, cardWidth, cardHeight, Color.FromArgb(244, 67, 54));
             lblMultaTotal = CriarLabelCardModerno("R$ 0,00", 40, cardMultas, 28F);
             CriarLabelCardModerno("Total pendente", 90, cardMultas, 11F, Color.FromArgb(255, 138, 128));
+            cardMultas.Cursor = Cursors.Hand;
+            cardMultas.Click += (s, e) => AbrirConsultaEmprestimos();
+            TornarCardClicavel(cardMultas);
             pnlDashboard.Controls.Add(cardMultas);
 
             // Segunda linha de cards
             int row2Y = 50 + cardHeight + cardMargin;
 
-            // Card 5: Livros Emprestados
-            var cardEmprestados = CriarCardModerno("LIVROS EMPRESTADOS", 0, row2Y, cardWidth, cardHeight, Color.FromArgb(255, 152, 0));
+            // Card 5: Livros Emprestados (clicável)
+            cardEmprestados = CriarCardModerno("LIVROS EMPRESTADOS", 0, row2Y, cardWidth, cardHeight, Color.FromArgb(255, 152, 0));
             lblLivrosEmprestados = CriarLabelCardModerno("0", 40, cardEmprestados, 32F);
             CriarLabelCardModerno("Exemplares em uso", 90, cardEmprestados, 11F, Color.FromArgb(255, 183, 77));
+            cardEmprestados.Cursor = Cursors.Hand;
+            cardEmprestados.Click += (s, e) => AbrirConsultaEmprestimos();
+            TornarCardClicavel(cardEmprestados);
             pnlDashboard.Controls.Add(cardEmprestados);
 
-            // Card 6: Alunos com Atrasos
-            var cardAtrasos = CriarCardModerno("ALUNOS C/ ATRASOS", cardWidth + cardMargin, row2Y, cardWidth, cardHeight, Color.FromArgb(255, 87, 34));
+            // Card 6: Alunos com Atrasos (clicável)
+            cardAtrasos = CriarCardModerno("ALUNOS C/ ATRASOS", cardWidth + cardMargin, row2Y, cardWidth, cardHeight, Color.FromArgb(255, 87, 34));
             lblAlunosComAtrasos = CriarLabelCardModerno("0", 40, cardAtrasos, 32F);
             CriarLabelCardModerno("Necessitam atenção", 90, cardAtrasos, 11F, Color.FromArgb(255, 138, 101));
+            cardAtrasos.Cursor = Cursors.Hand;
+            cardAtrasos.Click += (s, e) => AbrirCadastroAlunos();
+            TornarCardClicavel(cardAtrasos);
             pnlDashboard.Controls.Add(cardAtrasos);
 
             // Botão Atualizar Dashboard
@@ -510,6 +571,99 @@ namespace BibliotecaJK.Forms
         {
             var form = new FormBackup(_funcionarioLogado);
             form.ShowDialog();
+        }
+
+        /// <summary>
+        /// Torna um card clicável propagando o click para todos os controles filhos
+        /// </summary>
+        private void TornarCardClicavel(Panel card)
+        {
+            foreach (Control control in card.Controls)
+            {
+                control.Cursor = Cursors.Hand;
+                control.Click += (s, e) => card.PerformClick();
+            }
+        }
+
+        /// <summary>
+        /// Configura atalhos de teclado globais
+        /// </summary>
+        private void ConfigurarAtalhosTeclado()
+        {
+            _shortcutManager = new KeyboardShortcutManager(this);
+
+            // Atalhos principais
+            _shortcutManager.RegisterShortcut(Keys.F5, AtualizarDashboard, "Atualizar Dashboard");
+            _shortcutManager.RegisterShortcut(Keys.F1, () => _shortcutManager.ShowShortcutsHelp(), "Mostrar Ajuda de Atalhos");
+
+            // Navegação
+            _shortcutManager.RegisterShortcut(Keys.Control | Keys.N, AbrirNovoEmprestimo, "Novo Empréstimo");
+            _shortcutManager.RegisterShortcut(Keys.Control | Keys.D, AbrirDevolucoes, "Devoluções");
+            _shortcutManager.RegisterShortcut(Keys.Control | Keys.E, AbrirConsultaEmprestimos, "Consultar Empréstimos");
+            _shortcutManager.RegisterShortcut(Keys.Control | Keys.R, AbrirReservas, "Reservas");
+            _shortcutManager.RegisterShortcut(Keys.Control | Keys.B, AbrirBackup, "Backup");
+
+            // Cadastros
+            _shortcutManager.RegisterShortcut(Keys.Alt | Keys.D1, AbrirCadastroAlunos, "Cadastro de Alunos");
+            _shortcutManager.RegisterShortcut(Keys.Alt | Keys.D2, AbrirCadastroLivros, "Cadastro de Livros");
+
+            // Notificações
+            _shortcutManager.RegisterShortcut(Keys.Control | Keys.Shift | Keys.N, AbrirNotificacoes, "Central de Notificações");
+        }
+
+        /// <summary>
+        /// Configura tooltips para todos os botões
+        /// </summary>
+        private void ConfigurarTooltips()
+        {
+            _tooltip.SetToolTip(lblNotificacaoBadge, "Clique para ver notificações não lidas");
+
+            // Nota: Tooltips nos botões da sidebar podem ser adicionados dinamicamente
+            // se necessário, mas como já têm labels descritivos, são opcionais
+        }
+
+        /// <summary>
+        /// Configura a barra de status no rodapé
+        /// </summary>
+        private void ConfigurarStatusBar()
+        {
+            _lblStatus = new ToolStripStatusLabel
+            {
+                Text = "Pronto",
+                Spring = true,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+
+            _lblUsuario = new ToolStripStatusLabel
+            {
+                Text = $"Usuário: {_funcionarioLogado.Login} | Perfil: {_funcionarioLogado.Perfil}",
+                BorderSides = ToolStripStatusLabelBorderSides.Left,
+                BorderStyle = Border3DStyle.Etched
+            };
+
+            _lblHora = new ToolStripStatusLabel
+            {
+                Text = DateTime.Now.ToString("HH:mm:ss"),
+                BorderSides = ToolStripStatusLabelBorderSides.Left,
+                BorderStyle = Border3DStyle.Etched
+            };
+
+            _statusStrip.Items.AddRange(new ToolStripItem[] { _lblStatus, _lblUsuario, _lblHora });
+            this.Controls.Add(_statusStrip);
+
+            // Timer para atualizar hora
+            var timerHora = new System.Windows.Forms.Timer { Interval = 1000 };
+            timerHora.Tick += (s, e) => _lblHora.Text = DateTime.Now.ToString("HH:mm:ss");
+            timerHora.Start();
+        }
+
+        /// <summary>
+        /// Atualiza mensagem na barra de status
+        /// </summary>
+        public void AtualizarStatus(string mensagem)
+        {
+            if (_lblStatus != null)
+                _lblStatus.Text = mensagem;
         }
     }
 }
