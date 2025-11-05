@@ -6,15 +6,12 @@ namespace BibliotecaJK
     {
         // String de conexão com o banco MySQL
         private static string connectionString = "server=localhost;database=bibliokopke;uid=root;pwd=;";
-        private static MySqlConnection? connection = null;
 
-        // Retorna uma instância da conexão (não abre automaticamente)
+        // Retorna uma nova instância da conexão (não abre automaticamente)
+        // Cada chamada cria uma nova conexão para evitar conflitos
         public static MySqlConnection GetConnection()
         {
-            if (connection == null)
-                connection = new MySqlConnection(connectionString);
-
-            return connection;
+            return new MySqlConnection(connectionString);
         }
     }
 }
