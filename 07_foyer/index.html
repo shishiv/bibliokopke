@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação BiblioKopke</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background: #007BFF;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        nav {
+            background: #333;
+            color: #fff;
+            padding: 0.5rem;
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+        }
+        nav a:hover {
+            background: #555;
+        }
+        section {
+            padding: 2rem;
+            margin: 0 2rem;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .gallery img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem 0;
+            background: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>BiblioKopke</h1>
+        <p>Democratizando o Acesso à Gestão Bibliográfica Escolar</p>
+    </header>
+
+    <nav>
+        <a href="#problema">O Problema</a>
+        <a href="#solucao">Nossa Solução</a>
+        <a href="#impacto">Impacto</a>
+        <a href="#demonstracao">Demonstração</a>
+        <a href="#futuro">Próximos Passos</a>
+    </nav>
+
+    <section id="problema">
+        <h2>1. O Problema Real</h2>
+        <p>Escolas públicas enfrentam barreiras no acesso à leitura:</p>
+        <ul>
+            <li>Gestão manual ineficiente limita o uso da biblioteca</li>
+            <li>Falta de controle sobre empréstimos e reservas</li>
+            <li>Baixo engajamento dos estudantes com o acervo</li>
+            <li>Recursos limitados para soluções proprietárias</li>
+        </ul>
+        <p><strong>Por que isso importa?</strong> A biblioteca escolar é porta de entrada para a formação crítica e cidadã, mas processos arcaicos limitam seu potencial transformador.</p>
+    </section>
+
+    <section id="solucao">
+        <h2>2. Nossa Solução: BiblioKopke</h2>
+        <p><strong>O que é?</strong> Sistema web completo para gestão de biblioteca escolar, desenvolvido especificamente para escolas públicas.</p>
+        <p><strong>Por que funciona?</strong></p>
+        <ul>
+            <li>Gratuito e open source - Sem custos de licenciamento</li>
+            <li>Integração com SIMADE - Compatível com sistema oficial</li>
+            <li>Interface intuitiva - Fácil adoção por toda comunidade escolar</li>
+            <li>Desenvolvido com usuários reais - Validado na prática</li>
+        </ul>
+    </section>
+
+    <section id="impacto">
+        <h2>3. Impacto na Escola João Kopke</h2>
+        <p><strong>Resultados imediatos:</strong></p>
+        <ul>
+            <li>Controle total do acervo digitalizado</li>
+            <li>Processo de empréstimo simplificado</li>
+            <li>Engajamento aumentado através da facilidade de uso</li>
+            <li>Relatórios gerenciais para tomada de decisão</li>
+        </ul>
+    </section>
+
+    <section id="demonstracao">
+        <h2>4. Demonstração da Aplicação</h2>
+        <div class="gallery">
+            <img src="firefox_8jWx50o8fS.png" alt="Tela de Login">
+            <img src="firefox_9JZ8ZRhs70.png" alt="Tela de Cadastro">
+            <img src="firefox_a1XOSQ3yrh.png" alt="Dashboard do Aluno">
+            <img src="firefox_fZEVTQPAhn.png" alt="Busca de Livros">
+            <img src="firefox_MY5cHLqHFA.png" alt="Detalhes do Livro">
+            <img src="firefox_NS5m4LHPCd.png" alt="Reservas do Aluno">
+            <img src="firefox_OrkPT5WAlc.png" alt="Dashboard do Bibliotecário">
+            <img src="firefox_PqSmqfEOc0.png" alt="Gerenciamento de Empréstimos">
+            <img src="firefox_QGPANUO5d8.png" alt="Cadastro de Livros">
+            <img src="firefox_WwUG7Er74e.png" alt="Relatórios">
+        </div>
+    </section>
+
+    <section id="futuro">
+        <h2>7. Próximos Passos</h2>
+        <p><strong>Implementação (Próximo Semestre):</strong></p>
+        <ul>
+            <li>Desenvolvimento completo do sistema</li>
+            <li>Testes na Escola João Kopke</li>
+            <li>Publicação no GitHub</li>
+            <li>Documentação para outras escolas</li>
+        </ul>
+        <p><strong>Visão de Futuro:</strong></p>
+        <ul>
+            <li>Rede nacional de escolas usando BiblioKopke</li>
+            <li>Comunidade ativa de contribuidores</li>
+            <li>Impacto mensurável na educação pública</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>"Código aberto, educação acessível"</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

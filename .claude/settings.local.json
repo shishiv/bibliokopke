@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(if exist \"c:\\Repos\\BiblioKopke\\06_proto\\supabase\" move \"c:\\Repos\\BiblioKopke\\06_proto\\supabase\" \"c:\\Repos\\BiblioKopke\\06_proto\\database\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,14 @@
+flowchart TD
+    A[Inicio] --> B[Usuario solicita emprestimo ao bibliotecario]
+    B --> C[Verificar disponibilidade do livro]
+    C -->|Disponivel| D[Registrar emprestimo no sistema]
+    D --> E[Atualizar quantidade disponivel e status do livro]
+    E --> F[Gerar log de auditoria]
+    F --> G[Atualizar historico de emprestimos]
+    G --> H[Enviar notificacao ao usuario]
+    H --> I[Entregar livro ao usuario]
+    I --> J[Gerar recomendacao personalizada opcional]
+    J --> K[Fim]
+
+    C -->|Indisponivel| L[Informar usuario sobre indisponibilidade]
+    L --> K

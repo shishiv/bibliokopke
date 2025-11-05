@@ -1,0 +1,121 @@
+---
+title: Diagrama UML do Banco de Dados - BiblioKopke
+---
+
+erDiagram
+    USUARIO {
+        INT codigo_simade PK "Código SIMADE"
+        VARCHAR codigo_inep "Código INEP"
+        VARCHAR nome_completo "Nome completo"
+        DATE data_nascimento "Data de nascimento"
+        VARCHAR cpf "CPF"
+        VARCHAR email "Email"
+        VARCHAR telefone "Telefone"
+        TEXT endereco "Endereço"
+        ENUM tipo_usuario "Tipo de usuário"
+        VARCHAR nome_filiacao "Nome dos pais"
+        ENUM cor_raca "Cor/Raça"
+        ENUM sexo "Sexo"
+        ENUM estado_civil "Estado civil"
+        VARCHAR nacionalidade "Nacionalidade"
+        VARCHAR uf_nascimento "UF nascimento"
+        VARCHAR municipio_nascimento "Município nascimento"
+        BOOLEAN ativo "Ativo"
+        DATETIME data_cadastro
+        DATETIME data_atualizacao
+    }
+    LIVRO {
+        INT id_livro PK
+        VARCHAR isbn "ISBN"
+        VARCHAR titulo "Título"
+        VARCHAR autor "Autor"
+        VARCHAR editora "Editora"
+        YEAR ano_publicacao "Ano"
+        VARCHAR categoria "Categoria"
+        INT numero_paginas "Nº páginas"
+        VARCHAR idioma "Idioma"
+        TEXT sinopse "Sinopse"
+        VARCHAR localizacao "Localização"
+        ENUM status "Status"
+        INT quantidade_total
+        INT quantidade_disponivel
+        VARCHAR url_capa
+        DATETIME data_cadastro
+        DATETIME data_atualizacao
+    }
+    RECOMENDACAO {
+        INT id_recomendacao PK
+        INT codigo_simade_professor FK
+        INT id_livro FK
+        INT codigo_simade_aluno FK
+        VARCHAR turma
+        TEXT observacoes
+        DATETIME data_recomendacao
+    }
+    EMPRESTIMO {
+        INT id_emprestimo PK
+        INT codigo_simade FK
+        INT id_livro FK
+        DATE data_emprestimo
+        DATE data_devolucao_prevista
+        DATE data_devolucao_real
+        ENUM status
+        TEXT observacoes
+        INT renovacoes
+        DATETIME data_cadastro
+    }
+    RESERVA {
+        INT id_reserva PK
+        INT codigo_simade FK
+        INT id_livro FK
+        DATE data_reserva
+        DATE data_validade
+        ENUM status
+        TEXT motivo_cancelamento
+        DATETIME data_cadastro
+    }
+    HISTORICO_EMPRESTIMO {
+        INT id_historico PK
+        INT id_emprestimo FK
+        INT codigo_simade FK
+        INT id_livro FK
+        DATE data_emprestimo
+        DATE data_devolucao
+        INT dias_atraso
+        DECIMAL multa
+        TEXT observacoes
+        DATETIME data_registro
+    }
+    LOG_SISTEMA {
+        INT id_log PK
+        INT codigo_simade FK
+        VARCHAR tabela_afetada
+        ENUM acao
+        JSON dados_anteriores
+        JSON dados_novos
+        VARCHAR ip_usuario
+        DATETIME data_acao
+    }
+    RELATORIO {
+        INT id_relatorio PK
+        VARCHAR tipo_relatorio
+        VARCHAR periodo
+        JSON dados_relatorio
+        INT codigo_simade FK
+        DATETIME data_geracao
+    VARCHAR arquivo_gerado
+    }
+
+    %% RELACIONAMENTOS
+    RECOMENDACAO ||--o{ USUARIO : "professor"
+    RECOMENDACAO }o--o{ USUARIO : "aluno"
+    RECOMENDACAO }o--|| LIVRO : "livro"
+    EMPRESTIMO }o--|| USUARIO : "usuario"
+    EMPRESTIMO }o--|| LIVRO : "livro"
+    RESERVA }o--|| USUARIO : "usuario"
+    RESERVA }o--|| LIVRO : "livro"
+    HISTORICO_EMPRESTIMO }o--|| EMPRESTIMO : "emprestimo"
+    HISTORICO_EMPRESTIMO }o--|| USUARIO : "usuario"
+    HISTORICO_EMPRESTIMO }o--|| LIVRO : "livro"
+    LOG_SISTEMA }o--o| USUARIO : "usuario"
+    RELATORIO }o--|| USUARIO : "usuario"

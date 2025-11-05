@@ -1,0 +1,23 @@
+sequenceDiagram
+    participant U as Usuario
+    participant B as Bibliotecario
+    participant S as Sistema
+    participant DB as BancoDeDados
+
+    U->>B: Solicita emprestimo de livro
+    B->>S: Inicia processo de emprestimo
+    S->>DB: Verifica disponibilidade do livro
+    DB-->>S: Livro disponivel?
+    alt Disponivel
+        S->>DB: Registra emprestimo (tabela emprestimo)
+        S->>DB: Atualiza quantidade_disponivel e status do livro
+        S->>DB: Gera log de auditoria
+        S->>DB: Atualiza historico de emprestimos
+        S->>U: Envia notificacao de emprestimo realizado
+        S->>U: Gera recomendacao personalizada opcional
+        S-->>B: Confirmacao de emprestimo realizado
+        B-->>U: Entrega livro e confirma emprestimo
+    else Indisponivel
+        S-->>B: Informa indisponibilidade do livro
+        B-->>U: Notifica usuario sobre indisponibilidade
+    end
