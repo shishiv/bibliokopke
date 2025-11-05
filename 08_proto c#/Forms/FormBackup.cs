@@ -45,8 +45,8 @@ namespace BibliotecaJK.Forms
             };
             this.Controls.Add(lblTitulo);
 
-            // Panel Conexão MySQL
-            var pnlMySQL = new Panel
+            // Panel Conexão PostgreSQL
+            var pnlPostgreSQL = new Panel
             {
                 Location = new System.Drawing.Point(20, 60),
                 Size = new System.Drawing.Size(660, 200),
@@ -54,9 +54,9 @@ namespace BibliotecaJK.Forms
                 BorderStyle = BorderStyle.FixedSingle
             };
 
-            pnlMySQL.Controls.Add(new Label
+            pnlPostgreSQL.Controls.Add(new Label
             {
-                Text = "CREDENCIAIS DO MYSQL",
+                Text = "CREDENCIAIS DO POSTGRESQL/SUPABASE",
                 Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
                 ForeColor = System.Drawing.Color.DarkSlateBlue,
                 Location = new System.Drawing.Point(10, 10),
@@ -64,41 +64,41 @@ namespace BibliotecaJK.Forms
             });
 
             // Host
-            pnlMySQL.Controls.Add(new Label { Text = "Host:", Location = new System.Drawing.Point(20, 45), Size = new System.Drawing.Size(100, 20) });
+            pnlPostgreSQL.Controls.Add(new Label { Text = "Host:", Location = new System.Drawing.Point(20, 45), Size = new System.Drawing.Size(100, 20) });
             txtHost = new TextBox { Location = new System.Drawing.Point(130, 43), Size = new System.Drawing.Size(200, 25) };
-            pnlMySQL.Controls.Add(txtHost);
+            pnlPostgreSQL.Controls.Add(txtHost);
 
             // Porta
-            pnlMySQL.Controls.Add(new Label { Text = "Porta:", Location = new System.Drawing.Point(350, 45), Size = new System.Drawing.Size(60, 20) });
+            pnlPostgreSQL.Controls.Add(new Label { Text = "Porta:", Location = new System.Drawing.Point(350, 45), Size = new System.Drawing.Size(60, 20) });
             nudPorta = new NumericUpDown
             {
                 Location = new System.Drawing.Point(420, 43),
                 Size = new System.Drawing.Size(100, 25),
                 Minimum = 1,
                 Maximum = 65535,
-                Value = 3306
+                Value = 5432
             };
-            pnlMySQL.Controls.Add(nudPorta);
+            pnlPostgreSQL.Controls.Add(nudPorta);
 
             // Usuário
-            pnlMySQL.Controls.Add(new Label { Text = "Usuário:", Location = new System.Drawing.Point(20, 80), Size = new System.Drawing.Size(100, 20) });
+            pnlPostgreSQL.Controls.Add(new Label { Text = "Usuário:", Location = new System.Drawing.Point(20, 80), Size = new System.Drawing.Size(100, 20) });
             txtUsuario = new TextBox { Location = new System.Drawing.Point(130, 78), Size = new System.Drawing.Size(200, 25) };
-            pnlMySQL.Controls.Add(txtUsuario);
+            pnlPostgreSQL.Controls.Add(txtUsuario);
 
             // Senha
-            pnlMySQL.Controls.Add(new Label { Text = "Senha:", Location = new System.Drawing.Point(350, 80), Size = new System.Drawing.Size(60, 20) });
+            pnlPostgreSQL.Controls.Add(new Label { Text = "Senha:", Location = new System.Drawing.Point(350, 80), Size = new System.Drawing.Size(60, 20) });
             txtSenha = new TextBox
             {
                 Location = new System.Drawing.Point(420, 78),
                 Size = new System.Drawing.Size(200, 25),
                 PasswordChar = '●'
             };
-            pnlMySQL.Controls.Add(txtSenha);
+            pnlPostgreSQL.Controls.Add(txtSenha);
 
             // Database
-            pnlMySQL.Controls.Add(new Label { Text = "Database:", Location = new System.Drawing.Point(20, 115), Size = new System.Drawing.Size(100, 20) });
+            pnlPostgreSQL.Controls.Add(new Label { Text = "Database:", Location = new System.Drawing.Point(20, 115), Size = new System.Drawing.Size(100, 20) });
             txtDatabase = new TextBox { Location = new System.Drawing.Point(130, 113), Size = new System.Drawing.Size(200, 25) };
-            pnlMySQL.Controls.Add(txtDatabase);
+            pnlPostgreSQL.Controls.Add(txtDatabase);
 
             // Botão Testar Conexão
             btnTestarConexao = new Button
@@ -113,7 +113,7 @@ namespace BibliotecaJK.Forms
             };
             btnTestarConexao.FlatAppearance.BorderSize = 0;
             btnTestarConexao.Click += BtnTestarConexao_Click;
-            pnlMySQL.Controls.Add(btnTestarConexao);
+            pnlPostgreSQL.Controls.Add(btnTestarConexao);
 
             // Status da conexão
             lblStatusConexao = new Label
@@ -124,9 +124,9 @@ namespace BibliotecaJK.Forms
                 ForeColor = System.Drawing.Color.Gray,
                 Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic)
             };
-            pnlMySQL.Controls.Add(lblStatusConexao);
+            pnlPostgreSQL.Controls.Add(lblStatusConexao);
 
-            this.Controls.Add(pnlMySQL);
+            this.Controls.Add(pnlPostgreSQL);
 
             // Panel Configuração de Backup
             var pnlBackup = new Panel
@@ -360,7 +360,7 @@ namespace BibliotecaJK.Forms
                 // Validações
                 if (string.IsNullOrWhiteSpace(txtHost.Text))
                 {
-                    MessageBox.Show("Informe o host do MySQL.", "Atenção",
+                    MessageBox.Show("Informe o host do PostgreSQL/Supabase.", "Atenção",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtHost.Focus();
                     return;
