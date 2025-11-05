@@ -68,6 +68,11 @@ namespace BibliotecaJK.Forms
             menuRelatorios.DropDownItems.Add("Relatórios Gerenciais", null, (s, e) => AbrirRelatorios());
             menuStrip.Items.Add(menuRelatorios);
 
+            // Menu Ferramentas
+            var menuFerramentas = new ToolStripMenuItem("Ferramentas");
+            menuFerramentas.DropDownItems.Add("Backup e Restauração", null, (s, e) => AbrirBackup());
+            menuStrip.Items.Add(menuFerramentas);
+
             // Menu Sair
             var menuSair = new ToolStripMenuItem("Sair");
             menuSair.Click += (s, e) => this.Close();
@@ -308,6 +313,12 @@ namespace BibliotecaJK.Forms
             var form = new FormRelatorios(_funcionarioLogado);
             form.ShowDialog();
             AtualizarDashboard();
+        }
+
+        private void AbrirBackup()
+        {
+            var form = new FormBackup(_funcionarioLogado);
+            form.ShowDialog();
         }
     }
 }

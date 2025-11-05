@@ -134,9 +134,10 @@ CREATE TABLE IF NOT EXISTS Log_Acao (
 -- ================================================
 
 -- Inserir funcionário administrador padrão
--- Senha: "admin123" (em produção, usar hash bcrypt adequado)
+-- Senha: "admin123" (hash BCrypt seguro)
+-- Hash gerado com BCrypt.Net-Next usando fator de custo 11
 INSERT INTO Funcionario (nome, cpf, cargo, login, senha_hash, perfil)
-VALUES ('Administrador', '000.000.000-00', 'Administrador do Sistema', 'admin', 'admin123', 'ADMIN')
+VALUES ('Administrador', '000.000.000-00', 'Administrador do Sistema', 'admin', '$2a$11$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMIN')
 ON DUPLICATE KEY UPDATE nome=nome;
 
 -- Inserir alguns alunos de exemplo

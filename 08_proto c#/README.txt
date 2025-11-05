@@ -31,10 +31,12 @@ BLL/
   ├── ReservaService.cs    → Sistema de reservas (fila FIFO)
   ├── LivroService.cs      → Gerenciamento de livros
   ├── AlunoService.cs      → Gerenciamento de alunos
+  ├── BackupConfig.cs      → Configuração de backup (storage criptografado) ⭐ NOVO!
+  ├── BackupService.cs     → Serviço de backup automático MySQL ⭐ NOVO!
   └── README_BLL.md        → Documentação da camada BLL
 
 Forms/
-  ├── FormLogin.cs                → Autenticação de funcionários
+  ├── FormLogin.cs                → Autenticação de funcionários (BCrypt)
   ├── FormPrincipal.cs            → Menu principal e dashboard
   ├── FormCadastroAluno.cs        → CRUD de alunos
   ├── FormCadastroLivro.cs        → CRUD de livros
@@ -42,7 +44,8 @@ Forms/
   ├── FormDevolucao.cs            → Devolução com cálculo de multas
   ├── FormReserva.cs              → Sistema de reservas (FIFO)
   ├── FormConsultaEmprestimos.cs  → Consultas e relatórios
-  └── FormRelatorios.cs           → Relatórios gerenciais ⭐ NOVO!
+  ├── FormRelatorios.cs           → Relatórios gerenciais (7 tipos + CSV)
+  └── FormBackup.cs               → Backup automático e agendamento ⭐ NOVO!
 
 Documentação/ ⭐ NOVO!
   ├── MANUAL_USUARIO.md    → Manual completo do usuário (75 páginas)
@@ -62,17 +65,22 @@ README.txt                → Este arquivo
 ✅ Herança OOP com classe base Pessoa
 ✅ CRUD completo para todas as entidades (DAL)
 ✅ Lógica de negócio completa (BLL)
-✅ Interface gráfica WinForms completa e funcional (9 formulários)
+✅ Interface gráfica WinForms completa e funcional (10 formulários)
 ✅ Regras de empréstimo (prazo 7 dias, máx 3 simultâneos, multa R$ 2/dia)
 ✅ Sistema de reservas com fila FIFO
 ✅ Validações (CPF, ISBN, Email, Matrícula)
 ✅ Sistema de logs e auditoria
 ✅ Dashboard com estatísticas em tempo real
-✅ Autenticação de funcionários com login/senha
+✅ Autenticação de funcionários com login/senha BCrypt ⭐ SEGURO!
+✅ Hash de senhas com BCrypt.Net (fator de custo 11)
 ✅ Cálculo automático de multas por atraso
 ✅ Consultas e relatórios interativos
 ✅ 7 relatórios gerenciais (empréstimos, livros, alunos, multas, atrasos, reservas, estatísticas)
 ✅ Exportação de relatórios para CSV/TXT
+✅ Backup automático do MySQL com agendamento ⭐ NOVO!
+✅ Storage local criptografado (AES) para credenciais ⭐ SEGURO!
+✅ Agendamento de backup diário no Windows Task Scheduler
+✅ Política de retenção de backups configurável
 ✅ Documentação completa (Manual, Instalação, Arquitetura, Testes)
 ✅ Tratamento de valores nulos (Nullable types)
 ✅ Uso de using statements para gerenciamento de recursos

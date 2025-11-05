@@ -189,9 +189,20 @@ namespace BibliotecaJK.Forms
                     return;
                 }
 
-                // Validar senha (ATENÇÃO: Em produção, usar hash!)
-                // Por enquanto, comparação direta para o protótipo
-                if (funcionario.SenhaHash != txtSenha.Text)
+                // Validar senha com BCrypt (hash seguro)
+                bool senhaValida;
+                try
+                {
+                    senhaValida = BCrypt.Net.BCrypt.Verify(txtSenha.Text, funcionario.SenhaHash);
+                }
+                catch
+                {
+                    // Se o hash não for BCrypt (dados antigos), tentar comparação direta
+                    // TEMPORÁRIO: para compatibilidade com dados de teste antigos
+                    senhaValida = funcionario.SenhaHash == txtSenha.Text;
+                }
+
+                if (!senhaValida)
                 {
                     MessageBox.Show("Login ou senha incorretos.", "Erro de Autenticação",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
