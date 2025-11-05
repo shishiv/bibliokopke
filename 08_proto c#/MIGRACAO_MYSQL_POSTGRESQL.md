@@ -17,12 +17,12 @@ Com a migração para Supabase/PostgreSQL, todos os textos da interface
 devem refletir a nova tecnologia para evitar confusão do usuário.
 
 STATUS:
-✅ BackupService já usa Npgsql 9.0.4
-✅ DAL files já usam Npgsql 9.0.4
+✅ BackupService já usa Npgsql 8.0.8
+✅ DAL files já usam Npgsql 8.0.8
 ✅ FormBackup atualizado com textos "PostgreSQL/Supabase"
 ✅ BackupConfig atualizado com comentário "PostgreSQL"
 ✅ Porta padrão alterada de 3306 (MySQL) para 5432 (PostgreSQL)
 
 CONCLUÍDO:
 Todos os textos da UI foram atualizados para PostgreSQL/Supabase.
-Npgsql atualizado para versão 9.0.4 (versão estável mais recente).
+Npgsql atualizado para versão 8.0.8 (versão estável mais recente compatível com .NET 8.0).
