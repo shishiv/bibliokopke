@@ -6,5 +6,6 @@ namespace BibliotecaJK.Model
         public string Login { get; set; } = string.Empty;
         public string SenhaHash { get; set; } = string.Empty;
         public string Perfil { get; set; } = string.Empty; // ADMIN, BIBLIOTECARIO, OPERADOR
+        public bool PrimeiroLogin { get; set; } = true;
     }
 }
