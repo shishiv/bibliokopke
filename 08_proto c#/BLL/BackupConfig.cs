@@ -145,7 +145,7 @@ namespace BibliotecaJK.BLL
         }
 
         /// <summary>
-        /// Gera string de conexão MySQL
+        /// Gera string de conexão PostgreSQL
         /// </summary>
         public string GetConnectionString()
         {
