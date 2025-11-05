@@ -1,4 +1,4 @@
-using MySql.Data.MySqlClient;
+using Npgsql;
 using BibliotecaJK.Model;
 using System.Collections.Generic;
 using System;
@@ -11,7 +11,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "INSERT INTO Reserva (id_aluno, id_livro, data_reserva, status) VALUES (@idaluno,@idlivro,@datares,@status)";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@idaluno", r.IdAluno);
                 cmd.Parameters.AddWithValue("@idlivro", r.IdLivro);
@@ -29,7 +29,7 @@ namespace BibliotecaJK.DAL
             var lista = new List<Reserva>();
             var conn = Conexao.GetConnection();
             string sql = "SELECT * FROM Reserva";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 conn.Open();
                 using var reader = cmd.ExecuteReader();
@@ -53,7 +53,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "SELECT * FROM Reserva WHERE id_reserva=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@id", id);
                 conn.Open();
@@ -80,7 +80,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "UPDATE Reserva SET id_aluno=@idaluno, id_livro=@idlivro, data_reserva=@datares, status=@status WHERE id_reserva=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@idaluno", r.IdAluno);
                 cmd.Parameters.AddWithValue("@idlivro", r.IdLivro);
@@ -98,7 +98,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "DELETE FROM Reserva WHERE id_reserva=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@id", id);
                 conn.Open();

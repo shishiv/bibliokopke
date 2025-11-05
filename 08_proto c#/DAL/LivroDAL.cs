@@ -1,4 +1,4 @@
-using MySql.Data.MySqlClient;
+using Npgsql;
 using BibliotecaJK.Model;
 using System.Collections.Generic;
 
@@ -11,7 +11,7 @@ namespace BibliotecaJK.DAL
             var conn = Conexao.GetConnection();
             string sql = "INSERT INTO Livro (titulo, autor, isbn, editora, ano_publicacao, quantidade_total, quantidade_disponivel, localizacao) " +
                          "VALUES (@titulo, @autor, @isbn, @editora, @ano, @total, @disp, @loc)";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@titulo", livro.Titulo);
                 cmd.Parameters.AddWithValue("@autor", (object?)livro.Autor ?? DBNull.Value);
@@ -33,7 +33,7 @@ namespace BibliotecaJK.DAL
             var lista = new List<Livro>();
             var conn = Conexao.GetConnection();
             string sql = "SELECT * FROM Livro";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 conn.Open();
                 using var reader = cmd.ExecuteReader();
@@ -61,7 +61,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "SELECT * FROM Livro WHERE id_livro=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@id", id);
                 conn.Open();
@@ -93,7 +93,7 @@ namespace BibliotecaJK.DAL
             var conn = Conexao.GetConnection();
             string sql = "UPDATE Livro SET titulo=@titulo, autor=@autor, isbn=@isbn, editora=@editora, ano_publicacao=@ano, " +
                          "quantidade_total=@total, quantidade_disponivel=@disp, localizacao=@loc WHERE id_livro=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@titulo", livro.Titulo);
                 cmd.Parameters.AddWithValue("@autor", (object?)livro.Autor ?? DBNull.Value);
@@ -115,7 +115,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "DELETE FROM Livro WHERE id_livro=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@id", id);
                 conn.Open();
