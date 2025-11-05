@@ -1,0 +1,81 @@
+{
+  "version": 2,
+  "dgSpecHash": "gW7ofpxpOsU=",
+  "success": false,
+  "projectFilePath": "C:\\Repos\\BiblioKopke\\08_proto c#\\BibliotecaJK.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1100",
+      "level": "Error",
+      "message": "Unable to resolve 'Npgsql (>= 8.0.1)' for 'net8.0-windows7.0'.",
+      "libraryId": "Npgsql",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    },
+    {
+      "code": "NU1100",
+      "level": "Error",
+      "message": "Unable to resolve 'BCrypt.Net-Next (>= 4.0.3)' for 'net8.0-windows7.0'.",
+      "libraryId": "BCrypt.Net-Next",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    },
+    {
+      "code": "NU1100",
+      "level": "Error",
+      "message": "Unable to resolve 'Npgsql (>= 8.0.1)' for 'net8.0-windows7.0/win-x64'.",
+      "libraryId": "Npgsql",
+      "targetGraphs": [
+        "net8.0-windows7.0/win-x64"
+      ]
+    },
+    {
+      "code": "NU1100",
+      "level": "Error",
+      "message": "Unable to resolve 'BCrypt.Net-Next (>= 4.0.3)' for 'net8.0-windows7.0/win-x64'.",
+      "libraryId": "BCrypt.Net-Next",
+      "targetGraphs": [
+        "net8.0-windows7.0/win-x64"
+      ]
+    },
+    {
+      "code": "NU1100",
+      "level": "Error",
+      "message": "Unable to resolve 'Microsoft.NETCore.App.Runtime.win-x64 (= 8.0.21)' for 'net8.0-windows7.0'.",
+      "libraryId": "Microsoft.NETCore.App.Runtime.win-x64",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    },
+    {
+      "code": "NU1100",
+      "level": "Error",
+      "message": "Unable to resolve 'Microsoft.WindowsDesktop.App.Runtime.win-x64 (= 8.0.21)' for 'net8.0-windows7.0'.",
+      "libraryId": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    },
+    {
+      "code": "NU1100",
+      "level": "Error",
+      "message": "Unable to resolve 'Microsoft.AspNetCore.App.Runtime.win-x64 (= 8.0.21)' for 'net8.0-windows7.0'.",
+      "libraryId": "Microsoft.AspNetCore.App.Runtime.win-x64",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    },
+    {
+      "code": "NU1100",
+      "level": "Error",
+      "message": "Unable to resolve 'Microsoft.NETCore.App.Crossgen2.win-x64 (= 8.0.21)' for 'net8.0-windows7.0'.",
+      "libraryId": "Microsoft.NETCore.App.Crossgen2.win-x64",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    }
+  ]
+}
