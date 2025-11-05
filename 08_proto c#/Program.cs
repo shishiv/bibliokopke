@@ -8,28 +8,79 @@ namespace BibliotecaJK
     {
         /// <summary>
         /// Ponto de entrada principal para o aplicativo
-        /// Sistema BibliotecaJK v3.0 - Com Interface WinForms
+        /// Sistema BibliotecaJK v3.0 - Com Interface WinForms + Supabase/PostgreSQL
         /// </summary>
         [STAThread]
         static void Main()
         {
-            // Configuração de estilos visuais do Windows Forms
+            // Configuracao de estilos visuais do Windows Forms
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Testar conexão com banco de dados
-            if (!TestarConexaoBanco())
+            // Verificar se existe configuracao de conexao
+            if (!Conexao.TemConfiguracao())
             {
                 MessageBox.Show(
-                    "Não foi possível conectar ao banco de dados!\n\n" +
-                    "Verifique:\n" +
-                    "1. Se o MySQL está rodando\n" +
-                    "2. Se o banco 'bibliokopke' foi criado (execute schema.sql)\n" +
-                    "3. Se a connection string em Conexao.cs está correta",
-                    "Erro de Conexão",
+                    "Bem-vindo ao BibliotecaJK!\n\n" +
+                    "Parece ser a primeira vez que voce esta executando o sistema.\n" +
+                    "Vamos configurar a conexao com o banco de dados.",
+                    "Configuracao Inicial",
                     MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                // Mostrar formulario de configuracao
+                using var formConfig = new FormConfiguracaoConexao();
+                if (formConfig.ShowDialog() != DialogResult.OK)
+                {
+                    // Usuario cancelou a configuracao
+                    MessageBox.Show(
+                        "Configuracao cancelada.\n\n" +
+                        "O sistema nao pode ser iniciado sem uma conexao com o banco de dados.",
+                        "Sistema Cancelado",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            // Testar conexao com banco de dados
+            if (!TestarConexaoBanco())
+            {
+                var result = MessageBox.Show(
+                    "Nao foi possivel conectar ao banco de dados!\n\n" +
+                    "Verifique:\n" +
+                    "1. Se o PostgreSQL/Supabase esta acessivel\n" +
+                    "2. Se o schema foi executado (schema-postgresql.sql)\n" +
+                    "3. Se a connection string esta correta\n\n" +
+                    "Deseja reconfigurar a conexao?",
+                    "Erro de Conexao",
+                    MessageBoxButtons.YesNo,
                     MessageBoxIcon.Error);
-                return;
+
+                if (result == DialogResult.Yes)
+                {
+                    using var formConfig = new FormConfiguracaoConexao();
+                    if (formConfig.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    // Testar novamente
+                    if (!TestarConexaoBanco())
+                    {
+                        MessageBox.Show(
+                            "Ainda nao foi possivel conectar.\n" +
+                            "Verifique a connection string e tente novamente.",
+                            "Erro",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    return;
+                }
             }
 
             // Exibir tela de login
@@ -37,7 +88,7 @@ namespace BibliotecaJK
             {
                 if (formLogin.ShowDialog() == DialogResult.OK)
                 {
-                    // Login bem-sucedido, abrir formulário principal
+                    // Login bem-sucedido, abrir formulario principal
                     var funcionarioLogado = formLogin.FuncionarioLogado;
 
                     if (funcionarioLogado != null)
@@ -47,7 +98,7 @@ namespace BibliotecaJK
                     else
                     {
                         MessageBox.Show(
-                            "Erro ao recuperar dados do funcionário logado.",
+                            "Erro ao recuperar dados do funcionario logado.",
                             "Erro",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
@@ -57,7 +108,7 @@ namespace BibliotecaJK
         }
 
         /// <summary>
-        /// Testa a conexão com o banco de dados
+        /// Testa a conexao com o banco de dados
         /// </summary>
         private static bool TestarConexaoBanco()
         {
