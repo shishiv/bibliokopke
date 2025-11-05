@@ -1,4 +1,4 @@
-using MySql.Data.MySqlClient;
+using Npgsql;
 using BibliotecaJK.Model;
 using System.Collections.Generic;
 using System;
@@ -12,7 +12,7 @@ namespace BibliotecaJK.DAL
             var conn = Conexao.GetConnection();
             string sql = "INSERT INTO Emprestimo (id_aluno, id_livro, data_emprestimo, data_prevista, data_devolucao, multa) " +
                          "VALUES (@idaluno,@idlivro,@dataemp,@dataprev,@datadev,@multa)";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@idaluno", e.IdAluno);
                 cmd.Parameters.AddWithValue("@idlivro", e.IdLivro);
@@ -32,7 +32,7 @@ namespace BibliotecaJK.DAL
             var lista = new List<Emprestimo>();
             var conn = Conexao.GetConnection();
             string sql = "SELECT * FROM Emprestimo";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 conn.Open();
                 using var reader = cmd.ExecuteReader();
@@ -58,7 +58,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "SELECT * FROM Emprestimo WHERE id_emprestimo=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@id", id);
                 conn.Open();
@@ -87,7 +87,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "UPDATE Emprestimo SET id_aluno=@idaluno, id_livro=@idlivro, data_emprestimo=@dataemp, data_prevista=@dataprev, data_devolucao=@datadev, multa=@multa WHERE id_emprestimo=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@idaluno", e.IdAluno);
                 cmd.Parameters.AddWithValue("@idlivro", e.IdLivro);
@@ -107,7 +107,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "DELETE FROM Emprestimo WHERE id_emprestimo=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@id", id);
                 conn.Open();

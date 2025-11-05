@@ -1,4 +1,4 @@
-using MySql.Data.MySqlClient;
+using Npgsql;
 using BibliotecaJK.Model;
 using System.Collections.Generic;
 using System;
@@ -11,7 +11,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "INSERT INTO Log_Acao (id_funcionario, acao, descricao, data_hora) VALUES (@idfunc,@acao,@desc,@datahora)";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@idfunc", (object?)log.IdFuncionario ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@acao", (object?)log.Acao ?? DBNull.Value);
@@ -29,7 +29,7 @@ namespace BibliotecaJK.DAL
             var lista = new List<LogAcao>();
             var conn = Conexao.GetConnection();
             string sql = "SELECT * FROM Log_Acao";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 conn.Open();
                 using var reader = cmd.ExecuteReader();
@@ -53,7 +53,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "SELECT * FROM Log_Acao WHERE id_log=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@id", id);
                 conn.Open();
@@ -80,7 +80,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "UPDATE Log_Acao SET id_funcionario=@idfunc, acao=@acao, descricao=@desc, data_hora=@datahora WHERE id_log=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@idfunc", (object?)log.IdFuncionario ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@acao", (object?)log.Acao ?? DBNull.Value);
@@ -98,7 +98,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "DELETE FROM Log_Acao WHERE id_log=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@id", id);
                 conn.Open();

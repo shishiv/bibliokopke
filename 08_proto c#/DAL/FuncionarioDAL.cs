@@ -1,4 +1,4 @@
-using MySql.Data.MySqlClient;
+using Npgsql;
 using BibliotecaJK.Model;
 using System.Collections.Generic;
 
@@ -10,7 +10,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "INSERT INTO Funcionario (nome, cpf, cargo, login, senha_hash, perfil) VALUES (@nome,@cpf,@cargo,@login,@senha,@perfil)";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@nome", f.Nome);
                 cmd.Parameters.AddWithValue("@cpf", f.CPF);
@@ -30,7 +30,7 @@ namespace BibliotecaJK.DAL
             var lista = new List<Funcionario>();
             var conn = Conexao.GetConnection();
             string sql = "SELECT * FROM Funcionario";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 conn.Open();
                 using var reader = cmd.ExecuteReader();
@@ -56,7 +56,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "SELECT * FROM Funcionario WHERE id_funcionario=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@id", id);
                 conn.Open();
@@ -85,7 +85,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "UPDATE Funcionario SET nome=@nome, cpf=@cpf, cargo=@cargo, login=@login, senha_hash=@senha, perfil=@perfil WHERE id_funcionario=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@nome", f.Nome);
                 cmd.Parameters.AddWithValue("@cpf", f.CPF);
@@ -105,7 +105,7 @@ namespace BibliotecaJK.DAL
         {
             var conn = Conexao.GetConnection();
             string sql = "DELETE FROM Funcionario WHERE id_funcionario=@id";
-            using (var cmd = new MySqlCommand(sql, conn))
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@id", id);
                 conn.Open();
