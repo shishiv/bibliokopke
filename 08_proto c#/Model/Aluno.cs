@@ -1,10 +1,7 @@
 namespace BibliotecaJK.Model
 {
-    public class Aluno
+    public class Aluno : Pessoa
     {
-        public int Id { get; set; } // id_aluno
-        public string Nome { get; set; } = string.Empty;
-        public string CPF { get; set; } = string.Empty;
         public string Matricula { get; set; } = string.Empty;
         public string? Turma { get; set; }
         public string? Telefone { get; set; }
