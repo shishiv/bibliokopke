@@ -578,15 +578,14 @@ namespace BibliotecaJK.Forms
         /// </summary>
         private void TornarCardClicavel(Panel card)
         {
-            // Capturar o evento do card
-            var cardClickHandler = card.Click;
-
             foreach (Control control in card.Controls)
             {
                 control.Cursor = Cursors.Hand;
                 control.Click += (s, e) => {
-                    // Disparar o evento Click do card
-                    cardClickHandler?.Invoke(card, EventArgs.Empty);
+                    // Disparar o evento Click do card usando reflexão
+                    var onClickMethod = typeof(Control).GetMethod("OnClick",
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    onClickMethod?.Invoke(card, new object[] { EventArgs.Empty });
                 };
             }
         }
