@@ -124,7 +124,7 @@ namespace BibliotecaJK.Components
             }
 
             // Posicionar no canto superior direito
-            var screen = Screen.PrimaryScreen.WorkingArea;
+            var screen = Screen.PrimaryScreen?.WorkingArea ?? Screen.FromHandle(toast.Handle).WorkingArea;
             toast.Location = new Point(screen.Width - toast.Width - 20, 20);
 
             // Fade in
