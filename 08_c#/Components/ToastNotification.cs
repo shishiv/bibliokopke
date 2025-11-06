@@ -9,10 +9,10 @@ namespace BibliotecaJK.Components
     /// </summary>
     public class ToastNotification : Form
     {
-        private Label lblMensagem;
-        private Label lblIcone;
-        private System.Windows.Forms.Timer timerFade;
-        private System.Windows.Forms.Timer timerClose;
+        private Label lblMensagem = null!;
+        private Label lblIcone = null!;
+        private System.Windows.Forms.Timer timerFade = null!;
+        private System.Windows.Forms.Timer timerClose = null!;
         private double opacity = 1.0;
 
         public enum ToastType
@@ -135,8 +135,8 @@ namespace BibliotecaJK.Components
                     toast.Opacity += 0.1;
                 else
                 {
-                    fadeInTimer.Stop();
-                    toast.timerClose.Start();
+                    fadeInTimer?.Stop();
+                    toast.timerClose?.Start();
                 }
             };
             fadeInTimer.Start();

@@ -9,9 +9,9 @@ namespace BibliotecaJK.Components
     /// </summary>
     public class LoadingPanel : Panel
     {
-        private Label lblSpinner;
-        private Label lblMensagem;
-        private System.Windows.Forms.Timer timerAnimation;
+        private Label lblSpinner = null!;
+        private Label lblMensagem = null!;
+        private System.Windows.Forms.Timer timerAnimation = null!;
         private string[] spinnerFrames = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" };
         private int currentFrame = 0;
 
