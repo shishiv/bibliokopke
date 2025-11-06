@@ -9,7 +9,6 @@ C:\Repos\bibliokopke\08_c#\bin\Debug\net8.0-windows\BibliotecaJK.deps.json
 C:\Repos\bibliokopke\08_c#\bin\Debug\net8.0-windows\BibliotecaJK.runtimeconfig.json
 C:\Repos\bibliokopke\08_c#\bin\Debug\net8.0-windows\BibliotecaJK.dll
 C:\Repos\bibliokopke\08_c#\bin\Debug\net8.0-windows\BibliotecaJK.pdb
-C:\Repos\bibliokopke\08_c#\bin\Debug\net8.0-windows\BCrypt.Net-Next.dll
 C:\Repos\bibliokopke\08_c#\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Repos\bibliokopke\08_c#\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Repos\bibliokopke\08_c#\bin\Debug\net8.0-windows\Npgsql.dll
