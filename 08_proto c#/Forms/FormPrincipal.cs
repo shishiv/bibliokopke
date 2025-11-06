@@ -21,18 +21,18 @@ namespace BibliotecaJK.Forms
         private readonly NotificacaoDAL _notificacaoDAL;
         private Label lblNotificacaoBadge = new Label();
         private System.Windows.Forms.Timer timerNotificacoes = new System.Windows.Forms.Timer();
-        private KeyboardShortcutManager _shortcutManager;
+        private KeyboardShortcutManager _shortcutManager = null!;
         private ToolTip _tooltip = new ToolTip();
         private StatusStrip _statusStrip = new StatusStrip();
-        private ToolStripStatusLabel _lblStatus;
-        private ToolStripStatusLabel _lblUsuario;
-        private ToolStripStatusLabel _lblHora;
-        private Panel cardEmprestimos;
-        private Panel cardLivros;
-        private Panel cardAlunos;
-        private Panel cardMultas;
-        private Panel cardEmprestados;
-        private Panel cardAtrasos;
+        private ToolStripStatusLabel _lblStatus = null!;
+        private ToolStripStatusLabel _lblUsuario = null!;
+        private ToolStripStatusLabel _lblHora = null!;
+        private Panel cardEmprestimos = null!;
+        private Panel cardLivros = null!;
+        private Panel cardAlunos = null!;
+        private Panel cardMultas = null!;
+        private Panel cardEmprestados = null!;
+        private Panel cardAtrasos = null!;
 
         public FormPrincipal(Funcionario funcionario)
         {
@@ -578,10 +578,16 @@ namespace BibliotecaJK.Forms
         /// </summary>
         private void TornarCardClicavel(Panel card)
         {
+            // Capturar o evento do card
+            var cardClickHandler = card.Click;
+
             foreach (Control control in card.Controls)
             {
                 control.Cursor = Cursors.Hand;
-                control.Click += (s, e) => card.PerformClick();
+                control.Click += (s, e) => {
+                    // Disparar o evento Click do card
+                    cardClickHandler?.Invoke(card, EventArgs.Empty);
+                };
             }
         }
 
