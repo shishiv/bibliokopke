@@ -191,19 +191,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Desenvolvimento\\.nuget\\packages\\": {}
+    "/home/runner/work/bibliokopke/.codeql-scratch/dbs/csharp/working/packages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Repos\\bibliokopke\\08_c#\\BibliotecaJK.csproj",
+      "projectUniqueName": "/home/runner/work/bibliokopke/bibliokopke/08_c#/BibliotecaJK.csproj",
       "projectName": "BibliotecaJK",
-      "projectPath": "C:\\Repos\\bibliokopke\\08_c#\\BibliotecaJK.csproj",
-      "packagesPath": "C:\\Users\\Desenvolvimento\\.nuget\\packages\\",
-      "outputPath": "C:\\Repos\\bibliokopke\\08_c#\\obj\\",
+      "projectPath": "/home/runner/work/bibliokopke/bibliokopke/08_c#/BibliotecaJK.csproj",
+      "packagesPath": "/home/runner/work/bibliokopke/.codeql-scratch/dbs/csharp/working/packages",
+      "outputPath": "/home/runner/work/bibliokopke/bibliokopke/08_c#/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Desenvolvimento\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/runner/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0-windows"
@@ -226,7 +226,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0-windows7.0": {
@@ -248,6 +249,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.21, 8.0.21]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.linux-x64",
+            "version": "[8.0.21, 8.0.21]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.21, 8.0.21]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.21, 8.0.21]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
@@ -256,7 +275,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.415/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
