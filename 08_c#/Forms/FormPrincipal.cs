@@ -18,6 +18,7 @@ namespace BibliotecaJK.Forms
         private readonly EmprestimoService _emprestimoService;
         private readonly LivroService _livroService;
         private readonly AlunoService _alunoService;
+        private readonly ReservaService _reservaService;
         private readonly NotificacaoDAL _notificacaoDAL;
         private Label lblNotificacaoBadge = new Label();
         private System.Windows.Forms.Timer timerNotificacoes = new System.Windows.Forms.Timer();
@@ -43,6 +44,7 @@ namespace BibliotecaJK.Forms
             _emprestimoService = new EmprestimoService();
             _livroService = new LivroService();
             _alunoService = new AlunoService();
+            _reservaService = new ReservaService();
             _notificacaoDAL = new NotificacaoDAL();
 
             InitializeComponent();
@@ -620,8 +622,7 @@ namespace BibliotecaJK.Forms
                 lblAlunosComAtrasos.Text = statsAlunos.ComAtrasos.ToString();
 
                 // Estatísticas de Reservas
-                var reservaService = new ReservaService();
-                var statsReservas = reservaService.ObterEstatisticas();
+                var statsReservas = _reservaService.ObterEstatisticas();
                 lblReservasAtivas.Text = statsReservas.Ativas.ToString();
                 lblReservasPendentes.Text = $"{statsReservas.Pendentes} aguardando disponibilidade";
 
