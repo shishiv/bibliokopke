@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "7lGkSN+oIaI=",
+  "success": true,
+  "projectFilePath": "C:\\Repos\\bibliokopke\\08_c#\\BibliotecaJK.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Desenvolvimento\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\Desenvolvimento\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.0\\microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\Desenvolvimento\\.nuget\\packages\\npgsql\\8.0.8\\npgsql.8.0.8.nupkg.sha512"
+  ],
+  "logs": []
+}
