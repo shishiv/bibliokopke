@@ -623,7 +623,7 @@ namespace BibliotecaJK.Forms
                 var reservaService = new ReservaService();
                 var statsReservas = reservaService.ObterEstatisticas();
                 lblReservasAtivas.Text = statsReservas.Ativas.ToString();
-                lblReservasPendentes.Text = $"{statsReservas.Ativas} aguardando disponibilidade";
+                lblReservasPendentes.Text = $"{statsReservas.Pendentes} aguardando disponibilidade";
 
                 // Ações Hoje (empréstimos do dia)
                 var statsHoje = _emprestimoService.ObterEstatisticas(DateTime.Today, DateTime.Today);
