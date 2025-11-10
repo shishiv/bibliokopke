@@ -68,22 +68,37 @@ namespace BibliotecaJK.Forms
             // Label de exemplo
             var lblExemplo = new Label
             {
-                Text = "Exemplo Supabase:\n" +
-                       "Host=db.xxxxx.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=sua_senha\n\n" +
-                       "Exemplo Local:\n" +
+                Text = "SUPABASE - Session Pooler (RECOMENDADO para apps desktop):\n" +
+                       "postgresql://postgres.xxxxx:[SUA-SENHA]@aws-0-sa-east-1.pooler.supabase.com:5432/postgres\n" +
+                       "→ Suporta todas as features, transações e prepared statements\n\n" +
+                       "SUPABASE - Conexão Direta:\n" +
+                       "postgresql://postgres:[SUA-SENHA]@db.xxxxx.supabase.co:5432/postgres\n" +
+                       "→ Funciona, mas sem pooling (pode ser mais lento)\n\n" +
+                       "PostgreSQL Local:\n" +
                        "Host=localhost;Port=5432;Database=bibliokopke;Username=postgres;Password=sua_senha",
                 Location = new System.Drawing.Point(20, 245),
-                Size = new System.Drawing.Size(640, 80),
+                Size = new System.Drawing.Size(640, 130),
                 ForeColor = System.Drawing.Color.Gray,
-                Font = new System.Drawing.Font("Consolas", 8F)
+                Font = new System.Drawing.Font("Consolas", 7.2F)
             };
             this.Controls.Add(lblExemplo);
+
+            // Nota sobre SSL
+            var lblSSLNota = new Label
+            {
+                Text = "Nota: Conexões Supabase usam SSL automaticamente. O sistema detecta e adiciona SSL Mode=Require.",
+                Location = new System.Drawing.Point(20, 380),
+                Size = new System.Drawing.Size(640, 20),
+                ForeColor = System.Drawing.Color.Blue,
+                Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Italic)
+            };
+            this.Controls.Add(lblSSLNota);
 
             // Botao Testar Conexao
             var btnTestar = new Button
             {
                 Text = "Testar Conexao",
-                Location = new System.Drawing.Point(20, 340),
+                Location = new System.Drawing.Point(20, 410),
                 Size = new System.Drawing.Size(150, 35),
                 BackColor = System.Drawing.Color.FromArgb(0, 120, 215),
                 ForeColor = System.Drawing.Color.White,
@@ -97,7 +112,7 @@ namespace BibliotecaJK.Forms
             {
                 Name = "lblStatus",
                 Text = "",
-                Location = new System.Drawing.Point(180, 340),
+                Location = new System.Drawing.Point(180, 410),
                 Size = new System.Drawing.Size(480, 35),
                 TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
                 Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold)
