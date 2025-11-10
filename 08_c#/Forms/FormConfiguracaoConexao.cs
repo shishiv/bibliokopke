@@ -68,14 +68,16 @@ namespace BibliotecaJK.Forms
             // Label de exemplo
             var lblExemplo = new Label
             {
-                Text = "Exemplo Supabase:\n" +
+                Text = "Exemplo Supabase URI (recomendado):\n" +
+                       "postgresql://postgres.xxxxx:[SUA-SENHA]@aws-1-sa-east-1.pooler.supabase.com:5432/postgres\n\n" +
+                       "Exemplo Supabase Tradicional:\n" +
                        "Host=db.xxxxx.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=sua_senha\n\n" +
                        "Exemplo Local:\n" +
                        "Host=localhost;Port=5432;Database=bibliokopke;Username=postgres;Password=sua_senha",
                 Location = new System.Drawing.Point(20, 245),
-                Size = new System.Drawing.Size(640, 80),
+                Size = new System.Drawing.Size(640, 110),
                 ForeColor = System.Drawing.Color.Gray,
-                Font = new System.Drawing.Font("Consolas", 8F)
+                Font = new System.Drawing.Font("Consolas", 7.5F)
             };
             this.Controls.Add(lblExemplo);
 
@@ -83,7 +85,7 @@ namespace BibliotecaJK.Forms
             var btnTestar = new Button
             {
                 Text = "Testar Conexao",
-                Location = new System.Drawing.Point(20, 340),
+                Location = new System.Drawing.Point(20, 370),
                 Size = new System.Drawing.Size(150, 35),
                 BackColor = System.Drawing.Color.FromArgb(0, 120, 215),
                 ForeColor = System.Drawing.Color.White,
@@ -97,7 +99,7 @@ namespace BibliotecaJK.Forms
             {
                 Name = "lblStatus",
                 Text = "",
-                Location = new System.Drawing.Point(180, 340),
+                Location = new System.Drawing.Point(180, 370),
                 Size = new System.Drawing.Size(480, 35),
                 TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
                 Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold)

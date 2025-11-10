@@ -44,6 +44,9 @@ namespace BibliotecaJK
         {
             try
             {
+                // Converter URI do Supabase para formato padrão, se necessário
+                string connStrFinal = ConverterSupabaseURI(connectionString);
+
                 // Criar diretorio se nao existir
                 string? directory = Path.GetDirectoryName(ConfigFilePath);
                 if (directory != null && !Directory.Exists(directory))
@@ -52,17 +55,56 @@ namespace BibliotecaJK
                 }
 
                 // Salvar configuracao
-                var config = new DatabaseConfig { ConnectionString = connectionString };
+                var config = new DatabaseConfig { ConnectionString = connStrFinal };
                 string json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(ConfigFilePath, json);
 
                 // Atualizar cache
-                _connectionString = connectionString;
+                _connectionString = connStrFinal;
             }
             catch (Exception ex)
             {
                 throw new Exception($"Erro ao salvar configuracao: {ex.Message}", ex);
             }
+        }
+
+        /// <summary>
+        /// Converte URI do Supabase (postgresql://...) para formato Npgsql padrão
+        /// </summary>
+        private static string ConverterSupabaseURI(string connectionString)
+        {
+            // Se já está no formato padrão (Host=...), retornar como está
+            if (connectionString.Contains("Host=") || connectionString.Contains("host="))
+            {
+                return connectionString;
+            }
+
+            // Se está no formato URI (postgresql://...)
+            if (connectionString.StartsWith("postgresql://") || connectionString.StartsWith("postgres://"))
+            {
+                try
+                {
+                    var uri = new Uri(connectionString);
+
+                    // Extrair componentes
+                    string host = uri.Host;
+                    int port = uri.Port > 0 ? uri.Port : 5432;
+                    string database = uri.AbsolutePath.TrimStart('/');
+                    string username = uri.UserInfo.Split(':')[0];
+                    string password = uri.UserInfo.Contains(':') ? uri.UserInfo.Split(':')[1] : "";
+
+                    // Construir connection string no formato padrão
+                    return $"Host={host};Port={port};Database={database};Username={username};Password={password}";
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Erro ao converter URI do Supabase: {ex.Message}. " +
+                        "Verifique se o formato está correto: postgresql://user:password@host:port/database", ex);
+                }
+            }
+
+            // Retornar como está se não for nenhum dos formatos reconhecidos
+            return connectionString;
         }
 
         // Retorna a connection string configurada
@@ -110,7 +152,10 @@ namespace BibliotecaJK
 
             try
             {
-                using var conn = new NpgsqlConnection(connectionString);
+                // Converter URI para formato padrão, se necessário
+                string connStrFinal = ConverterSupabaseURI(connectionString);
+
+                using var conn = new NpgsqlConnection(connStrFinal);
                 conn.Open();
 
                 // Testa uma query simples
