@@ -16,11 +16,11 @@ namespace BibliotecaJK.BLL
         private readonly AlunoDAL _alunoDAL;
         private readonly LogService _logService;
 
-        // Constantes de regras de negócio
-        private const int PRAZO_DIAS = 7;
-        private const int MAX_EMPRESTIMOS_SIMULTANEOS = 3;
-        private const int MAX_RENOVACOES = 2;
-        private const decimal MULTA_POR_DIA = 2.00m;
+        // Constantes agora centralizadas em Constants.cs
+        private const int PRAZO_DIAS = Constants.PRAZO_EMPRESTIMO_DIAS;
+        private const int MAX_EMPRESTIMOS_SIMULTANEOS = Constants.MAX_EMPRESTIMOS_SIMULTANEOS;
+        private const int MAX_RENOVACOES = Constants.MAX_RENOVACOES;
+        private const decimal MULTA_POR_DIA = Constants.MULTA_POR_DIA;
 
         public EmprestimoService()
         {

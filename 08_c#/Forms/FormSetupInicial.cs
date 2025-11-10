@@ -173,8 +173,13 @@ namespace BibliotecaJK.Forms
 
                 // Verificar se as tabelas principais existem
                 string[] tabelasNecessarias = {
-                    "aluno", "funcionario", "livro",
-                    "emprestimo", "reserva", "log_acao"
+                    Constants.Tabelas.ALUNO,
+                    Constants.Tabelas.FUNCIONARIO,
+                    Constants.Tabelas.LIVRO,
+                    Constants.Tabelas.EMPRESTIMO,
+                    Constants.Tabelas.RESERVA,
+                    Constants.Tabelas.LOG_ACAO,
+                    Constants.Tabelas.NOTIFICACAO
                 };
 
                 int tabelasEncontradas = 0;
@@ -281,17 +286,17 @@ namespace BibliotecaJK.Forms
             try
             {
                 // Localizar o arquivo schema-postgresql.sql
-                string schemaPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "schema-postgresql.sql");
+                string schemaPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Constants.SCHEMA_FILE_NAME);
 
                 if (!File.Exists(schemaPath))
                 {
                     // Tentar uma pasta acima
-                    schemaPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "schema-postgresql.sql");
+                    schemaPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", Constants.SCHEMA_FILE_NAME);
                 }
 
                 if (!File.Exists(schemaPath))
                 {
-                    throw new FileNotFoundException("Arquivo 'schema-postgresql.sql' não encontrado.");
+                    throw new FileNotFoundException($"Arquivo '{Constants.SCHEMA_FILE_NAME}' não encontrado.");
                 }
 
                 AdicionarLog($"✓ Arquivo schema encontrado: {schemaPath}");
@@ -345,7 +350,7 @@ namespace BibliotecaJK.Forms
 
                 MessageBox.Show(
                     $"Erro ao executar schema:\n\n{ex.Message}\n\n" +
-                    "Verifique se o arquivo 'schema-postgresql.sql' está na pasta do executável.",
+                    $"Verifique se o arquivo '{Constants.SCHEMA_FILE_NAME}' está na pasta do executável.",
                     "Erro",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);

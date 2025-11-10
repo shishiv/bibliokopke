@@ -18,12 +18,11 @@ namespace BibliotecaJK
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Verificar se existe configuracao de conexao
-            if (!Conexao.TemConfiguracao())
+            bool primeiraExecucao = !Conexao.TemConfiguracao();
+            if (primeiraExecucao)
             {
                 MessageBox.Show(
-                    "Bem-vindo ao BibliotecaJK!\n\n" +
-                    "Parece ser a primeira vez que voce esta executando o sistema.\n" +
-                    "Vamos configurar a conexao com o banco de dados.",
+                    Constants.Mensagens.SETUP_BEM_VINDO,
                     "Configuracao Inicial",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -84,15 +83,24 @@ namespace BibliotecaJK
             }
 
             // Conexao OK - Verificar se o schema esta instalado
-            var resultSetup = MessageBox.Show(
-                "Conexao estabelecida com sucesso!\n\n" +
-                "Deseja verificar se o banco de dados esta configurado corretamente?\n" +
-                "(Verifica se as tabelas existem e oferece criar automaticamente)",
-                "Setup do Banco de Dados",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
+            // Se for primeira execucao, sempre executar o setup wizard
+            // Caso contrario, perguntar ao usuario
+            bool executarSetup = primeiraExecucao;
 
-            if (resultSetup == DialogResult.Yes)
+            if (!primeiraExecucao)
+            {
+                var resultSetup = MessageBox.Show(
+                    "Conexao estabelecida com sucesso!\n\n" +
+                    "Deseja verificar se o banco de dados esta configurado corretamente?\n" +
+                    "(Verifica se as tabelas existem e oferece criar automaticamente)",
+                    "Setup do Banco de Dados",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                executarSetup = (resultSetup == DialogResult.Yes);
+            }
+
+            if (executarSetup)
             {
                 string connStr = Conexao.GetConnectionString();
                 using var formSetup = new FormSetupInicial(connStr);

@@ -8,7 +8,7 @@ namespace BibliotecaJK
         // Arquivo de configuracao armazenado localmente
         private static readonly string ConfigFilePath =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                        "BibliotecaJK", "database.config");
+                        Constants.CONFIG_FOLDER_NAME, Constants.CONFIG_FILE_NAME);
 
         // Connection string padrao (Supabase ou PostgreSQL local)
         private static string? _connectionString = null;
