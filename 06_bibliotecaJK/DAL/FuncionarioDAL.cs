@@ -1,5 +1,6 @@
 using Npgsql;
 using BibliotecaJK.Model;
+using System;
 using System.Collections.Generic;
 
 namespace BibliotecaJK.DAL
