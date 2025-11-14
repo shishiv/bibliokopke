@@ -122,7 +122,7 @@ namespace BibliotecaJK.Forms
                 Size = new Size(180, 25),
                 MaxLength = 14
             };
-            txtCPF.KeyPress += (s, e) => InputMaskHelper.ApplyCPFMask(txtCPF, e);
+            txtCPF.AllowOnlyNumbers();
             pnlCadastro.Controls.Add(txtCPF);
 
             // Cargo
@@ -362,7 +362,7 @@ namespace BibliotecaJK.Forms
                     return;
                 }
 
-                if (!Validacoes.ValidarCPF(txtCPF.Text))
+                if (!Validadores.ValidarCPF(txtCPF.Text))
                 {
                     MessageBox.Show("CPF inválido.", "Validação", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtCPF.Focus();
