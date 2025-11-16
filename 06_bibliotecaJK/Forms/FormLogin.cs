@@ -4,6 +4,7 @@ using BibliotecaJK.DAL;
 using BibliotecaJK.Model;
 using BibliotecaJK.BLL;
 using Npgsql;
+using BibliotecaJK;
 
 namespace BibliotecaJK.Forms
 {

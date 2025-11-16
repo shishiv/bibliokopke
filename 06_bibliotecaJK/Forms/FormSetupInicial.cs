@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Text;
 using Npgsql;
+using BibliotecaJK;
 
 namespace BibliotecaJK.Forms
 {

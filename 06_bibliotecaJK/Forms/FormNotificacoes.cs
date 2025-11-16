@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using BibliotecaJK.DAL;
 using BibliotecaJK.Model;
+using BibliotecaJK;
 
 namespace BibliotecaJK.Forms
 {

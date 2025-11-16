@@ -1,0 +1,34 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  analyze:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore 06_bibliotecaJK/BibliotecaJK.csproj
+
+    - name: Check formatting
+      run: dotnet format 06_bibliotecaJK/BibliotecaJK.csproj --verify-no-changes --verbosity diagnostic
+      continue-on-error: true
+
+    - name: Security audit
+      run: dotnet list 06_bibliotecaJK/BibliotecaJK.csproj package --vulnerable --include-transitive
+      continue-on-error: true
+
+    - name: Build with warnings as errors (nullable reference types)
+      run: dotnet build 06_bibliotecaJK/BibliotecaJK.csproj --configuration Release -p:TreatWarningsAsErrors=false

@@ -1,0 +1,6 @@
+{
+  "version": "0.15.0",
+  "providers": ["claude-code"],
+  "specsDir": "openspec/specs",
+  "changesDir": "openspec/changes"
+}
