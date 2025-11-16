@@ -5,6 +5,7 @@ using BibliotecaJK.Model;
 using BibliotecaJK.BLL;
 using BibliotecaJK.DAL;
 using BibliotecaJK.Components;
+using BibliotecaJK.Helpers;
 
 namespace BibliotecaJK.Forms
 {
@@ -28,15 +29,24 @@ namespace BibliotecaJK.Forms
         private ToolStripStatusLabel _lblStatus = null!;
         private ToolStripStatusLabel _lblUsuario = null!;
         private ToolStripStatusLabel _lblHora = null!;
-        private Panel cardEmprestimos = null!;
-        private Panel cardLivros = null!;
-        private Panel cardAlunos = null!;
-        private Panel cardMultas = null!;
-        private Panel cardEmprestados = null!;
-        private Panel cardAtrasos = null!;
-        private Panel cardReservas = null!;
-        private Panel cardAcoesHoje = null!;
-        private Panel cardTaxaUso = null!;
+
+        // ModernCard components for dashboard
+        private ModernCard cardEmprestimos = null!;
+        private ModernCard cardLivros = null!;
+        private ModernCard cardAlunos = null!;
+        private ModernCard cardMultas = null!;
+        private ModernCard cardEmprestados = null!;
+        private ModernCard cardAtrasos = null!;
+        private ModernCard cardReservas = null!;
+        private ModernCard cardAcoesHoje = null!;
+        private ModernCard cardTaxaUso = null!;
+
+        // FlowLayoutPanel for responsive dashboard
+        private FlowLayoutPanel pnlDashboardFlow = null!;
+        private Panel pnlContent = null!;
+
+        // Current screen size for responsive layout
+        private LayoutManager.ScreenSize _currentScreenSize;
 
         public FormPrincipal(Funcionario funcionario)
         {
@@ -48,6 +58,10 @@ namespace BibliotecaJK.Forms
             _notificacaoDAL = new NotificacaoDAL();
 
             InitializeComponent();
+
+            // Make form responsive
+            LayoutManager.MakeFormResponsive(this);
+
             ConfigurarAtalhosTeclado();
             ConfigurarTooltips();
             ConfigurarStatusBar();
@@ -68,6 +82,7 @@ namespace BibliotecaJK.Forms
             this.SuspendLayout();
 
             // FormPrincipal - Tamanho maior e moderno
+            this.Name = "FormPrincipal";
             this.ClientSize = new Size(1400, 800);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "BibliotecaJK - Sistema de Gerenciamento";
@@ -315,20 +330,12 @@ namespace BibliotecaJK.Forms
             this.Controls.Add(pnlHeader);
 
             // ==================== ÁREA DE CONTEÚDO ====================
-            var pnlContent = new Panel
+            pnlContent = new Panel
             {
                 Location = new Point(250, 80),
                 Size = new Size(1150, 720),
                 BackColor = Color.FromArgb(245, 245, 250),
                 AutoScroll = true
-            };
-
-            // Dashboard Cards Container
-            var pnlDashboard = new Panel
-            {
-                Location = new Point(20, 20),
-                Size = new Size(1110, 680),
-                BackColor = Color.Transparent
             };
 
             // Título Dashboard
@@ -337,119 +344,304 @@ namespace BibliotecaJK.Forms
                 Text = "ESTATÍSTICAS DO SISTEMA",
                 Font = new Font("Segoe UI", 14F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(63, 81, 181),
-                Location = new Point(0, 0),
+                Location = new Point(20, 20),
                 Size = new Size(1110, 30)
             };
-            pnlDashboard.Controls.Add(lblTituloDashboard);
+            pnlContent.Controls.Add(lblTituloDashboard);
 
-            // Cards Grid - 3x3 formation
-            int cardWidth = 350;
-            int cardHeight = 160;
-            int cardMargin = 15;
+            // FlowLayoutPanel for responsive dashboard
+            pnlDashboardFlow = new FlowLayoutPanel
+            {
+                Location = new Point(20, 60),
+                Size = new Size(1110, 640),
+                BackColor = Color.Transparent,
+                AutoScroll = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = true,
+                Padding = new Padding(0)
+            };
 
-            // ========== LINHA 1 ==========
+            // Create dashboard cards
+            CriarCardsDashboard();
 
-            // Card 1: Empréstimos Ativos (clicável)
-            cardEmprestimos = CriarCardDetalhadoModerno("EMPRÉSTIMOS ATIVOS", 0, 50, cardWidth, cardHeight, Color.FromArgb(76, 175, 80), "📚");
-            lblEmprestimosAtivos = CriarLabelCardModerno("0", 50, cardEmprestimos, 36F);
-            lblEmprestimosAtrasados = CriarLabelCardModerno("0 atrasados", 100, cardEmprestimos, 12F, Color.FromArgb(255, 235, 238));
-            var lblDetalhesEmprestimos = CriarLabelCardModerno("Ver todos →", 125, cardEmprestimos, 10F, Color.FromArgb(200, 230, 201));
-            cardEmprestimos.Cursor = Cursors.Hand;
-            cardEmprestimos.Click += (s, e) => AbrirConsultaEmprestimos();
-            TornarCardClicavel(cardEmprestimos);
-            pnlDashboard.Controls.Add(cardEmprestimos);
-
-            // Card 2: Livros Cadastrados (clicável)
-            cardLivros = CriarCardDetalhadoModerno("LIVROS NO ACERVO", cardWidth + cardMargin, 50, cardWidth, cardHeight, Color.FromArgb(33, 150, 243), "📖");
-            lblTotalLivros = CriarLabelCardModerno("0", 50, cardLivros, 36F);
-            lblLivrosDisponiveis = CriarLabelCardModerno("0 disponíveis", 100, cardLivros, 12F, Color.FromArgb(227, 242, 253));
-            var lblDetalhesLivros = CriarLabelCardModerno("Ver catálogo →", 125, cardLivros, 10F, Color.FromArgb(187, 222, 251));
-            cardLivros.Cursor = Cursors.Hand;
-            cardLivros.Click += (s, e) => AbrirCadastroLivros();
-            TornarCardClicavel(cardLivros);
-            pnlDashboard.Controls.Add(cardLivros);
-
-            // Card 3: Alunos Cadastrados (clicável)
-            cardAlunos = CriarCardDetalhadoModerno("ALUNOS CADASTRADOS", (cardWidth + cardMargin) * 2, 50, cardWidth, cardHeight, Color.FromArgb(156, 39, 176), "👥");
-            lblTotalAlunos = CriarLabelCardModerno("0", 50, cardAlunos, 36F);
-            lblAlunosComEmprestimos = CriarLabelCardModerno("0 com empréstimos ativos", 100, cardAlunos, 12F, Color.FromArgb(243, 229, 245));
-            var lblDetalhesAlunos = CriarLabelCardModerno("Ver lista →", 125, cardAlunos, 10F, Color.FromArgb(225, 190, 231));
-            cardAlunos.Cursor = Cursors.Hand;
-            cardAlunos.Click += (s, e) => AbrirCadastroAlunos();
-            TornarCardClicavel(cardAlunos);
-            pnlDashboard.Controls.Add(cardAlunos);
-
-            // ========== LINHA 2 ==========
-            int row2Y = 50 + cardHeight + cardMargin;
-
-            // Card 4: Livros Emprestados (clicável)
-            cardEmprestados = CriarCardDetalhadoModerno("EXEMPLARES EMPRESTADOS", 0, row2Y, cardWidth, cardHeight, Color.FromArgb(255, 152, 0), "📦");
-            lblLivrosEmprestados = CriarLabelCardModerno("0", 50, cardEmprestados, 36F);
-            var lblExemplaresTotal = CriarLabelCardModerno("de 0 exemplares totais", 100, cardEmprestados, 12F, Color.FromArgb(255, 243, 224));
-            var lblDetalhesEmprestados = CriarLabelCardModerno("Ver detalhes →", 125, cardEmprestados, 10F, Color.FromArgb(255, 224, 178));
-            cardEmprestados.Cursor = Cursors.Hand;
-            cardEmprestados.Click += (s, e) => AbrirConsultaEmprestimos();
-            TornarCardClicavel(cardEmprestados);
-            pnlDashboard.Controls.Add(cardEmprestados);
-
-            // Card 5: Multas Acumuladas (clicável)
-            cardMultas = CriarCardDetalhadoModerno("MULTAS PENDENTES", cardWidth + cardMargin, row2Y, cardWidth, cardHeight, Color.FromArgb(244, 67, 54), "💰");
-            lblMultaTotal = CriarLabelCardModerno("R$ 0,00", 50, cardMultas, 32F);
-            var lblMultasEmprestimos = CriarLabelCardModerno("0 empréstimos com multa", 100, cardMultas, 12F, Color.FromArgb(255, 235, 238));
-            var lblDetalhesMultas = CriarLabelCardModerno("Ver cobranças →", 125, cardMultas, 10F, Color.FromArgb(255, 205, 210));
-            cardMultas.Cursor = Cursors.Hand;
-            cardMultas.Click += (s, e) => AbrirConsultaEmprestimos();
-            TornarCardClicavel(cardMultas);
-            pnlDashboard.Controls.Add(cardMultas);
-
-            // Card 6: Alunos com Atrasos (clicável)
-            cardAtrasos = CriarCardDetalhadoModerno("ATRASOS E PENDÊNCIAS", (cardWidth + cardMargin) * 2, row2Y, cardWidth, cardHeight, Color.FromArgb(255, 87, 34), "⚠️");
-            lblAlunosComAtrasos = CriarLabelCardModerno("0", 50, cardAtrasos, 36F);
-            var lblAlunosPendentes = CriarLabelCardModerno("alunos precisam devolver", 100, cardAtrasos, 12F, Color.FromArgb(255, 235, 238));
-            var lblDetalhesAtrasos = CriarLabelCardModerno("Ação necessária →", 125, cardAtrasos, 10F, Color.FromArgb(255, 204, 188));
-            cardAtrasos.Cursor = Cursors.Hand;
-            cardAtrasos.Click += (s, e) => AbrirConsultaEmprestimos();
-            TornarCardClicavel(cardAtrasos);
-            pnlDashboard.Controls.Add(cardAtrasos);
-
-            // ========== LINHA 3 ==========
-            int row3Y = row2Y + cardHeight + cardMargin;
-
-            // Card 7: Reservas Ativas (clicável)
-            cardReservas = CriarCardDetalhadoModerno("RESERVAS ATIVAS", 0, row3Y, cardWidth, cardHeight, Color.FromArgb(103, 58, 183), "🔖");
-            lblReservasAtivas = CriarLabelCardModerno("0", 50, cardReservas, 36F);
-            lblReservasPendentes = CriarLabelCardModerno("0 aguardando disponibilidade", 100, cardReservas, 12F, Color.FromArgb(237, 231, 246));
-            var lblDetalhesReservas = CriarLabelCardModerno("Gerenciar reservas →", 125, cardReservas, 10F, Color.FromArgb(209, 196, 233));
-            cardReservas.Cursor = Cursors.Hand;
-            cardReservas.Click += (s, e) => AbrirReservas();
-            TornarCardClicavel(cardReservas);
-            pnlDashboard.Controls.Add(cardReservas);
-
-            // Card 8: Ações Hoje (clicável)
-            cardAcoesHoje = CriarCardDetalhadoModerno("MOVIMENTAÇÃO HOJE", cardWidth + cardMargin, row3Y, cardWidth, cardHeight, Color.FromArgb(0, 150, 136), "📊");
-            lblAcoesHoje = CriarLabelCardModerno("0", 50, cardAcoesHoje, 36F);
-            lblDetalhesAcoes = CriarLabelCardModerno("empréstimos + devoluções", 100, cardAcoesHoje, 12F, Color.FromArgb(224, 242, 241));
-            var lblVerLogs = CriarLabelCardModerno("Ver atividades →", 125, cardAcoesHoje, 10F, Color.FromArgb(178, 223, 219));
-            cardAcoesHoje.Cursor = Cursors.Hand;
-            cardAcoesHoje.Click += (s, e) => AbrirRelatorios();
-            TornarCardClicavel(cardAcoesHoje);
-            pnlDashboard.Controls.Add(cardAcoesHoje);
-
-            // Card 9: Taxa de Uso
-            cardTaxaUso = CriarCardDetalhadoModerno("TAXA DE UTILIZAÇÃO", (cardWidth + cardMargin) * 2, row3Y, cardWidth, cardHeight, Color.FromArgb(121, 85, 72), "📈");
-            lblTaxaUso = CriarLabelCardModerno("0%", 50, cardTaxaUso, 36F);
-            lblDetalheTaxaUso = CriarLabelCardModerno("do acervo está em uso", 100, cardTaxaUso, 12F, Color.FromArgb(239, 235, 233));
-            var lblDetalhesTaxa = CriarLabelCardModerno("Ver estatísticas →", 125, cardTaxaUso, 10F, Color.FromArgb(215, 204, 200));
-            cardTaxaUso.Cursor = Cursors.Hand;
-            cardTaxaUso.Click += (s, e) => AbrirRelatorios();
-            TornarCardClicavel(cardTaxaUso);
-            pnlDashboard.Controls.Add(cardTaxaUso);
-
-            pnlContent.Controls.Add(pnlDashboard);
+            pnlContent.Controls.Add(pnlDashboardFlow);
             this.Controls.Add(pnlContent);
+
+            // Add resize handler for responsive layout
+            this.Resize += FormPrincipal_Resize;
+
+            // Initial screen size calculation
+            _currentScreenSize = LayoutManager.GetScreenSize(this.Width);
+            AjustarLayoutResponsivo();
 
             this.ResumeLayout(false);
             this.PerformLayout();
+        }
+
+        private void CriarCardsDashboard()
+        {
+            // Card 1: Empréstimos Ativos
+            cardEmprestimos = CriarModernCard(
+                "EMPRÉSTIMOS ATIVOS",
+                "📚",
+                ThemeManager.Colors.Success,
+                Color.FromArgb(76, 175, 80)
+            );
+            lblEmprestimosAtivos = CriarLabelValor(cardEmprestimos, "0");
+            lblEmprestimosAtrasados = CriarLabelDetalhe(cardEmprestimos, "0 atrasados", 95);
+            cardEmprestimos.Cursor = Cursors.Hand;
+            cardEmprestimos.Click += (s, e) => AbrirConsultaEmprestimos();
+            TornarCardClicavel(cardEmprestimos);
+            pnlDashboardFlow.Controls.Add(cardEmprestimos);
+
+            // Card 2: Livros Cadastrados
+            cardLivros = CriarModernCard(
+                "LIVROS NO ACERVO",
+                "📖",
+                ThemeManager.Colors.Primary,
+                Color.FromArgb(33, 150, 243)
+            );
+            lblTotalLivros = CriarLabelValor(cardLivros, "0");
+            lblLivrosDisponiveis = CriarLabelDetalhe(cardLivros, "0 disponíveis", 95);
+            cardLivros.Cursor = Cursors.Hand;
+            cardLivros.Click += (s, e) => AbrirCadastroLivros();
+            TornarCardClicavel(cardLivros);
+            pnlDashboardFlow.Controls.Add(cardLivros);
+
+            // Card 3: Alunos Cadastrados
+            cardAlunos = CriarModernCard(
+                "ALUNOS CADASTRADOS",
+                "👥",
+                ThemeManager.Colors.Secondary,
+                Color.FromArgb(156, 39, 176)
+            );
+            lblTotalAlunos = CriarLabelValor(cardAlunos, "0");
+            lblAlunosComEmprestimos = CriarLabelDetalhe(cardAlunos, "0 com empréstimos ativos", 95);
+            cardAlunos.Cursor = Cursors.Hand;
+            cardAlunos.Click += (s, e) => AbrirCadastroAlunos();
+            TornarCardClicavel(cardAlunos);
+            pnlDashboardFlow.Controls.Add(cardAlunos);
+
+            // Card 4: Livros Emprestados
+            cardEmprestados = CriarModernCard(
+                "EXEMPLARES EMPRESTADOS",
+                "📦",
+                ThemeManager.Colors.Warning,
+                Color.FromArgb(255, 152, 0)
+            );
+            lblLivrosEmprestados = CriarLabelValor(cardEmprestados, "0");
+            lblExemplaresTotal = CriarLabelDetalhe(cardEmprestados, "de 0 exemplares totais", 95);
+            cardEmprestados.Cursor = Cursors.Hand;
+            cardEmprestados.Click += (s, e) => AbrirConsultaEmprestimos();
+            TornarCardClicavel(cardEmprestados);
+            pnlDashboardFlow.Controls.Add(cardEmprestados);
+
+            // Card 5: Multas Acumuladas
+            cardMultas = CriarModernCard(
+                "MULTAS PENDENTES",
+                "💰",
+                ThemeManager.Colors.Error,
+                Color.FromArgb(244, 67, 54)
+            );
+            lblMultaTotal = CriarLabelValor(cardMultas, "R$ 0,00");
+            lblMultasEmprestimos = CriarLabelDetalhe(cardMultas, "0 empréstimos com multa", 95);
+            cardMultas.Cursor = Cursors.Hand;
+            cardMultas.Click += (s, e) => AbrirConsultaEmprestimos();
+            TornarCardClicavel(cardMultas);
+            pnlDashboardFlow.Controls.Add(cardMultas);
+
+            // Card 6: Alunos com Atrasos
+            cardAtrasos = CriarModernCard(
+                "ATRASOS E PENDÊNCIAS",
+                "⚠️",
+                Color.FromArgb(255, 87, 34),
+                Color.FromArgb(255, 87, 34)
+            );
+            lblAlunosComAtrasos = CriarLabelValor(cardAtrasos, "0");
+            lblAlunosPendentes = CriarLabelDetalhe(cardAtrasos, "alunos precisam devolver", 95);
+            cardAtrasos.Cursor = Cursors.Hand;
+            cardAtrasos.Click += (s, e) => AbrirConsultaEmprestimos();
+            TornarCardClicavel(cardAtrasos);
+            pnlDashboardFlow.Controls.Add(cardAtrasos);
+
+            // Card 7: Reservas Ativas
+            cardReservas = CriarModernCard(
+                "RESERVAS ATIVAS",
+                "🔖",
+                Color.FromArgb(103, 58, 183),
+                Color.FromArgb(103, 58, 183)
+            );
+            lblReservasAtivas = CriarLabelValor(cardReservas, "0");
+            lblReservasPendentes = CriarLabelDetalhe(cardReservas, "0 aguardando disponibilidade", 95);
+            cardReservas.Cursor = Cursors.Hand;
+            cardReservas.Click += (s, e) => AbrirReservas();
+            TornarCardClicavel(cardReservas);
+            pnlDashboardFlow.Controls.Add(cardReservas);
+
+            // Card 8: Ações Hoje
+            cardAcoesHoje = CriarModernCard(
+                "MOVIMENTAÇÃO HOJE",
+                "📊",
+                ThemeManager.Colors.Info,
+                Color.FromArgb(0, 150, 136)
+            );
+            lblAcoesHoje = CriarLabelValor(cardAcoesHoje, "0");
+            lblDetalhesAcoes = CriarLabelDetalhe(cardAcoesHoje, "empréstimos + devoluções", 95);
+            cardAcoesHoje.Cursor = Cursors.Hand;
+            cardAcoesHoje.Click += (s, e) => AbrirRelatorios();
+            TornarCardClicavel(cardAcoesHoje);
+            pnlDashboardFlow.Controls.Add(cardAcoesHoje);
+
+            // Card 9: Taxa de Uso
+            cardTaxaUso = CriarModernCard(
+                "TAXA DE UTILIZAÇÃO",
+                "📈",
+                Color.FromArgb(121, 85, 72),
+                Color.FromArgb(121, 85, 72)
+            );
+            lblTaxaUso = CriarLabelValor(cardTaxaUso, "0%");
+            lblDetalheTaxaUso = CriarLabelDetalhe(cardTaxaUso, "do acervo está em uso", 95);
+            cardTaxaUso.Cursor = Cursors.Hand;
+            cardTaxaUso.Click += (s, e) => AbrirRelatorios();
+            TornarCardClicavel(cardTaxaUso);
+            pnlDashboardFlow.Controls.Add(cardTaxaUso);
+        }
+
+        private ModernCard CriarModernCard(string titulo, string icone, Color accentColor, Color backgroundColor)
+        {
+            var card = new ModernCard
+            {
+                Elevation = 2,
+                BackColor = Color.White,
+                Size = new Size(350, 150),
+                Margin = new Padding(8)
+            };
+
+            // Accent bar on left edge
+            var accentBar = new Panel
+            {
+                Location = new Point(0, 0),
+                Size = new Size(4, 150),
+                BackColor = accentColor,
+                Dock = DockStyle.Left
+            };
+            card.Controls.Add(accentBar);
+
+            // Icon
+            var lblIcone = new Label
+            {
+                Text = icone,
+                Font = new Font("Segoe UI", 32F),
+                ForeColor = backgroundColor,
+                Location = new Point(20, 15),
+                Size = new Size(50, 50),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            card.Controls.Add(lblIcone);
+
+            // Title
+            var lblTitulo = new Label
+            {
+                Text = titulo,
+                Font = ThemeManager.Typography.Body2,
+                ForeColor = Color.FromArgb(100, 100, 100),
+                Location = new Point(80, 20),
+                Size = new Size(260, 20),
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            card.Controls.Add(lblTitulo);
+
+            return card;
+        }
+
+        private Label CriarLabelValor(ModernCard card, string texto)
+        {
+            var lbl = new Label
+            {
+                Text = texto,
+                Font = ThemeManager.Typography.H2,
+                ForeColor = Color.FromArgb(33, 33, 33),
+                Location = new Point(80, 45),
+                Size = new Size(260, 40),
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            card.Controls.Add(lbl);
+            return lbl;
+        }
+
+        private Label CriarLabelDetalhe(ModernCard card, string texto, int y)
+        {
+            var lbl = new Label
+            {
+                Text = texto,
+                Font = ThemeManager.Typography.Body2,
+                ForeColor = Color.FromArgb(120, 120, 120),
+                Location = new Point(80, y),
+                Size = new Size(260, 40),
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            card.Controls.Add(lbl);
+            return lbl;
+        }
+
+        private void FormPrincipal_Resize(object sender, EventArgs e)
+        {
+            var newScreenSize = LayoutManager.GetScreenSize(this.Width);
+            if (newScreenSize != _currentScreenSize)
+            {
+                _currentScreenSize = newScreenSize;
+                AjustarLayoutResponsivo();
+            }
+        }
+
+        private void AjustarLayoutResponsivo()
+        {
+            if (pnlDashboardFlow == null) return;
+
+            // Calculate card width based on screen size
+            int containerWidth = pnlContent.Width - 40; // Account for padding
+            int cardWidth;
+
+            switch (_currentScreenSize)
+            {
+                case LayoutManager.ScreenSize.Small:
+                    // 1 column - full width
+                    cardWidth = containerWidth - 16;
+                    break;
+                case LayoutManager.ScreenSize.Medium:
+                    // 2 columns - 50% width
+                    cardWidth = (containerWidth / 2) - 16;
+                    break;
+                case LayoutManager.ScreenSize.Large:
+                    // 3 columns - 33% width
+                    cardWidth = (containerWidth / 3) - 16;
+                    break;
+                case LayoutManager.ScreenSize.ExtraLarge:
+                    // 4 columns - 25% width
+                    cardWidth = (containerWidth / 4) - 16;
+                    break;
+                default:
+                    cardWidth = 350;
+                    break;
+            }
+
+            // Update all cards with new width
+            foreach (Control control in pnlDashboardFlow.Controls)
+            {
+                if (control is ModernCard card)
+                {
+                    card.Width = cardWidth;
+
+                    // Update accent bar height to match card height
+                    foreach (Control child in card.Controls)
+                    {
+                        if (child is Panel panel && panel.Dock == DockStyle.Left)
+                        {
+                            panel.Height = card.Height;
+                        }
+                    }
+                }
+            }
         }
 
         private Button CriarBotaoSidebar(string texto, int y)
@@ -472,82 +664,6 @@ namespace BibliotecaJK.Forms
             return btn;
         }
 
-        private Panel CriarCardModerno(string titulo, int x, int y, int width, int height, Color cor)
-        {
-            var card = new Panel
-            {
-                Location = new Point(x, y),
-                Size = new Size(width, height),
-                BackColor = cor,
-                BorderStyle = BorderStyle.None
-            };
-
-            var lblTitulo = new Label
-            {
-                Text = titulo,
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.White,
-                Location = new Point(15, 15),
-                Size = new Size(width - 30, 20),
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-            card.Controls.Add(lblTitulo);
-
-            return card;
-        }
-
-        private Panel CriarCardDetalhadoModerno(string titulo, int x, int y, int width, int height, Color cor, string icone)
-        {
-            var card = new Panel
-            {
-                Location = new Point(x, y),
-                Size = new Size(width, height),
-                BackColor = cor,
-                BorderStyle = BorderStyle.None
-            };
-
-            // Ícone no canto superior esquerdo
-            var lblIcone = new Label
-            {
-                Text = icone,
-                Font = new Font("Segoe UI", 24F),
-                ForeColor = Color.White,
-                Location = new Point(15, 10),
-                Size = new Size(40, 40),
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-            card.Controls.Add(lblIcone);
-
-            // Título ao lado do ícone
-            var lblTitulo = new Label
-            {
-                Text = titulo,
-                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
-                ForeColor = Color.White,
-                Location = new Point(60, 15),
-                Size = new Size(width - 75, 25),
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-            card.Controls.Add(lblTitulo);
-
-            return card;
-        }
-
-        private Label CriarLabelCardModerno(string texto, int y, Panel card, float fontSize = 14F, Color? cor = null)
-        {
-            var lbl = new Label
-            {
-                Text = texto,
-                Font = new Font("Segoe UI", fontSize, FontStyle.Bold),
-                ForeColor = cor ?? Color.White,
-                Location = new Point(15, y),
-                Size = new Size(card.Width - 30, (int)(fontSize * 2)),
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-            card.Controls.Add(lbl);
-            return lbl;
-        }
-
         private Label lblBoasVindas = new Label();
         private Label lblPerfil = new Label();
         private Label lblEmprestimosAtivos = new Label();
@@ -555,16 +671,33 @@ namespace BibliotecaJK.Forms
         private Label lblTotalLivros = new Label();
         private Label lblLivrosDisponiveis = new Label();
         private Label lblLivrosEmprestados = new Label();
+        private Label lblExemplaresTotal = new Label();
         private Label lblTotalAlunos = new Label();
         private Label lblAlunosComEmprestimos = new Label();
         private Label lblAlunosComAtrasos = new Label();
+        private Label lblAlunosPendentes = new Label();
         private Label lblMultaTotal = new Label();
+        private Label lblMultasEmprestimos = new Label();
         private Label lblReservasAtivas = new Label();
         private Label lblReservasPendentes = new Label();
         private Label lblAcoesHoje = new Label();
         private Label lblDetalhesAcoes = new Label();
         private Label lblTaxaUso = new Label();
         private Label lblDetalheTaxaUso = new Label();
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            // Restore form state
+            FormStateManager.RestoreFormState(this);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            // Save form state
+            FormStateManager.SaveFormState(this);
+        }
 
         private void AtualizarNotificacoes()
         {
@@ -608,18 +741,21 @@ namespace BibliotecaJK.Forms
                 lblEmprestimosAtivos.Text = statsEmprestimos.Ativos.ToString();
                 lblEmprestimosAtrasados.Text = $"{statsEmprestimos.Atrasados} atrasados";
                 lblMultaTotal.Text = $"R$ {statsEmprestimos.MultaTotal:F2}";
+                lblMultasEmprestimos.Text = $"{statsEmprestimos.ComMulta} empréstimos com multa";
 
                 // Estatísticas de Livros
                 var statsLivros = _livroService.ObterEstatisticas();
                 lblTotalLivros.Text = statsLivros.TotalLivros.ToString();
                 lblLivrosDisponiveis.Text = $"{statsLivros.ExemplaresDisponiveis} disponíveis";
                 lblLivrosEmprestados.Text = statsLivros.ExemplaresEmprestados.ToString();
+                lblExemplaresTotal.Text = $"de {statsLivros.TotalExemplares} exemplares totais";
 
                 // Estatísticas de Alunos
                 var statsAlunos = _alunoService.ObterEstatisticas();
                 lblTotalAlunos.Text = statsAlunos.TotalAlunos.ToString();
                 lblAlunosComEmprestimos.Text = $"{statsAlunos.ComEmprestimos} com empréstimos ativos";
                 lblAlunosComAtrasos.Text = statsAlunos.ComAtrasos.ToString();
+                lblAlunosPendentes.Text = "alunos precisam devolver";
 
                 // Estatísticas de Reservas
                 var statsReservas = _reservaService.ObterEstatisticas();
@@ -726,7 +862,7 @@ namespace BibliotecaJK.Forms
         /// <summary>
         /// Torna um card clicável propagando o click para todos os controles filhos
         /// </summary>
-        private void TornarCardClicavel(Panel card)
+        private void TornarCardClicavel(ModernCard card)
         {
             foreach (Control control in card.Controls)
             {

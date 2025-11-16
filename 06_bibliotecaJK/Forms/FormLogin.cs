@@ -5,6 +5,7 @@ using BibliotecaJK.Model;
 using BibliotecaJK.BLL;
 using Npgsql;
 using BibliotecaJK;
+using BibliotecaJK.Components;
 
 namespace BibliotecaJK.Forms
 {
@@ -25,10 +26,35 @@ namespace BibliotecaJK.Forms
             _funcionarioDAL = new FuncionarioDAL();
             _logService = new LogService();
 
+            // Make form responsive
+            LayoutManager.MakeFormResponsive(this);
+
             // Configurar eventos
-            txtSenha.KeyPress += TxtSenha_KeyPress;
+            txtSenha.TextChanged += (s, e) => { }; // ModernTextBox compatibility
             btnEntrar.Click += BtnEntrar_Click;
             btnCancelar.Click += BtnCancelar_Click;
+
+            // Add keyboard shortcuts
+            this.KeyPreview = true;
+            this.KeyDown += FormLogin_KeyDown;
+        }
+
+        private void FormLogin_KeyDown(object? sender, KeyEventArgs e)
+        {
+            // Enter to submit
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                BtnEntrar_Click(sender, e);
+            }
+            // Escape to cancel
+            else if (e.KeyCode == Keys.Escape)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                BtnCancelar_Click(sender, e);
+            }
         }
 
         private void InitializeComponent()
@@ -36,22 +62,22 @@ namespace BibliotecaJK.Forms
             this.SuspendLayout();
 
             // FormLogin
-            this.ClientSize = new System.Drawing.Size(400, 300);
+            this.ClientSize = new System.Drawing.Size(480, 420);
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "BibliotecaJK - Login";
-            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.BackColor = ThemeManager.Light.Background;
 
             // lblTitulo
             var lblTitulo = new Label
             {
                 Text = "SISTEMA BIBLIOTECAJK",
-                Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold),
-                ForeColor = System.Drawing.Color.DarkSlateBlue,
-                Location = new System.Drawing.Point(50, 30),
-                Size = new System.Drawing.Size(300, 40),
+                Font = ThemeManager.Typography.H3,
+                ForeColor = ThemeManager.Light.Primary,
+                Location = new System.Drawing.Point(ThemeManager.Spacing.LG, ThemeManager.Spacing.LG),
+                Size = new System.Drawing.Size(432, 50),
                 TextAlign = System.Drawing.ContentAlignment.MiddleCenter
             };
             this.Controls.Add(lblTitulo);
@@ -60,100 +86,92 @@ namespace BibliotecaJK.Forms
             var lblSubtitulo = new Label
             {
                 Text = "Autenticação de Funcionários",
-                Font = new System.Drawing.Font("Segoe UI", 10F),
-                ForeColor = System.Drawing.Color.Gray,
-                Location = new System.Drawing.Point(50, 70),
-                Size = new System.Drawing.Size(300, 25),
+                Font = ThemeManager.Typography.Body1,
+                ForeColor = ThemeManager.Light.TextSecondary,
+                Location = new System.Drawing.Point(ThemeManager.Spacing.LG, 74),
+                Size = new System.Drawing.Size(432, 30),
                 TextAlign = System.Drawing.ContentAlignment.MiddleCenter
             };
             this.Controls.Add(lblSubtitulo);
 
-            // lblLogin
-            var lblLogin = new Label
+            // txtLogin (ModernTextBox)
+            txtLogin = new ModernTextBox
             {
-                Text = "Login:",
-                Font = new System.Drawing.Font("Segoe UI", 10F),
-                Location = new System.Drawing.Point(50, 120),
-                Size = new System.Drawing.Size(80, 25)
-            };
-            this.Controls.Add(lblLogin);
-
-            // txtLogin
-            txtLogin = new TextBox
-            {
-                Font = new System.Drawing.Font("Segoe UI", 10F),
-                Location = new System.Drawing.Point(140, 118),
-                Size = new System.Drawing.Size(210, 25),
-                MaxLength = 50
+                FloatingLabel = "Login",
+                Location = new System.Drawing.Point(ThemeManager.Spacing.XXL, 140),
+                Size = new System.Drawing.Size(340, 56),
+                MaxLength = 50,
+                FocusedLineColor = ThemeManager.Light.Primary,
+                UnfocusedLineColor = ThemeManager.Colors.Neutral300
             };
             this.Controls.Add(txtLogin);
 
-            // lblSenha
-            var lblSenha = new Label
+            // HelpIcon for Login
+            var helpIconLogin = new HelpIcon("Use seu login de funcionário cadastrado no sistema para acessar.")
             {
-                Text = "Senha:",
-                Font = new System.Drawing.Font("Segoe UI", 10F),
-                Location = new System.Drawing.Point(50, 160),
-                Size = new System.Drawing.Size(80, 25)
+                Location = new System.Drawing.Point(ThemeManager.Spacing.XXL + 345, 150),
+                HelpTitle = "Login do Sistema"
             };
-            this.Controls.Add(lblSenha);
+            this.Controls.Add(helpIconLogin);
 
-            // txtSenha
-            txtSenha = new TextBox
+            // txtSenha (ModernTextBox)
+            txtSenha = new ModernTextBox
             {
-                Font = new System.Drawing.Font("Segoe UI", 10F),
-                Location = new System.Drawing.Point(140, 158),
-                Size = new System.Drawing.Size(210, 25),
+                FloatingLabel = "Senha",
+                Location = new System.Drawing.Point(ThemeManager.Spacing.XXL, 220),
+                Size = new System.Drawing.Size(340, 56),
                 MaxLength = 50,
-                PasswordChar = '●'
+                PasswordChar = '●',
+                FocusedLineColor = ThemeManager.Light.Primary,
+                UnfocusedLineColor = ThemeManager.Colors.Neutral300
             };
             this.Controls.Add(txtSenha);
 
-            // btnEntrar
-            btnEntrar = new Button
+            // btnEntrar (ModernButton)
+            btnEntrar = new ModernButton
             {
                 Text = "Entrar",
-                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
-                Location = new System.Drawing.Point(140, 210),
-                Size = new System.Drawing.Size(100, 35),
-                BackColor = System.Drawing.Color.DarkSlateBlue,
+                Location = new System.Drawing.Point(ThemeManager.Spacing.XXL, 320),
+                Size = new System.Drawing.Size(160, 44),
+                BackColor = ThemeManager.Light.Primary,
                 ForeColor = System.Drawing.Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Variant = ModernButton.ButtonVariant.Contained,
+                BorderRadiusValue = ThemeManager.BorderRadius.MD
             };
-            btnEntrar.FlatAppearance.BorderSize = 0;
             this.Controls.Add(btnEntrar);
 
-            // btnCancelar
-            btnCancelar = new Button
+            // btnCancelar (ModernButton)
+            btnCancelar = new ModernButton
             {
                 Text = "Cancelar",
-                Font = new System.Drawing.Font("Segoe UI", 10F),
-                Location = new System.Drawing.Point(250, 210),
-                Size = new System.Drawing.Size(100, 35),
-                BackColor = System.Drawing.Color.Gray,
-                ForeColor = System.Drawing.Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Location = new System.Drawing.Point(ThemeManager.Spacing.XXL + 175, 320),
+                Size = new System.Drawing.Size(160, 44),
+                BackColor = ThemeManager.Colors.Neutral500,
+                ForeColor = ThemeManager.Light.Text,
+                Variant = ModernButton.ButtonVariant.Outlined,
+                BorderRadiusValue = ThemeManager.BorderRadius.MD
             };
-            btnCancelar.FlatAppearance.BorderSize = 0;
             this.Controls.Add(btnCancelar);
+
+            // Footer info
+            var lblFooter = new Label
+            {
+                Text = "Pressione Enter para entrar ou Esc para cancelar",
+                Font = ThemeManager.Typography.Caption,
+                ForeColor = ThemeManager.Light.TextSecondary,
+                Location = new System.Drawing.Point(ThemeManager.Spacing.LG, 380),
+                Size = new System.Drawing.Size(432, 20),
+                TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+            };
+            this.Controls.Add(lblFooter);
 
             this.ResumeLayout(false);
         }
 
-        private TextBox txtLogin = new TextBox();
-        private TextBox txtSenha = new TextBox();
-        private Button btnEntrar = new Button();
-        private Button btnCancelar = new Button();
-
-        private void TxtSenha_KeyPress(object? sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                BtnEntrar_Click(sender, e);
-            }
-        }
+        private ModernTextBox txtLogin = new ModernTextBox();
+        private ModernTextBox txtSenha = new ModernTextBox();
+        private ModernButton btnEntrar = new ModernButton();
+        private ModernButton btnCancelar = new ModernButton();
 
         private void BtnEntrar_Click(object? sender, EventArgs e)
         {

@@ -1,14 +1,19 @@
 using System;
+using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BibliotecaJK.Model;
 using BibliotecaJK.BLL;
 using BibliotecaJK.DAL;
+using BibliotecaJK.Components;
+using BibliotecaJK.Helpers;
 
 namespace BibliotecaJK.Forms
 {
     /// <summary>
-    /// Formulário de Cadastro de Alunos (CRUD Completo)
+    /// Formulário de Cadastro de Alunos com Wizard Multi-Step
+    /// Uses WizardControl for guided registration flow
     /// </summary>
     public partial class FormCadastroAluno : Form
     {
@@ -17,6 +22,27 @@ namespace BibliotecaJK.Forms
         private readonly AlunoDAL _alunoDAL;
         private int? _alunoEmEdicaoId;
 
+        // Wizard control
+        private WizardControl _wizard = null!;
+
+        // Step 1: Dados Pessoais
+        private Panel _step1Panel = null!;
+        private ValidatedTextBox _txtNome = null!;
+        private ValidatedTextBox _txtCPF = null!;
+        private HelpIcon _helpCPF = null!;
+
+        // Step 2: Contato
+        private Panel _step2Panel = null!;
+        private ValidatedTextBox _txtEmail = null!;
+        private ModernTextBox _txtTelefone = null!;
+        private HelpIcon _helpEmail = null!;
+
+        // Step 3: Informações Acadêmicas
+        private Panel _step3Panel = null!;
+        private ValidatedTextBox _txtMatricula = null!;
+        private ModernTextBox _txtTurma = null!;
+        private HelpIcon _helpMatricula = null!;
+
         public FormCadastroAluno(Funcionario funcionario)
         {
             _funcionarioLogado = funcionario;
@@ -24,7 +50,12 @@ namespace BibliotecaJK.Forms
             _alunoDAL = new AlunoDAL();
 
             InitializeComponent();
-            CarregarGrid();
+
+            // Restore form state
+            FormStateManager.RestoreFormState(this);
+
+            // Handle form closing to save state
+            this.FormClosing += (s, e) => FormStateManager.SaveFormState(this);
         }
 
         private void InitializeComponent()
@@ -32,425 +63,490 @@ namespace BibliotecaJK.Forms
             this.SuspendLayout();
 
             // FormCadastroAluno
-            this.ClientSize = new System.Drawing.Size(1000, 650);
+            this.Name = "FormCadastroAluno";
+            this.ClientSize = new Size(900, 650);
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.Text = "Cadastro de Alunos";
-            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.Text = "Cadastro de Aluno - Wizard";
+            this.BackColor = ThemeManager.Background.LightDefault;
+            this.MinimumSize = new Size(800, 600);
 
-            // Título
-            var lblTitulo = new Label
-            {
-                Text = "CADASTRO DE ALUNOS",
-                Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
-                ForeColor = System.Drawing.Color.DarkSlateBlue,
-                Location = new System.Drawing.Point(20, 15),
-                Size = new System.Drawing.Size(960, 30)
-            };
-            this.Controls.Add(lblTitulo);
+            // Create wizard steps
+            CreateStep1_DadosPessoais();
+            CreateStep2_Contato();
+            CreateStep3_InformacoesAcademicas();
 
-            // Panel de Formulário
-            var pnlForm = new Panel
+            // Initialize Wizard Control
+            _wizard = new WizardControl
             {
-                Location = new System.Drawing.Point(20, 60),
-                Size = new System.Drawing.Size(960, 200),
-                BackColor = System.Drawing.Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                Dock = DockStyle.Fill
             };
 
-            // Nome
-            pnlForm.Controls.Add(new Label
-            {
-                Text = "Nome Completo *",
-                Location = new System.Drawing.Point(20, 20),
-                Size = new System.Drawing.Size(120, 20)
-            });
-            txtNome = new TextBox
-            {
-                Location = new System.Drawing.Point(150, 18),
-                Size = new System.Drawing.Size(350, 25),
-                MaxLength = 100
-            };
-            pnlForm.Controls.Add(txtNome);
+            // Add steps to wizard
+            _wizard.AddStep(
+                "Dados Pessoais",
+                "Informações básicas do aluno",
+                _step1Panel,
+                ValidateStep1
+            );
 
-            // CPF
-            pnlForm.Controls.Add(new Label
-            {
-                Text = "CPF *",
-                Location = new System.Drawing.Point(520, 20),
-                Size = new System.Drawing.Size(80, 20)
-            });
-            txtCPF = new TextBox
-            {
-                Location = new System.Drawing.Point(610, 18),
-                Size = new System.Drawing.Size(150, 25),
-                MaxLength = 14
-            };
-            txtCPF.Leave += (s, e) => FormatarCPF();
-            pnlForm.Controls.Add(txtCPF);
+            _wizard.AddStep(
+                "Contato",
+                "Informações de contato",
+                _step2Panel,
+                ValidateStep2
+            );
 
-            // Matrícula
-            pnlForm.Controls.Add(new Label
-            {
-                Text = "Matrícula *",
-                Location = new System.Drawing.Point(20, 60),
-                Size = new System.Drawing.Size(120, 20)
-            });
-            txtMatricula = new TextBox
-            {
-                Location = new System.Drawing.Point(150, 58),
-                Size = new System.Drawing.Size(150, 25),
-                MaxLength = 20
-            };
-            pnlForm.Controls.Add(txtMatricula);
+            _wizard.AddStep(
+                "Informações Acadêmicas",
+                "Matrícula e dados escolares",
+                _step3Panel,
+                ValidateStep3
+            );
 
-            // Turma
-            pnlForm.Controls.Add(new Label
-            {
-                Text = "Turma",
-                Location = new System.Drawing.Point(320, 60),
-                Size = new System.Drawing.Size(80, 20)
-            });
-            txtTurma = new TextBox
-            {
-                Location = new System.Drawing.Point(410, 58),
-                Size = new System.Drawing.Size(90, 25),
-                MaxLength = 50
-            };
-            pnlForm.Controls.Add(txtTurma);
+            // Wire up wizard completion event
+            _wizard.WizardCompleted += Wizard_Completed;
 
-            // Telefone
-            pnlForm.Controls.Add(new Label
-            {
-                Text = "Telefone",
-                Location = new System.Drawing.Point(520, 60),
-                Size = new System.Drawing.Size(80, 20)
-            });
-            txtTelefone = new TextBox
-            {
-                Location = new System.Drawing.Point(610, 58),
-                Size = new System.Drawing.Size(150, 25),
-                MaxLength = 15
-            };
-            pnlForm.Controls.Add(txtTelefone);
-
-            // Email
-            pnlForm.Controls.Add(new Label
-            {
-                Text = "E-mail",
-                Location = new System.Drawing.Point(20, 100),
-                Size = new System.Drawing.Size(120, 20)
-            });
-            txtEmail = new TextBox
-            {
-                Location = new System.Drawing.Point(150, 98),
-                Size = new System.Drawing.Size(350, 25),
-                MaxLength = 100
-            };
-            pnlForm.Controls.Add(txtEmail);
-
-            // Botões
-            btnNovo = new Button
-            {
-                Text = "Novo",
-                Location = new System.Drawing.Point(150, 145),
-                Size = new System.Drawing.Size(100, 35),
-                BackColor = System.Drawing.Color.MediumSeaGreen,
-                ForeColor = System.Drawing.Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btnNovo.FlatAppearance.BorderSize = 0;
-            btnNovo.Click += BtnNovo_Click;
-            pnlForm.Controls.Add(btnNovo);
-
-            btnSalvar = new Button
-            {
-                Text = "Salvar",
-                Location = new System.Drawing.Point(260, 145),
-                Size = new System.Drawing.Size(100, 35),
-                BackColor = System.Drawing.Color.DarkSlateBlue,
-                ForeColor = System.Drawing.Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btnSalvar.FlatAppearance.BorderSize = 0;
-            btnSalvar.Click += BtnSalvar_Click;
-            pnlForm.Controls.Add(btnSalvar);
-
-            btnCancelar = new Button
-            {
-                Text = "Cancelar",
-                Location = new System.Drawing.Point(370, 145),
-                Size = new System.Drawing.Size(100, 35),
-                BackColor = System.Drawing.Color.Gray,
-                ForeColor = System.Drawing.Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand,
-                Enabled = false
-            };
-            btnCancelar.FlatAppearance.BorderSize = 0;
-            btnCancelar.Click += BtnCancelar_Click;
-            pnlForm.Controls.Add(btnCancelar);
-
-            this.Controls.Add(pnlForm);
-
-            // Grid de Alunos
-            dgvAlunos = new DataGridView
-            {
-                Location = new System.Drawing.Point(20, 280),
-                Size = new System.Drawing.Size(960, 320),
-                BackgroundColor = System.Drawing.Color.White,
-                AllowUserToAddRows = false,
-                AllowUserToDeleteRows = false,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                MultiSelect = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            };
-            dgvAlunos.CellDoubleClick += DgvAlunos_CellDoubleClick;
-
-            this.Controls.Add(dgvAlunos);
-
-            // Botões de Ação
-            var btnEditar = new Button
-            {
-                Text = "Editar",
-                Location = new System.Drawing.Point(710, 610),
-                Size = new System.Drawing.Size(90, 30),
-                BackColor = System.Drawing.Color.SteelBlue,
-                ForeColor = System.Drawing.Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btnEditar.FlatAppearance.BorderSize = 0;
-            btnEditar.Click += BtnEditar_Click;
-            this.Controls.Add(btnEditar);
-
-            var btnExcluir = new Button
-            {
-                Text = "Excluir",
-                Location = new System.Drawing.Point(810, 610),
-                Size = new System.Drawing.Size(90, 30),
-                BackColor = System.Drawing.Color.Crimson,
-                ForeColor = System.Drawing.Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btnExcluir.FlatAppearance.BorderSize = 0;
-            btnExcluir.Click += BtnExcluir_Click;
-            this.Controls.Add(btnExcluir);
-
-            var btnFechar = new Button
-            {
-                Text = "Fechar",
-                Location = new System.Drawing.Point(910, 610),
-                Size = new System.Drawing.Size(70, 30),
-                BackColor = System.Drawing.Color.Gray,
-                ForeColor = System.Drawing.Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btnFechar.FlatAppearance.BorderSize = 0;
-            btnFechar.Click += (s, e) => this.Close();
-            this.Controls.Add(btnFechar);
+            // Add wizard to form
+            this.Controls.Add(_wizard);
 
             this.ResumeLayout(false);
+
+            // Set focus to first field
+            this.Load += (s, e) => _txtNome.Focus();
         }
 
-        private TextBox txtNome = new TextBox();
-        private TextBox txtCPF = new TextBox();
-        private TextBox txtMatricula = new TextBox();
-        private TextBox txtTurma = new TextBox();
-        private TextBox txtTelefone = new TextBox();
-        private TextBox txtEmail = new TextBox();
-        private Button btnNovo = new Button();
-        private Button btnSalvar = new Button();
-        private Button btnCancelar = new Button();
-        private DataGridView dgvAlunos = new DataGridView();
+        /// <summary>
+        /// Creates Step 1: Dados Pessoais (Personal Information)
+        /// </summary>
+        private void CreateStep1_DadosPessoais()
+        {
+            _step1Panel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(ThemeManager.Spacing.XL),
+                BackColor = Color.Transparent
+            };
 
-        private void CarregarGrid()
+            int yPos = 20;
+            int labelWidth = 150;
+            int controlWidth = 400;
+            int spacing = 100;
+
+            // Nome Completo (Required)
+            var lblNome = new Label
+            {
+                Text = "Nome Completo *",
+                Location = new Point(20, yPos),
+                Size = new Size(labelWidth, 25),
+                Font = ThemeManager.Typography.Body1,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            _step1Panel.Controls.Add(lblNome);
+
+            _txtNome = new ValidatedTextBox
+            {
+                FloatingLabel = "Nome Completo",
+                Location = new Point(labelWidth + 40, yPos - 5),
+                Size = new Size(controlWidth, 80),
+                MaxLength = 100,
+                ValidationEnabled = true
+            };
+            _txtNome.SetRequiredValidator("Nome completo é obrigatório");
+            _step1Panel.Controls.Add(_txtNome);
+
+            yPos += spacing;
+
+            // CPF (Required with validation)
+            var lblCPF = new Label
+            {
+                Text = "CPF *",
+                Location = new Point(20, yPos),
+                Size = new Size(labelWidth, 25),
+                Font = ThemeManager.Typography.Body1,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            _step1Panel.Controls.Add(lblCPF);
+
+            _txtCPF = new ValidatedTextBox
+            {
+                FloatingLabel = "CPF",
+                Location = new Point(labelWidth + 40, yPos - 5),
+                Size = new Size(250, 80),
+                MaxLength = 14,
+                ValidationEnabled = true
+            };
+            _txtCPF.Validator = (text) =>
+            {
+                if (string.IsNullOrWhiteSpace(text))
+                    return (false, "CPF é obrigatório");
+
+                if (!Validadores.ValidarCPF(text))
+                    return (false, "CPF inválido");
+
+                return (true, string.Empty);
+            };
+            _txtCPF.TextChanged += (s, e) => FormatarCPF();
+            _step1Panel.Controls.Add(_txtCPF);
+
+            // Help icon for CPF
+            _helpCPF = HelpIcon.Create(
+                "Digite o CPF no formato XXX.XXX.XXX-XX ou apenas números. A validação é feita automaticamente.",
+                "Ajuda - CPF"
+            );
+            _helpCPF.Location = new Point(labelWidth + 40 + 250 + 10, yPos);
+            _step1Panel.Controls.Add(_helpCPF);
+
+        }
+
+        /// <summary>
+        /// Creates Step 2: Contato (Contact Information)
+        /// </summary>
+        private void CreateStep2_Contato()
+        {
+            _step2Panel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(ThemeManager.Spacing.XL),
+                BackColor = Color.Transparent
+            };
+
+            int yPos = 20;
+            int labelWidth = 150;
+            int controlWidth = 400;
+            int spacing = 100;
+
+            // Email (Optional but validated)
+            var lblEmail = new Label
+            {
+                Text = "E-mail",
+                Location = new Point(20, yPos),
+                Size = new Size(labelWidth, 25),
+                Font = ThemeManager.Typography.Body1,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            _step2Panel.Controls.Add(lblEmail);
+
+            _txtEmail = new ValidatedTextBox
+            {
+                FloatingLabel = "E-mail",
+                Location = new Point(labelWidth + 40, yPos - 5),
+                Size = new Size(controlWidth, 80),
+                MaxLength = 100,
+                ValidationEnabled = true
+            };
+            _txtEmail.Validator = (text) =>
+            {
+                if (string.IsNullOrWhiteSpace(text))
+                    return (true, string.Empty); // Optional field
+
+                if (!Validadores.ValidarEmail(text))
+                    return (false, "E-mail inválido");
+
+                return (true, string.Empty);
+            };
+            _step2Panel.Controls.Add(_txtEmail);
+
+            // Help icon for Email
+            _helpEmail = HelpIcon.Create(
+                "E-mail opcional para contato. Exemplo: aluno@escola.com.br",
+                "Ajuda - E-mail"
+            );
+            _helpEmail.Location = new Point(labelWidth + 40 + controlWidth + 10, yPos);
+            _step2Panel.Controls.Add(_helpEmail);
+
+            yPos += spacing;
+
+            // Telefone (Optional with mask)
+            var lblTelefone = new Label
+            {
+                Text = "Telefone",
+                Location = new Point(20, yPos),
+                Size = new Size(labelWidth, 25),
+                Font = ThemeManager.Typography.Body1,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            _step2Panel.Controls.Add(lblTelefone);
+
+            _txtTelefone = new ModernTextBox
+            {
+                FloatingLabel = "Telefone",
+                Location = new Point(labelWidth + 40, yPos - 5),
+                Size = new Size(250, 56),
+                MaxLength = 15
+            };
+            // Apply phone mask formatting on text changed
+            _txtTelefone.TextChanged += (s, e) => FormatarTelefone();
+            _step2Panel.Controls.Add(_txtTelefone);
+        }
+
+        /// <summary>
+        /// Creates Step 3: Informações Acadêmicas (Academic Information)
+        /// </summary>
+        private void CreateStep3_InformacoesAcademicas()
+        {
+            _step3Panel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(ThemeManager.Spacing.XL),
+                BackColor = Color.Transparent
+            };
+
+            int yPos = 20;
+            int labelWidth = 150;
+            int controlWidth = 400;
+            int spacing = 100;
+
+            // Matrícula (Required)
+            var lblMatricula = new Label
+            {
+                Text = "Matrícula *",
+                Location = new Point(20, yPos),
+                Size = new Size(labelWidth, 25),
+                Font = ThemeManager.Typography.Body1,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            _step3Panel.Controls.Add(lblMatricula);
+
+            _txtMatricula = new ValidatedTextBox
+            {
+                FloatingLabel = "Matrícula",
+                Location = new Point(labelWidth + 40, yPos - 5),
+                Size = new Size(250, 80),
+                MaxLength = 20,
+                ValidationEnabled = true
+            };
+            _txtMatricula.Validator = (text) =>
+            {
+                if (string.IsNullOrWhiteSpace(text))
+                    return (false, "Matrícula é obrigatória");
+
+                if (!Validadores.ValidarMatricula(text))
+                    return (false, "Matrícula inválida (3-20 caracteres alfanuméricos)");
+
+                return (true, string.Empty);
+            };
+            _step3Panel.Controls.Add(_txtMatricula);
+
+            // Help icon for Matrícula
+            _helpMatricula = HelpIcon.Create(
+                "Matrícula deve conter de 3 a 20 caracteres alfanuméricos. Exemplo: 2024001, ALU123",
+                "Ajuda - Matrícula"
+            );
+            _helpMatricula.Location = new Point(labelWidth + 40 + 250 + 10, yPos);
+            _step3Panel.Controls.Add(_helpMatricula);
+
+            yPos += spacing;
+
+            // Turma
+            var lblTurma = new Label
+            {
+                Text = "Turma",
+                Location = new Point(20, yPos),
+                Size = new Size(labelWidth, 25),
+                Font = ThemeManager.Typography.Body1,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            _step3Panel.Controls.Add(lblTurma);
+
+            _txtTurma = new ModernTextBox
+            {
+                FloatingLabel = "Turma",
+                Location = new Point(labelWidth + 40, yPos - 5),
+                Size = new Size(controlWidth, 56),
+                MaxLength = 50
+            };
+            _step3Panel.Controls.Add(_txtTurma);
+        }
+
+        /// <summary>
+        /// Validates Step 1: Dados Pessoais
+        /// </summary>
+        private bool ValidateStep1()
+        {
+            // Trigger validation on all fields
+            _txtNome.ValidateInput();
+            _txtCPF.ValidateInput();
+
+            // Check if all required fields are valid
+            return _txtNome.IsValid && _txtCPF.IsValid;
+        }
+
+        /// <summary>
+        /// Validates Step 2: Contato
+        /// </summary>
+        private bool ValidateStep2()
+        {
+            // Trigger validation on email
+            _txtEmail.ValidateInput();
+
+            // Email is optional but must be valid if provided
+            return _txtEmail.IsValid;
+        }
+
+        /// <summary>
+        /// Validates Step 3: Informações Acadêmicas
+        /// </summary>
+        private bool ValidateStep3()
+        {
+            // Trigger validation on matrícula
+            _txtMatricula.ValidateInput();
+
+            // Check if matrícula is valid
+            return _txtMatricula.IsValid;
+        }
+
+        /// <summary>
+        /// Handles wizard completion - saves the student data
+        /// </summary>
+        private async void Wizard_Completed(object? sender, EventArgs e)
         {
             try
             {
-                var alunos = _alunoDAL.Listar();
-
-                dgvAlunos.DataSource = alunos.Select(a => new
-                {
-                    a.Id,
-                    a.Nome,
-                    a.CPF,
-                    a.Matricula,
-                    a.Turma,
-                    a.Telefone,
-                    a.Email
-                }).ToList();
-
-                if (dgvAlunos.Columns.Count > 0)
-                {
-                    dgvAlunos.Columns["Id"].Visible = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Erro ao carregar alunos: {ex.Message}", "Erro",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void FormatarCPF()
-        {
-            string cpf = new string(txtCPF.Text.Where(char.IsDigit).ToArray());
-            if (cpf.Length == 11)
-            {
-                txtCPF.Text = $"{cpf.Substring(0, 3)}.{cpf.Substring(3, 3)}.{cpf.Substring(6, 3)}-{cpf.Substring(9, 2)}";
-            }
-        }
-
-        private void BtnNovo_Click(object? sender, EventArgs e)
-        {
-            LimparCampos();
-            _alunoEmEdicaoId = null;
-            btnCancelar.Enabled = true;
-            txtNome.Focus();
-        }
-
-        private void BtnSalvar_Click(object? sender, EventArgs e)
-        {
-            try
-            {
+                // Collect data from all wizard steps
                 var aluno = new Aluno
                 {
-                    Nome = txtNome.Text.Trim(),
-                    CPF = txtCPF.Text.Trim(),
-                    Matricula = txtMatricula.Text.Trim(),
-                    Turma = string.IsNullOrWhiteSpace(txtTurma.Text) ? null : txtTurma.Text.Trim(),
-                    Telefone = string.IsNullOrWhiteSpace(txtTelefone.Text) ? null : txtTelefone.Text.Trim(),
-                    Email = string.IsNullOrWhiteSpace(txtEmail.Text) ? null : txtEmail.Text.Trim()
+                    // Step 1: Dados Pessoais
+                    Nome = _txtNome.Text.Trim(),
+                    CPF = _txtCPF.Text.Trim(),
+
+                    // Step 2: Contato
+                    Email = string.IsNullOrWhiteSpace(_txtEmail.Text) ? null : _txtEmail.Text.Trim(),
+                    Telefone = string.IsNullOrWhiteSpace(_txtTelefone.Text) ? null : _txtTelefone.Text.Trim(),
+
+                    // Step 3: Informações Acadêmicas
+                    Matricula = _txtMatricula.Text.Trim(),
+                    Turma = string.IsNullOrWhiteSpace(_txtTurma.Text) ? null : _txtTurma.Text.Trim()
                 };
 
-                ResultadoOperacao resultado;
+                // Use AsyncOperationHelper to save with loading indicator
+                await AsyncOperationHelper.RunAsync(this, async () =>
+                {
+                    await Task.Run(() =>
+                    {
+                        ResultadoOperacao resultado;
 
-                if (_alunoEmEdicaoId.HasValue)
-                {
-                    // Atualização
-                    aluno.Id = _alunoEmEdicaoId.Value;
-                    resultado = _alunoService.AtualizarAluno(aluno, _funcionarioLogado.Id);
-                }
-                else
-                {
-                    // Novo cadastro
-                    resultado = _alunoService.CadastrarAluno(aluno, _funcionarioLogado.Id);
-                }
+                        if (_alunoEmEdicaoId.HasValue)
+                        {
+                            // Update existing student
+                            aluno.Id = _alunoEmEdicaoId.Value;
+                            resultado = _alunoService.AtualizarAluno(aluno, _funcionarioLogado.Id);
+                        }
+                        else
+                        {
+                            // Create new student
+                            resultado = _alunoService.CadastrarAluno(aluno, _funcionarioLogado.Id);
+                        }
 
-                if (resultado.Sucesso)
-                {
-                    MessageBox.Show(resultado.Mensagem, "Sucesso",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LimparCampos();
-                    CarregarGrid();
-                    _alunoEmEdicaoId = null;
-                    btnCancelar.Enabled = false;
-                }
-                else
-                {
-                    MessageBox.Show(resultado.Mensagem, "Atenção",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                        if (!resultado.Sucesso)
+                        {
+                            throw new Exception(resultado.Mensagem);
+                        }
+
+                        // Invoke on UI thread to show success message
+                        this.Invoke(new Action(() =>
+                        {
+                            ToastNotification.Success(resultado.Mensagem);
+                        }));
+                    });
+                }, "Salvando aluno...");
+
+                // Close the form on success
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao salvar aluno: {ex.Message}", "Erro",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Error is already shown by AsyncOperationHelper via ErrorDialog
+                // Just log for debugging
+                System.Diagnostics.Debug.WriteLine($"Error saving student: {ex.Message}");
             }
         }
 
-        private void BtnCancelar_Click(object? sender, EventArgs e)
+        /// <summary>
+        /// Formats CPF with mask (XXX.XXX.XXX-XX)
+        /// </summary>
+        private void FormatarCPF()
         {
-            LimparCampos();
-            _alunoEmEdicaoId = null;
-            btnCancelar.Enabled = false;
+            string cpf = new string(_txtCPF.Text.Where(char.IsDigit).ToArray());
+
+            if (cpf.Length == 11)
+            {
+                // Don't trigger TextChanged event during formatting
+                _txtCPF.TextChanged -= (s, e) => FormatarCPF();
+                _txtCPF.Text = $"{cpf.Substring(0, 3)}.{cpf.Substring(3, 3)}.{cpf.Substring(6, 3)}-{cpf.Substring(9, 2)}";
+                _txtCPF.TextChanged += (s, e) => FormatarCPF();
+            }
         }
 
-        private void BtnEditar_Click(object? sender, EventArgs e)
+        /// <summary>
+        /// Formats phone with mask (XX) XXXXX-XXXX
+        /// </summary>
+        private void FormatarTelefone()
         {
-            if (dgvAlunos.SelectedRows.Count == 0)
+            string telefone = new string(_txtTelefone.Text.Where(char.IsDigit).ToArray());
+
+            if (telefone.Length == 11)
             {
-                MessageBox.Show("Selecione um aluno para editar.", "Atenção",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                // Don't trigger TextChanged event during formatting
+                _txtTelefone.TextChanged -= (s, e) => FormatarTelefone();
+                _txtTelefone.Text = $"({telefone.Substring(0, 2)}) {telefone.Substring(2, 5)}-{telefone.Substring(7, 4)}";
+                _txtTelefone.TextChanged += (s, e) => FormatarTelefone();
             }
-
-            int alunoId = Convert.ToInt32(dgvAlunos.SelectedRows[0].Cells["Id"].Value);
-            var aluno = _alunoDAL.ObterPorId(alunoId);
-
-            if (aluno != null)
+            else if (telefone.Length == 10)
             {
-                txtNome.Text = aluno.Nome;
-                txtCPF.Text = aluno.CPF;
-                txtMatricula.Text = aluno.Matricula;
-                txtTurma.Text = aluno.Turma ?? "";
-                txtTelefone.Text = aluno.Telefone ?? "";
-                txtEmail.Text = aluno.Email ?? "";
-
-                _alunoEmEdicaoId = aluno.Id;
-                btnCancelar.Enabled = true;
-                txtNome.Focus();
+                // Landline format
+                _txtTelefone.TextChanged -= (s, e) => FormatarTelefone();
+                _txtTelefone.Text = $"({telefone.Substring(0, 2)}) {telefone.Substring(2, 4)}-{telefone.Substring(6, 4)}";
+                _txtTelefone.TextChanged += (s, e) => FormatarTelefone();
             }
         }
 
-        private void DgvAlunos_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                BtnEditar_Click(sender, EventArgs.Empty);
-            }
-        }
-
-        private void BtnExcluir_Click(object? sender, EventArgs e)
-        {
-            if (dgvAlunos.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Selecione um aluno para excluir.", "Atenção",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            int alunoId = Convert.ToInt32(dgvAlunos.SelectedRows[0].Cells["Id"].Value);
-            string nomeAluno = dgvAlunos.SelectedRows[0].Cells["Nome"].Value.ToString() ?? "";
-
-            var confirmacao = MessageBox.Show(
-                $"Deseja realmente excluir o aluno '{nomeAluno}'?",
-                "Confirmação",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (confirmacao == DialogResult.Yes)
-            {
-                var resultado = _alunoService.ExcluirAluno(alunoId, _funcionarioLogado.Id);
-
-                if (resultado.Sucesso)
-                {
-                    MessageBox.Show(resultado.Mensagem, "Sucesso",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LimparCampos();
-                    CarregarGrid();
-                }
-                else
-                {
-                    MessageBox.Show(resultado.Mensagem, "Atenção",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-            }
-        }
-
+        /// <summary>
+        /// Clears all wizard fields and resets to step 1
+        /// </summary>
         private void LimparCampos()
         {
-            txtNome.Clear();
-            txtCPF.Clear();
-            txtMatricula.Clear();
-            txtTurma.Clear();
-            txtTelefone.Clear();
-            txtEmail.Clear();
+            // Step 1
+            _txtNome.Clear();
+            _txtCPF.Clear();
+
+            // Step 2
+            _txtEmail.Clear();
+            _txtTelefone.Clear();
+
+            // Step 3
+            _txtMatricula.Clear();
+            _txtTurma.Clear();
+
+            // Reset wizard to first step
+            _wizard.GoToStep(0);
+
+            // Clear editing state
+            _alunoEmEdicaoId = null;
+        }
+
+        /// <summary>
+        /// Disposes resources
+        /// </summary>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _wizard?.Dispose();
+                _txtNome?.Dispose();
+                _txtCPF?.Dispose();
+                _txtEmail?.Dispose();
+                _txtTelefone?.Dispose();
+                _txtMatricula?.Dispose();
+                _txtTurma?.Dispose();
+                _helpCPF?.Dispose();
+                _helpEmail?.Dispose();
+                _helpMatricula?.Dispose();
+                _step1Panel?.Dispose();
+                _step2Panel?.Dispose();
+                _step3Panel?.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }
