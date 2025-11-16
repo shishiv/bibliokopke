@@ -13,6 +13,10 @@ namespace BibliotecaJK.Tests.Unit.BLL
     /// <summary>
     /// Testes unitários para EmprestimoService
     /// Foca nas regras de negócio críticas definidas em Constants.cs
+    ///
+    /// NOTA: Esta é uma estrutura de exemplo. Os testes estão comentados porque
+    /// o EmprestimoService precisa ser refatorado para aceitar injeção de dependências.
+    /// Quando o serviço for atualizado, descomente e implemente os testes.
     /// </summary>
     public class EmprestimoServiceTests
     {
@@ -20,7 +24,8 @@ namespace BibliotecaJK.Tests.Unit.BLL
         private readonly Mock<AlunoDAL> _mockAlunoDAL;
         private readonly Mock<LivroDAL> _mockLivroDAL;
         private readonly Mock<LogService> _mockLogService;
-        private readonly EmprestimoService _service;
+        // TODO: Uncomment when EmprestimoService supports dependency injection
+        // private readonly EmprestimoService _service;
 
         public EmprestimoServiceTests()
         {
@@ -29,8 +34,8 @@ namespace BibliotecaJK.Tests.Unit.BLL
             _mockLivroDAL = new Mock<LivroDAL>();
             _mockLogService = new Mock<LogService>();
 
-            // Note: Service instantiation may need adjustment based on actual constructor
-            // _service = new EmprestimoService(_mockEmprestimoDAL.Object, ...);
+            // TODO: Uncomment and adjust when EmprestimoService constructor is refactored
+            // _service = new EmprestimoService(_mockEmprestimoDAL.Object, _mockAlunoDAL.Object, ...);
         }
 
         #region RegistrarEmprestimo Tests
