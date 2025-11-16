@@ -20,14 +20,14 @@ namespace BibliotecaJK.Components
         public Color UnfocusedLineColor { get; set; } = Color.FromArgb(224, 224, 224); // Gray300
 
         // TextBox properties delegation
-        public override string Text
+        public override string? Text
         {
             get => _textBox?.Text ?? string.Empty;
             set
             {
                 if (_textBox != null)
                 {
-                    _textBox.Text = value;
+                    _textBox.Text = value ?? string.Empty;
                     UpdateFloatingLabel();
                 }
             }

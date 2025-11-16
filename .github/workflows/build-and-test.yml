@@ -19,23 +19,32 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Restore dependencies
+    - name: Restore dependencies - Main Project
       run: dotnet restore 06_bibliotecaJK/BibliotecaJK.csproj
 
-    - name: Build
+    - name: Restore dependencies - Test Project
+      run: dotnet restore 06_bibliotecaJK.Tests/BibliotecaJK.Tests.csproj
+
+    - name: Build Main Project
       run: dotnet build 06_bibliotecaJK/BibliotecaJK.csproj --configuration Release --no-restore
 
-    - name: Verify build succeeded
-      run: |
-        # dotnet build exit code is reliable: 0 = success, non-zero = failure
-        # Checking output for "error" is unreliable because "0 Error(s)" contains "error"
-        $exitCode = $LASTEXITCODE
-        if ($exitCode -ne 0) {
-          Write-Error "Build failed with exit code $exitCode"
-          exit $exitCode
-        }
-        Write-Host "Build completed successfully with no errors"
+    - name: Build Test Project
+      run: dotnet build 06_bibliotecaJK.Tests/BibliotecaJK.Tests.csproj --configuration Release --no-restore
 
-    # Note: Tests will be added in future iterations
-    # - name: Run tests
-    #   run: dotnet test 06_bibliotecaJK.Tests/BibliotecaJK.Tests.csproj --no-build --verbosity normal
+    - name: Run Unit Tests
+      run: |
+        dotnet test 06_bibliotecaJK.Tests/BibliotecaJK.Tests.csproj `
+          --configuration Release `
+          --no-build `
+          --verbosity normal `
+          --filter "Category=Unit" `
+          --collect:"XPlat Code Coverage" `
+          --results-directory ./coverage
+
+    - name: Upload Code Coverage
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: code-coverage
+        path: ./coverage/**/*.xml
+        retention-days: 30

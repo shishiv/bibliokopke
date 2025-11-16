@@ -50,7 +50,7 @@ namespace BibliotecaJK.Helpers
             public Dictionary<Control, Color> OriginalColors { get; set; }
             public Dictionary<Control, EventHandler> PaintHandlers { get; set; }
             public List<Control> FocusableControls { get; set; }
-            public Timer HighlightTimer { get; set; }
+            public System.Windows.Forms.Timer HighlightTimer { get; set; }
             public Control HighlightedControl { get; set; }
             public int HighlightAlpha { get; set; }
             public bool IsFocusTrapped { get; set; }
@@ -299,7 +299,7 @@ namespace BibliotecaJK.Helpers
             ScrollControlIntoView(control);
 
             // Criar timer para animação de fade
-            trackingData.HighlightTimer = new Timer
+            trackingData.HighlightTimer = new System.Windows.Forms.Timer
             {
                 Interval = 50 // 50ms = ~20fps
             };

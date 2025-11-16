@@ -1,0 +1,123 @@
+name: Code Coverage
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  coverage:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 8.0
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore 06_bibliotecaJK.Tests/BibliotecaJK.Tests.csproj
+
+    - name: Build
+      run: dotnet build 06_bibliotecaJK.Tests/BibliotecaJK.Tests.csproj --configuration Release --no-restore
+
+    - name: Run tests with code coverage
+      run: |
+        dotnet test 06_bibliotecaJK.Tests/BibliotecaJK.Tests.csproj `
+          --configuration Release `
+          --no-build `
+          --verbosity normal `
+          --collect:"XPlat Code Coverage" `
+          --results-directory ./coverage
+
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+    - name: Generate coverage report
+      run: |
+        reportgenerator `
+          -reports:./coverage/**/coverage.cobertura.xml `
+          -targetdir:./coverage/report `
+          -reporttypes:"Html;TextSummary;Cobertura" `
+          -classfilters:"-System.*;-Microsoft.*"
+
+    - name: Display coverage summary
+      run: |
+        Get-Content ./coverage/report/Summary.txt
+        Write-Host "`n========================================`n"
+
+    - name: Parse coverage and check threshold
+      shell: pwsh
+      run: |
+        # Parse the Cobertura XML to get line coverage percentage
+        [xml]$coverage = Get-Content ./coverage/report/Cobertura.xml
+        $lineRate = [double]$coverage.coverage.'line-rate'
+        $branchRate = [double]$coverage.coverage.'branch-rate'
+
+        # Convert to percentage
+        $lineCoverage = [math]::Round($lineRate * 100, 2)
+        $branchCoverage = [math]::Round($branchRate * 100, 2)
+
+        Write-Host "==================================="
+        Write-Host "  Code Coverage Summary"
+        Write-Host "==================================="
+        Write-Host "Line Coverage:   $lineCoverage%"
+        Write-Host "Branch Coverage: $branchCoverage%"
+        Write-Host "==================================="
+        Write-Host ""
+
+        # Set minimum threshold
+        $minThreshold = 70.0
+
+        if ($lineCoverage -lt $minThreshold) {
+          Write-Host "❌ COVERAGE CHECK FAILED!" -ForegroundColor Red
+          Write-Host "Line coverage ($lineCoverage%) is below the minimum threshold of $minThreshold%"
+          Write-Host ""
+          Write-Host "Please add more tests to increase code coverage."
+          exit 1
+        } else {
+          Write-Host "✅ COVERAGE CHECK PASSED!" -ForegroundColor Green
+          Write-Host "Line coverage ($lineCoverage%) meets the minimum threshold of $minThreshold%"
+        }
+
+    - name: Upload coverage report as artifact
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: code-coverage-report
+        path: ./coverage/report/
+        retention-days: 30
+
+    - name: Upload coverage to Codecov (optional)
+      uses: codecov/codecov-action@v4
+      if: always()
+      continue-on-error: true
+      with:
+        files: ./coverage/report/Cobertura.xml
+        fail_ci_if_error: false
+        verbose: true
+
+    - name: Comment PR with coverage (optional)
+      if: github.event_name == 'pull_request' && always()
+      continue-on-error: true
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const summaryPath = './coverage/report/Summary.txt';
+
+          if (fs.existsSync(summaryPath)) {
+            const summary = fs.readFileSync(summaryPath, 'utf8');
+            const body = `## Code Coverage Report\n\n\`\`\`\n${summary}\n\`\`\`\n\n📊 [View detailed coverage report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+          }
