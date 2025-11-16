@@ -1,0 +1,39 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop, 'claude/**' ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 8.0
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore 06_bibliotecaJK/BibliotecaJK.csproj
+
+    - name: Build
+      run: dotnet build 06_bibliotecaJK/BibliotecaJK.csproj --configuration Release --no-restore
+
+    - name: Check build warnings
+      run: |
+        $output = dotnet build 06_bibliotecaJK/BibliotecaJK.csproj --configuration Release --no-restore 2>&1
+        if ($output -match "error") {
+          Write-Error "Build failed with errors"
+          exit 1
+        }
+        Write-Host "Build completed successfully"
+
+    # Note: Tests will be added in future iterations
+    # - name: Run tests
+    #   run: dotnet test 06_bibliotecaJK.Tests/BibliotecaJK.Tests.csproj --no-build --verbosity normal
