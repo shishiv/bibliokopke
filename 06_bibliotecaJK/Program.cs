@@ -14,6 +14,8 @@ namespace BibliotecaJK
         static void Main()
         {
             // Configuracao de estilos visuais do Windows Forms
+            // High-DPI support must be set before EnableVisualStyles
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
