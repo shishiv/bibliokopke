@@ -42,65 +42,77 @@ namespace BibliotecaJK.Forms
         {
             this.SuspendLayout();
 
-            // FormNotificacoes
+            // FormNotificacoes - Layout Responsivo (90% da tela, mínimo 800x500)
+            this.MinimumSize = new Size(800, 500);
             this.ClientSize = new Size(1100, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Central de Notificações - BibliotecaJK";
             this.BackColor = Color.FromArgb(245, 245, 250);
+            this.AutoScroll = true;
 
-            // Header Panel
-            var pnlHeader = new Panel
-            {
-                Location = new Point(0, 0),
-                Size = new Size(1100, 80),
-                BackColor = Color.FromArgb(63, 81, 181)
-            };
-
+            // Header Label - Responsivo com Anchor Top | Left | Right
             var lblTitulo = new Label
             {
-                Text = "🔔 CENTRAL DE NOTIFICAÇÕES",
-                Font = new Font("Segoe UI", 16F, FontStyle.Bold),
+                Text = "CENTRAL DE NOTIFICAÇÕES",
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
                 ForeColor = Color.White,
-                Location = new Point(20, 15),
-                Size = new Size(400, 30)
+                BackColor = Color.FromArgb(63, 81, 181),
+                Padding = new Padding(20, 15, 20, 15),
+                Dock = DockStyle.Top,
+                TextAlign = ContentAlignment.MiddleLeft,
+                AutoSize = false,
+                Height = 60
             };
-            pnlHeader.Controls.Add(lblTitulo);
+            lblTitulo.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            this.Controls.Add(lblTitulo);
 
+            // Status Labels - Dentro do Header
             lblNaoLidas = new Label
             {
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 9F),
                 ForeColor = Color.White,
-                Location = new Point(20, 50),
-                Size = new Size(300, 25)
+                BackColor = Color.FromArgb(63, 81, 181),
+                Padding = new Padding(20, 0, 10, 10),
+                Dock = DockStyle.Top,
+                TextAlign = ContentAlignment.TopLeft,
+                AutoSize = false,
+                Height = 25
             };
-            pnlHeader.Controls.Add(lblNaoLidas);
+            lblNaoLidas.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            this.Controls.Add(lblNaoLidas);
 
             lblTotal = new Label
             {
-                Font = new Font("Segoe UI", 10F),
+                Font = new Font("Segoe UI", 9F),
                 ForeColor = Color.FromArgb(200, 200, 255),
-                Location = new Point(330, 50),
-                Size = new Size(250, 25)
+                BackColor = Color.FromArgb(63, 81, 181),
+                Padding = new Padding(20, 0, 20, 15),
+                Dock = DockStyle.Top,
+                TextAlign = ContentAlignment.TopLeft,
+                AutoSize = false,
+                Height = 25
             };
-            pnlHeader.Controls.Add(lblTotal);
+            lblTotal.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            this.Controls.Add(lblTotal);
 
-            this.Controls.Add(pnlHeader);
-
-            // Panel de Filtros
+            // Panel de Filtros - Responsivo
             var pnlFiltros = new Panel
             {
-                Location = new Point(10, 90),
-                Size = new Size(1080, 60),
                 BackColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Dock = DockStyle.Top,
+                AutoSize = false,
+                Height = 100,
+                Padding = new Padding(10)
             };
+            pnlFiltros.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             var lblFiltros = new Label
             {
                 Text = "Filtros:",
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                Location = new Point(10, 18),
-                Size = new Size(60, 25)
+                AutoSize = true,
+                Location = new Point(10, 10)
             };
             pnlFiltros.Controls.Add(lblFiltros);
 
@@ -108,16 +120,18 @@ namespace BibliotecaJK.Forms
             var lblStatus = new Label
             {
                 Text = "Status:",
-                Location = new Point(70, 18),
-                Size = new Size(50, 25)
+                Location = new Point(10, 35),
+                Size = new Size(50, 25),
+                TextAlign = ContentAlignment.MiddleLeft
             };
             pnlFiltros.Controls.Add(lblStatus);
 
             cboFiltroStatus = new ComboBox
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Location = new Point(125, 15),
-                Size = new Size(150, 25)
+                Location = new Point(65, 35),
+                Size = new Size(130, 25),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left
             };
             cboFiltroStatus.Items.AddRange(new object[] { "Todas", "Não Lidas", "Lidas" });
             cboFiltroStatus.SelectedIndex = 0;
@@ -128,16 +142,18 @@ namespace BibliotecaJK.Forms
             var lblTipo = new Label
             {
                 Text = "Tipo:",
-                Location = new Point(290, 18),
-                Size = new Size(40, 25)
+                Location = new Point(210, 35),
+                Size = new Size(40, 25),
+                TextAlign = ContentAlignment.MiddleLeft
             };
             pnlFiltros.Controls.Add(lblTipo);
 
             cboFiltroTipo = new ComboBox
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Location = new Point(335, 15),
-                Size = new Size(200, 25)
+                Location = new Point(255, 35),
+                Size = new Size(170, 25),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left
             };
             cboFiltroTipo.Items.AddRange(new object[] {
                 "Todos os Tipos",
@@ -153,16 +169,18 @@ namespace BibliotecaJK.Forms
             var lblPrioridade = new Label
             {
                 Text = "Prioridade:",
-                Location = new Point(550, 18),
-                Size = new Size(70, 25)
+                Location = new Point(440, 35),
+                Size = new Size(70, 25),
+                TextAlign = ContentAlignment.MiddleLeft
             };
             pnlFiltros.Controls.Add(lblPrioridade);
 
             cboFiltroPrioridade = new ComboBox
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Location = new Point(625, 15),
-                Size = new Size(120, 25)
+                Location = new Point(515, 35),
+                Size = new Size(110, 25),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left
             };
             cboFiltroPrioridade.Items.AddRange(new object[] {
                 "Todas",
@@ -178,14 +196,15 @@ namespace BibliotecaJK.Forms
             // Botão Atualizar
             btnAtualizar = new Button
             {
-                Text = "🔄 Atualizar",
-                Location = new Point(760, 12),
-                Size = new Size(100, 35),
+                Text = "Atualizar",
+                Location = new Point(640, 35),
+                Size = new Size(90, 35),
                 BackColor = Color.FromArgb(33, 150, 243),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9F),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left
             };
             btnAtualizar.FlatAppearance.BorderSize = 0;
             btnAtualizar.Click += (s, e) => CarregarNotificacoes();
@@ -193,11 +212,9 @@ namespace BibliotecaJK.Forms
 
             this.Controls.Add(pnlFiltros);
 
-            // DataGridView de Notificações
+            // DataGridView de Notificações - Responsivo com Anchor Top | Bottom | Left | Right
             dgvNotificacoes = new DataGridView
             {
-                Location = new Point(10, 160),
-                Size = new Size(1080, 450),
                 BackgroundColor = Color.White,
                 BorderStyle = BorderStyle.None,
                 AllowUserToAddRows = false,
@@ -208,7 +225,10 @@ namespace BibliotecaJK.Forms
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 RowHeadersVisible = false,
                 Font = new Font("Segoe UI", 9F),
-                ColumnHeadersHeight = 40
+                ColumnHeadersHeight = 40,
+                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                Margin = new Padding(10, 10, 10, 10)
             };
 
             dgvNotificacoes.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(63, 81, 181);
@@ -226,78 +246,83 @@ namespace BibliotecaJK.Forms
 
             this.Controls.Add(dgvNotificacoes);
 
-            // Panel de Ações
-            var pnlAcoes = new Panel
+            // FlowLayoutPanel de Ações - Responsivo com Anchor Bottom | Right
+            var flowAcoes = new FlowLayoutPanel
             {
-                Location = new Point(10, 620),
-                Size = new Size(1080, 60),
                 BackColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Dock = DockStyle.Bottom,
+                AutoSize = false,
+                Height = 60,
+                Padding = new Padding(10),
+                WrapContents = true,
+                FlowDirection = FlowDirection.RightToLeft,
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
             };
-
-            btnMarcarLida = new Button
-            {
-                Text = "✓ Marcar como Lida",
-                Location = new Point(10, 12),
-                Size = new Size(160, 35),
-                BackColor = Color.FromArgb(76, 175, 80),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                Enabled = false
-            };
-            btnMarcarLida.FlatAppearance.BorderSize = 0;
-            btnMarcarLida.Click += BtnMarcarLida_Click;
-            pnlAcoes.Controls.Add(btnMarcarLida);
-
-            btnMarcarTodasLidas = new Button
-            {
-                Text = "✓✓ Marcar Todas como Lidas",
-                Location = new Point(180, 12),
-                Size = new Size(200, 35),
-                BackColor = Color.FromArgb(139, 195, 74),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F),
-                Cursor = Cursors.Hand
-            };
-            btnMarcarTodasLidas.FlatAppearance.BorderSize = 0;
-            btnMarcarTodasLidas.Click += BtnMarcarTodasLidas_Click;
-            pnlAcoes.Controls.Add(btnMarcarTodasLidas);
-
-            btnExcluir = new Button
-            {
-                Text = "🗑️ Excluir",
-                Location = new Point(390, 12),
-                Size = new Size(120, 35),
-                BackColor = Color.FromArgb(244, 67, 54),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F),
-                Cursor = Cursors.Hand,
-                Enabled = false
-            };
-            btnExcluir.FlatAppearance.BorderSize = 0;
-            btnExcluir.Click += BtnExcluir_Click;
-            pnlAcoes.Controls.Add(btnExcluir);
 
             var btnFechar = new Button
             {
                 Text = "Fechar",
-                Location = new Point(970, 12),
                 Size = new Size(100, 35),
                 BackColor = Color.FromArgb(158, 158, 158),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 9F),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
             };
             btnFechar.FlatAppearance.BorderSize = 0;
             btnFechar.Click += (s, e) => this.Close();
-            pnlAcoes.Controls.Add(btnFechar);
+            flowAcoes.Controls.Add(btnFechar);
 
-            this.Controls.Add(pnlAcoes);
+            btnExcluir = new Button
+            {
+                Text = "Excluir",
+                Size = new Size(100, 35),
+                BackColor = Color.FromArgb(244, 67, 54),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 9F),
+                Cursor = Cursors.Hand,
+                Enabled = false,
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
+            };
+            btnExcluir.FlatAppearance.BorderSize = 0;
+            btnExcluir.Click += BtnExcluir_Click;
+            flowAcoes.Controls.Add(btnExcluir);
+
+            btnMarcarTodasLidas = new Button
+            {
+                Text = "Marcar Todas como Lidas",
+                Size = new Size(200, 35),
+                BackColor = Color.FromArgb(139, 195, 74),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 9F),
+                Cursor = Cursors.Hand,
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
+            };
+            btnMarcarTodasLidas.FlatAppearance.BorderSize = 0;
+            btnMarcarTodasLidas.Click += BtnMarcarTodasLidas_Click;
+            flowAcoes.Controls.Add(btnMarcarTodasLidas);
+
+            btnMarcarLida = new Button
+            {
+                Text = "Marcar como Lida",
+                Size = new Size(150, 35),
+                BackColor = Color.FromArgb(76, 175, 80),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false,
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
+            };
+            btnMarcarLida.FlatAppearance.BorderSize = 0;
+            btnMarcarLida.Click += BtnMarcarLida_Click;
+            flowAcoes.Controls.Add(btnMarcarLida);
+
+            this.Controls.Add(flowAcoes);
 
             this.ResumeLayout(false);
         }
