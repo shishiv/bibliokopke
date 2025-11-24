@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup Condition="'$(MSBuildProjectName)'=='BibliotecaJK'">
+    <BaseIntermediateOutputPath>obj\BibliotecaJK\</BaseIntermediateOutputPath>
+    <BaseOutputPath>bin\BibliotecaJK\</BaseOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)'=='telalogin'">
+    <BaseIntermediateOutputPath>obj\telalogin\</BaseIntermediateOutputPath>
+    <BaseOutputPath>bin\telalogin\</BaseOutputPath>
+  </PropertyGroup>
+</Project>
