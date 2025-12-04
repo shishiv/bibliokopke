@@ -34,12 +34,14 @@ namespace BibliotecaJK.Forms
         {
             this.SuspendLayout();
 
-            // FormTrocaSenha
-            this.ClientSize = new System.Drawing.Size(500, 450);
+            // FormTrocaSenha - Configurações base com responsividade
+            this.ClientSize = new System.Drawing.Size(600, 500);
+            this.MinimumSize = new System.Drawing.Size(500, 350);
+            this.AutoScroll = true;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = _obrigatorio ? "Troca de Senha Obrigatória" : "Alterar Senha";
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
 
@@ -49,15 +51,16 @@ namespace BibliotecaJK.Forms
                 this.FormClosing += FormTrocaSenha_FormClosing;
             }
 
-            // Título
+            // Título com Anchor responsivo
             var lblTitulo = new Label
             {
                 Text = _obrigatorio ? "🔒 TROCA DE SENHA OBRIGATÓRIA" : "🔒 ALTERAR SENHA",
                 Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
                 ForeColor = _obrigatorio ? System.Drawing.Color.DarkRed : System.Drawing.Color.DarkSlateBlue,
                 Location = new System.Drawing.Point(20, 20),
-                Size = new System.Drawing.Size(460, 30),
-                TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+                Size = new System.Drawing.Size(560, 30),
+                TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             this.Controls.Add(lblTitulo);
 
@@ -72,18 +75,20 @@ namespace BibliotecaJK.Forms
                 Font = new System.Drawing.Font("Segoe UI", 9F),
                 ForeColor = System.Drawing.Color.Gray,
                 Location = new System.Drawing.Point(20, 60),
-                Size = new System.Drawing.Size(460, 50),
-                TextAlign = System.Drawing.ContentAlignment.TopCenter
+                Size = new System.Drawing.Size(560, 50),
+                TextAlign = System.Drawing.ContentAlignment.TopCenter,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             this.Controls.Add(lblMensagem);
 
-            // Panel principal
+            // Panel principal com Anchor responsivo
             var pnlMain = new Panel
             {
                 Location = new System.Drawing.Point(20, 120),
-                Size = new System.Drawing.Size(460, 250),
+                Size = new System.Drawing.Size(560, 300),
                 BackColor = System.Drawing.Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
             // Senha Atual
@@ -91,16 +96,17 @@ namespace BibliotecaJK.Forms
             {
                 Text = "Senha Atual:",
                 Location = new System.Drawing.Point(20, 25),
-                Size = new System.Drawing.Size(120, 20),
+                Size = new System.Drawing.Size(100, 20),
                 Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold)
             });
 
             txtSenhaAtual = new TextBox
             {
-                Location = new System.Drawing.Point(150, 23),
-                Size = new System.Drawing.Size(280, 25),
+                Location = new System.Drawing.Point(130, 23),
+                Size = new System.Drawing.Size(400, 25),
                 PasswordChar = '●',
-                Font = new System.Drawing.Font("Segoe UI", 10F)
+                Font = new System.Drawing.Font("Segoe UI", 10F),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             pnlMain.Controls.Add(txtSenhaAtual);
 
@@ -109,16 +115,17 @@ namespace BibliotecaJK.Forms
             {
                 Text = "Nova Senha:",
                 Location = new System.Drawing.Point(20, 70),
-                Size = new System.Drawing.Size(120, 20),
+                Size = new System.Drawing.Size(100, 20),
                 Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold)
             });
 
             txtNovaSenha = new TextBox
             {
-                Location = new System.Drawing.Point(150, 68),
-                Size = new System.Drawing.Size(280, 25),
+                Location = new System.Drawing.Point(130, 68),
+                Size = new System.Drawing.Size(400, 25),
                 PasswordChar = '●',
-                Font = new System.Drawing.Font("Segoe UI", 10F)
+                Font = new System.Drawing.Font("Segoe UI", 10F),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             txtNovaSenha.TextChanged += TxtNovaSenha_TextChanged;
             pnlMain.Controls.Add(txtNovaSenha);
@@ -127,20 +134,22 @@ namespace BibliotecaJK.Forms
             lblForcaSenha = new Label
             {
                 Text = "Força: ",
-                Location = new System.Drawing.Point(150, 98),
-                Size = new System.Drawing.Size(280, 20),
+                Location = new System.Drawing.Point(130, 98),
+                Size = new System.Drawing.Size(400, 20),
                 Font = new System.Drawing.Font("Segoe UI", 8F),
-                ForeColor = System.Drawing.Color.Gray
+                ForeColor = System.Drawing.Color.Gray,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             pnlMain.Controls.Add(lblForcaSenha);
 
             progressForca = new ProgressBar
             {
-                Location = new System.Drawing.Point(150, 118),
-                Size = new System.Drawing.Size(280, 10),
+                Location = new System.Drawing.Point(130, 118),
+                Size = new System.Drawing.Size(400, 10),
                 Minimum = 0,
                 Maximum = 100,
-                Value = 0
+                Value = 0,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             pnlMain.Controls.Add(progressForca);
 
@@ -149,16 +158,17 @@ namespace BibliotecaJK.Forms
             {
                 Text = "Confirmar Senha:",
                 Location = new System.Drawing.Point(20, 150),
-                Size = new System.Drawing.Size(120, 20),
+                Size = new System.Drawing.Size(110, 20),
                 Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold)
             });
 
             txtConfirmaSenha = new TextBox
             {
-                Location = new System.Drawing.Point(150, 148),
-                Size = new System.Drawing.Size(280, 25),
+                Location = new System.Drawing.Point(130, 148),
+                Size = new System.Drawing.Size(400, 25),
                 PasswordChar = '●',
-                Font = new System.Drawing.Font("Segoe UI", 10F)
+                Font = new System.Drawing.Font("Segoe UI", 10F),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             pnlMain.Controls.Add(txtConfirmaSenha);
 
@@ -168,45 +178,58 @@ namespace BibliotecaJK.Forms
                 Text = "✓ Mínimo 8 caracteres\n" +
                        "✓ Use letras, números e símbolos\n" +
                        "✓ Evite senhas óbvias",
-                Location = new System.Drawing.Point(20, 185),
-                Size = new System.Drawing.Size(410, 50),
+                Location = new System.Drawing.Point(20, 195),
+                Size = new System.Drawing.Size(510, 60),
                 Font = new System.Drawing.Font("Segoe UI", 8F),
-                ForeColor = System.Drawing.Color.Gray
+                ForeColor = System.Drawing.Color.Gray,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             pnlMain.Controls.Add(lblRequisitos);
 
             this.Controls.Add(pnlMain);
 
-            // Botões
-            btnSalvar = new Button
+            // FlowLayoutPanel para botões ancorado Bottom | Right
+            var flowButtons = new FlowLayoutPanel
             {
-                Text = "💾 Salvar Nova Senha",
-                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
-                Location = new System.Drawing.Point(120, 385),
-                Size = new System.Drawing.Size(180, 40),
-                BackColor = System.Drawing.Color.DarkGreen,
-                ForeColor = System.Drawing.Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Location = new System.Drawing.Point(20, 430),
+                Size = new System.Drawing.Size(560, 50),
+                BackColor = System.Drawing.Color.WhiteSmoke,
+                FlowDirection = FlowDirection.RightToLeft,
+                WrapContents = false,
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Left
             };
-            btnSalvar.FlatAppearance.BorderSize = 0;
-            btnSalvar.Click += BtnSalvar_Click;
-            this.Controls.Add(btnSalvar);
 
             btnCancelar = new Button
             {
                 Text = _obrigatorio ? "❌ Sair do Sistema" : "Cancelar",
                 Font = new System.Drawing.Font("Segoe UI", 10F),
-                Location = new System.Drawing.Point(310, 385),
-                Size = new System.Drawing.Size(170, 40),
+                Size = new System.Drawing.Size(160, 40),
                 BackColor = System.Drawing.Color.Gray,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Margin = new Padding(5)
             };
             btnCancelar.FlatAppearance.BorderSize = 0;
             btnCancelar.Click += BtnCancelar_Click;
-            this.Controls.Add(btnCancelar);
+            flowButtons.Controls.Add(btnCancelar);
+
+            btnSalvar = new Button
+            {
+                Text = "💾 Salvar Nova Senha",
+                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
+                Size = new System.Drawing.Size(180, 40),
+                BackColor = System.Drawing.Color.DarkGreen,
+                ForeColor = System.Drawing.Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                Margin = new Padding(5)
+            };
+            btnSalvar.FlatAppearance.BorderSize = 0;
+            btnSalvar.Click += BtnSalvar_Click;
+            flowButtons.Controls.Add(btnSalvar);
+
+            this.Controls.Add(flowButtons);
 
             this.ResumeLayout(false);
         }

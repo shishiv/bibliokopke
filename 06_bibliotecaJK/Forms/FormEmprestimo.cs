@@ -34,11 +34,23 @@ namespace BibliotecaJK.Forms
         {
             this.SuspendLayout();
 
-            // FormEmprestimo
-            this.ClientSize = new System.Drawing.Size(900, 600);
+            // FormEmprestimo - Adaptive sizing para diferentes resoluções
+            System.Drawing.Rectangle workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+
+            // Calcular tamanho ideal (90% da tela, mas não menor que mínimo)
+            int idealWidth = Math.Max(900, (int)(workingArea.Width * 0.9));
+            int idealHeight = Math.Max(600, (int)(workingArea.Height * 0.9));
+
+            // Limitar ao máximo disponível
+            int formWidth = Math.Min(idealWidth, workingArea.Width - 50);
+            int formHeight = Math.Min(idealHeight, workingArea.Height - 50);
+
+            this.ClientSize = new System.Drawing.Size(formWidth, formHeight);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Novo Empréstimo";
             this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.MinimumSize = new System.Drawing.Size(900, 600);
+            this.AutoScroll = true;
 
             // Título
             var lblTitulo = new Label
@@ -47,17 +59,21 @@ namespace BibliotecaJK.Forms
                 Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
                 ForeColor = System.Drawing.Color.DarkSlateBlue,
                 Location = new System.Drawing.Point(20, 15),
-                Size = new System.Drawing.Size(860, 30)
+                Size = new System.Drawing.Size(formWidth - 40, 30),
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
             this.Controls.Add(lblTitulo);
 
-            // Panel de Formulário
+            // Panel de Formulário - responsivo com Anchor
             var pnlForm = new Panel
             {
                 Location = new System.Drawing.Point(20, 60),
-                Size = new System.Drawing.Size(860, 480),
+                Size = new System.Drawing.Size(formWidth - 40, formHeight - 120),
                 BackColor = System.Drawing.Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                AutoScroll = true,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom |
+                         System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
 
             // Seção Aluno
@@ -160,36 +176,49 @@ namespace BibliotecaJK.Forms
 
             this.Controls.Add(pnlForm);
 
-            // Botões
+            // FlowLayoutPanel para botões - ancorado no canto inferior direito
+            var flowButtons = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.LeftToRight,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right,
+                WrapContents = false,
+                Padding = new System.Windows.Forms.Padding(0)
+            };
+            flowButtons.Location = new System.Drawing.Point(formWidth - 260, formHeight - 45);
+
             btnRegistrar = new Button
             {
                 Text = "Registrar Empréstimo",
                 Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
-                Location = new System.Drawing.Point(630, 555),
                 Size = new System.Drawing.Size(170, 35),
                 BackColor = System.Drawing.Color.DarkSlateBlue,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Cursor = Cursors.Hand,
-                Enabled = false
+                Enabled = false,
+                Margin = new System.Windows.Forms.Padding(0, 0, 5, 0)
             };
             btnRegistrar.FlatAppearance.BorderSize = 0;
             btnRegistrar.Click += BtnRegistrar_Click;
-            this.Controls.Add(btnRegistrar);
+            flowButtons.Controls.Add(btnRegistrar);
 
             var btnFechar = new Button
             {
                 Text = "Fechar",
-                Location = new System.Drawing.Point(810, 555),
-                Size = new System.Drawing.Size(70, 35),
+                Size = new System.Drawing.Size(80, 35),
                 BackColor = System.Drawing.Color.Gray,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Margin = new System.Windows.Forms.Padding(0)
             };
             btnFechar.FlatAppearance.BorderSize = 0;
             btnFechar.Click += (s, e) => this.Close();
-            this.Controls.Add(btnFechar);
+            flowButtons.Controls.Add(btnFechar);
+
+            this.Controls.Add(flowButtons);
 
             this.ResumeLayout(false);
         }

@@ -40,161 +40,133 @@ namespace BibliotecaJK.Forms
         {
             this.SuspendLayout();
 
-            // Form
-            this.ClientSize = new Size(1000, 700);
+            // FormCadastroFuncionario - Adaptive sizing para diferentes resoluções
+            System.Drawing.Rectangle workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+
+            // Calcular tamanho ideal (90% da tela, mas não menor que mínimo)
+            int idealWidth = Math.Max(900, (int)(workingArea.Width * 0.9));
+            int idealHeight = Math.Max(550, (int)(workingArea.Height * 0.9));
+
+            // Limitar ao máximo disponível
+            int formWidth = Math.Min(idealWidth, workingArea.Width - 50);
+            int formHeight = Math.Min(idealHeight, workingArea.Height - 50);
+
+            this.ClientSize = new System.Drawing.Size(formWidth, formHeight);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Gerenciamento de Usuários - BibliotecaJK";
-            this.BackColor = Color.FromArgb(245, 245, 250);
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
+            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.MinimumSize = new System.Drawing.Size(900, 550);
+            this.AutoScroll = true;
 
-            // Header
-            var pnlHeader = new Panel
-            {
-                Location = new Point(0, 0),
-                Size = new Size(1000, 80),
-                BackColor = Color.FromArgb(63, 81, 181)
-            };
-
+            // Título
             var lblTitulo = new Label
             {
-                Text = "👤 GERENCIAMENTO DE USUÁRIOS",
-                Font = new Font("Segoe UI", 18F, FontStyle.Bold),
-                ForeColor = Color.White,
-                Location = new Point(20, 20),
-                Size = new Size(960, 40),
-                TextAlign = ContentAlignment.MiddleLeft
+                Text = "GERENCIAMENTO DE USUÁRIOS",
+                Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
+                ForeColor = System.Drawing.Color.DarkSlateBlue,
+                Location = new System.Drawing.Point(20, 15),
+                Size = new System.Drawing.Size(formWidth - 40, 30),
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
-            pnlHeader.Controls.Add(lblTitulo);
-            this.Controls.Add(pnlHeader);
+            this.Controls.Add(lblTitulo);
 
-            // Panel de Cadastro
-            var pnlCadastro = new Panel
+            // Panel de Formulário - responsivo com Anchor
+            var pnlForm = new Panel
             {
-                Location = new Point(20, 100),
-                Size = new Size(960, 220),
-                BackColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                Location = new System.Drawing.Point(20, 60),
+                Size = new System.Drawing.Size(formWidth - 40, 200),
+                BackColor = System.Drawing.Color.White,
+                BorderStyle = BorderStyle.FixedSingle,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
-
-            var lblCadastroTitulo = new Label
-            {
-                Text = "Dados do Usuário",
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
-                Location = new Point(15, 10),
-                Size = new Size(930, 25),
-                ForeColor = Color.FromArgb(63, 81, 181)
-            };
-            pnlCadastro.Controls.Add(lblCadastroTitulo);
 
             // Nome
-            var lblNome = new Label
+            pnlForm.Controls.Add(new Label
             {
                 Text = "Nome Completo *",
-                Font = new Font("Segoe UI", 9F),
-                Location = new Point(15, 45),
-                Size = new Size(200, 20)
-            };
-            pnlCadastro.Controls.Add(lblNome);
-
+                Location = new System.Drawing.Point(20, 20),
+                Size = new System.Drawing.Size(120, 20)
+            });
             txtNome = new TextBox
             {
-                Font = new Font("Segoe UI", 10F),
-                Location = new Point(15, 65),
-                Size = new Size(300, 25)
+                Location = new System.Drawing.Point(150, 18),
+                Size = new System.Drawing.Size(350, 25),
+                MaxLength = 100
             };
-            pnlCadastro.Controls.Add(txtNome);
+            pnlForm.Controls.Add(txtNome);
 
             // CPF
-            var lblCPF = new Label
+            pnlForm.Controls.Add(new Label
             {
                 Text = "CPF *",
-                Font = new Font("Segoe UI", 9F),
-                Location = new Point(330, 45),
-                Size = new Size(150, 20)
-            };
-            pnlCadastro.Controls.Add(lblCPF);
-
+                Location = new System.Drawing.Point(520, 20),
+                Size = new System.Drawing.Size(80, 20)
+            });
             txtCPF = new TextBox
             {
-                Font = new Font("Segoe UI", 10F),
-                Location = new Point(330, 65),
-                Size = new Size(180, 25),
+                Location = new System.Drawing.Point(610, 18),
+                Size = new System.Drawing.Size(150, 25),
                 MaxLength = 14
             };
             txtCPF.AllowOnlyNumbers();
-            pnlCadastro.Controls.Add(txtCPF);
+            pnlForm.Controls.Add(txtCPF);
 
             // Cargo
-            var lblCargo = new Label
+            pnlForm.Controls.Add(new Label
             {
                 Text = "Cargo",
-                Font = new Font("Segoe UI", 9F),
-                Location = new Point(525, 45),
-                Size = new Size(200, 20)
-            };
-            pnlCadastro.Controls.Add(lblCargo);
-
+                Location = new System.Drawing.Point(20, 60),
+                Size = new System.Drawing.Size(120, 20)
+            });
             txtCargo = new TextBox
             {
-                Font = new Font("Segoe UI", 10F),
-                Location = new Point(525, 65),
-                Size = new Size(250, 25)
+                Location = new System.Drawing.Point(150, 58),
+                Size = new System.Drawing.Size(350, 25),
+                MaxLength = 100
             };
-            pnlCadastro.Controls.Add(txtCargo);
+            pnlForm.Controls.Add(txtCargo);
 
             // Login
-            var lblLogin = new Label
+            pnlForm.Controls.Add(new Label
             {
                 Text = "Login *",
-                Font = new Font("Segoe UI", 9F),
-                Location = new Point(15, 100),
-                Size = new Size(200, 20)
-            };
-            pnlCadastro.Controls.Add(lblLogin);
-
+                Location = new System.Drawing.Point(520, 60),
+                Size = new System.Drawing.Size(80, 20)
+            });
             txtLogin = new TextBox
             {
-                Font = new Font("Segoe UI", 10F),
-                Location = new Point(15, 120),
-                Size = new Size(200, 25)
+                Location = new System.Drawing.Point(610, 58),
+                Size = new System.Drawing.Size(150, 25),
+                MaxLength = 50
             };
-            pnlCadastro.Controls.Add(txtLogin);
+            pnlForm.Controls.Add(txtLogin);
 
             // Senha
-            var lblSenha = new Label
+            pnlForm.Controls.Add(new Label
             {
                 Text = "Senha *",
-                Font = new Font("Segoe UI", 9F),
-                Location = new Point(230, 100),
-                Size = new Size(200, 20)
-            };
-            pnlCadastro.Controls.Add(lblSenha);
-
+                Location = new System.Drawing.Point(20, 100),
+                Size = new System.Drawing.Size(120, 20)
+            });
             txtSenha = new TextBox
             {
-                Font = new Font("Segoe UI", 10F),
-                Location = new Point(230, 120),
-                Size = new Size(200, 25),
+                Location = new System.Drawing.Point(150, 98),
+                Size = new System.Drawing.Size(350, 25),
                 UseSystemPasswordChar = true
             };
-            pnlCadastro.Controls.Add(txtSenha);
+            pnlForm.Controls.Add(txtSenha);
 
             // Perfil
-            var lblPerfil = new Label
+            pnlForm.Controls.Add(new Label
             {
                 Text = "Perfil *",
-                Font = new Font("Segoe UI", 9F),
-                Location = new Point(445, 100),
-                Size = new Size(150, 20)
-            };
-            pnlCadastro.Controls.Add(lblPerfil);
-
+                Location = new System.Drawing.Point(520, 100),
+                Size = new System.Drawing.Size(80, 20)
+            });
             cboPerfil = new ComboBox
             {
-                Font = new Font("Segoe UI", 10F),
-                Location = new Point(445, 120),
-                Size = new Size(200, 25),
+                Location = new System.Drawing.Point(610, 98),
+                Size = new System.Drawing.Size(150, 25),
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
             cboPerfil.Items.AddRange(new object[] {
@@ -203,84 +175,115 @@ namespace BibliotecaJK.Forms
                 Constants.PerfilFuncionario.OPERADOR
             });
             cboPerfil.SelectedIndex = 2; // Default: OPERADOR
-            pnlCadastro.Controls.Add(cboPerfil);
+            pnlForm.Controls.Add(cboPerfil);
 
             // Botões
-            btnSalvar = new Button
-            {
-                Text = "💾 Salvar",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                Location = new Point(15, 165),
-                Size = new Size(130, 40),
-                BackColor = Color.FromArgb(76, 175, 80),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btnSalvar.FlatAppearance.BorderSize = 0;
-            btnSalvar.Click += BtnSalvar_Click;
-            pnlCadastro.Controls.Add(btnSalvar);
-
             btnNovo = new Button
             {
-                Text = "📄 Novo",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                Location = new Point(160, 165),
-                Size = new Size(130, 40),
-                BackColor = Color.FromArgb(33, 150, 243),
-                ForeColor = Color.White,
+                Text = "Novo",
+                Location = new System.Drawing.Point(150, 145),
+                Size = new System.Drawing.Size(100, 35),
+                BackColor = System.Drawing.Color.MediumSeaGreen,
+                ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Cursor = Cursors.Hand
             };
             btnNovo.FlatAppearance.BorderSize = 0;
             btnNovo.Click += (s, e) => LimparCampos();
-            pnlCadastro.Controls.Add(btnNovo);
+            pnlForm.Controls.Add(btnNovo);
+
+            btnSalvar = new Button
+            {
+                Text = "Salvar",
+                Location = new System.Drawing.Point(260, 145),
+                Size = new System.Drawing.Size(100, 35),
+                BackColor = System.Drawing.Color.DarkSlateBlue,
+                ForeColor = System.Drawing.Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand
+            };
+            btnSalvar.FlatAppearance.BorderSize = 0;
+            btnSalvar.Click += BtnSalvar_Click;
+            pnlForm.Controls.Add(btnSalvar);
 
             btnExcluir = new Button
             {
-                Text = "🗑️ Excluir",
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                Location = new Point(305, 165),
-                Size = new Size(130, 40),
-                BackColor = Color.FromArgb(244, 67, 54),
-                ForeColor = Color.White,
+                Text = "Excluir",
+                Location = new System.Drawing.Point(370, 145),
+                Size = new System.Drawing.Size(100, 35),
+                BackColor = System.Drawing.Color.Crimson,
+                ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Cursor = Cursors.Hand,
                 Enabled = false
             };
             btnExcluir.FlatAppearance.BorderSize = 0;
             btnExcluir.Click += BtnExcluir_Click;
-            pnlCadastro.Controls.Add(btnExcluir);
+            pnlForm.Controls.Add(btnExcluir);
 
-            this.Controls.Add(pnlCadastro);
+            this.Controls.Add(pnlForm);
 
-            // Grid de Funcionários
-            var lblGrid = new Label
-            {
-                Text = "Usuários Cadastrados",
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
-                Location = new Point(20, 335),
-                Size = new Size(960, 25),
-                ForeColor = Color.FromArgb(63, 81, 181)
-            };
-            this.Controls.Add(lblGrid);
-
+            // Grid de Funcionários - responsivo com Anchor
             dgvFuncionarios = new DataGridView
             {
-                Location = new Point(20, 365),
-                Size = new Size(960, 315),
-                BackgroundColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle,
+                Location = new System.Drawing.Point(20, 280),
+                Size = new System.Drawing.Size(formWidth - 40, formHeight - 335),
+                BackgroundColor = System.Drawing.Color.White,
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 ReadOnly = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 MultiSelect = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom |
+                         System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
             dgvFuncionarios.SelectionChanged += DgvFuncionarios_SelectionChanged;
             dgvFuncionarios.DoubleClick += (s, e) => CarregarFuncionarioSelecionado();
+
             this.Controls.Add(dgvFuncionarios);
+
+            // FlowLayoutPanel para botões de ação - ancorado no canto inferior direito
+            var flowButtons = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.LeftToRight,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right,
+                WrapContents = false,
+                Padding = new System.Windows.Forms.Padding(0)
+            };
+            flowButtons.Location = new System.Drawing.Point(formWidth - 180, formHeight - 45);
+
+            var btnEditar = new Button
+            {
+                Text = "Editar",
+                Size = new System.Drawing.Size(90, 30),
+                BackColor = System.Drawing.Color.SteelBlue,
+                ForeColor = System.Drawing.Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                Margin = new System.Windows.Forms.Padding(0, 0, 5, 0)
+            };
+            btnEditar.FlatAppearance.BorderSize = 0;
+            btnEditar.Click += (s, e) => CarregarFuncionarioSelecionado();
+            flowButtons.Controls.Add(btnEditar);
+
+            var btnFechar = new Button
+            {
+                Text = "Fechar",
+                Size = new System.Drawing.Size(70, 30),
+                BackColor = System.Drawing.Color.Gray,
+                ForeColor = System.Drawing.Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                Margin = new System.Windows.Forms.Padding(0)
+            };
+            btnFechar.FlatAppearance.BorderSize = 0;
+            btnFechar.Click += (s, e) => this.Close();
+            flowButtons.Controls.Add(btnFechar);
+
+            this.Controls.Add(flowButtons);
 
             this.ResumeLayout(false);
         }
@@ -326,7 +329,11 @@ namespace BibliotecaJK.Forms
         private void CarregarFuncionarioSelecionado()
         {
             if (dgvFuncionarios.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Selecione um funcionário para editar.", "Atenção",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
+            }
 
             var row = dgvFuncionarios.SelectedRows[0];
             _idFuncionarioSelecionado = (int)row.Cells["Id"].Value;
@@ -339,8 +346,8 @@ namespace BibliotecaJK.Forms
             txtSenha.Clear();
             txtSenha.PlaceholderText = "Deixe em branco para manter a senha atual";
 
-            btnSalvar.Text = "💾 Atualizar";
             btnExcluir.Enabled = true;
+            txtNome.Focus();
         }
 
         private void BtnSalvar_Click(object? sender, EventArgs e)

@@ -34,11 +34,23 @@ namespace BibliotecaJK.Forms
         {
             this.SuspendLayout();
 
-            // FormConsultaEmprestimos
-            this.ClientSize = new System.Drawing.Size(1100, 700);
+            // FormConsultaEmprestimos - Adaptive sizing para diferentes resoluções
+            System.Drawing.Rectangle workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+
+            // Calcular tamanho ideal (90% da tela, mas não menor que mínimo)
+            int idealWidth = Math.Max(1000, (int)(workingArea.Width * 0.9));
+            int idealHeight = Math.Max(600, (int)(workingArea.Height * 0.9));
+
+            // Limitar ao máximo disponível
+            int formWidth = Math.Min(idealWidth, workingArea.Width - 50);
+            int formHeight = Math.Min(idealHeight, workingArea.Height - 50);
+
+            this.ClientSize = new System.Drawing.Size(formWidth, formHeight);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Consulta de Empréstimos";
             this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.MinimumSize = new System.Drawing.Size(1000, 600);
+            this.AutoScroll = true;
 
             // Título
             var lblTitulo = new Label
@@ -47,15 +59,18 @@ namespace BibliotecaJK.Forms
                 Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
                 ForeColor = System.Drawing.Color.DarkSlateBlue,
                 Location = new System.Drawing.Point(20, 15),
-                Size = new System.Drawing.Size(1060, 30)
+                Size = new System.Drawing.Size(formWidth - 40, 30),
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
             this.Controls.Add(lblTitulo);
 
-            // Abas
+            // Abas - responsivo com Anchor
             var tabControl = new TabControl
             {
                 Location = new System.Drawing.Point(20, 60),
-                Size = new System.Drawing.Size(1060, 590)
+                Size = new System.Drawing.Size(formWidth - 40, formHeight - 110),
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom |
+                         System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
 
             // Aba 1: Todos os Empréstimos
@@ -85,17 +100,18 @@ namespace BibliotecaJK.Forms
 
             this.Controls.Add(tabControl);
 
-            // Botão Fechar
+            // Botão Fechar - ancorado no canto inferior direito
             var btnFechar = new Button
             {
                 Text = "Fechar",
-                Location = new System.Drawing.Point(1030, 660),
-                Size = new System.Drawing.Size(50, 30),
+                Size = new System.Drawing.Size(80, 35),
                 BackColor = System.Drawing.Color.Gray,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right
             };
+            btnFechar.Location = new System.Drawing.Point(formWidth - 100, formHeight - 45);
             btnFechar.FlatAppearance.BorderSize = 0;
             btnFechar.Click += (s, e) => this.Close();
             this.Controls.Add(btnFechar);
@@ -115,13 +131,14 @@ namespace BibliotecaJK.Forms
             var btnAtualizar = new Button
             {
                 Text = "🔄 Atualizar",
-                Location = new System.Drawing.Point(930, 520),
-                Size = new System.Drawing.Size(100, 30),
+                Size = new System.Drawing.Size(120, 35),
                 BackColor = System.Drawing.Color.SteelBlue,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right
             };
+            btnAtualizar.Location = new System.Drawing.Point(tab.Width - 140, tab.Height - 45);
             btnAtualizar.FlatAppearance.BorderSize = 0;
             btnAtualizar.Click += (s, e) => CarregarTodos();
             tab.Controls.Add(btnAtualizar);
@@ -136,13 +153,14 @@ namespace BibliotecaJK.Forms
             var btnAtualizar = new Button
             {
                 Text = "🔄 Atualizar",
-                Location = new System.Drawing.Point(930, 520),
-                Size = new System.Drawing.Size(100, 30),
+                Size = new System.Drawing.Size(120, 35),
                 BackColor = System.Drawing.Color.SteelBlue,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right
             };
+            btnAtualizar.Location = new System.Drawing.Point(tab.Width - 140, tab.Height - 45);
             btnAtualizar.FlatAppearance.BorderSize = 0;
             btnAtualizar.Click += (s, e) => CarregarAtivos();
             tab.Controls.Add(btnAtualizar);
@@ -157,13 +175,14 @@ namespace BibliotecaJK.Forms
             var btnAtualizar = new Button
             {
                 Text = "🔄 Atualizar",
-                Location = new System.Drawing.Point(930, 520),
-                Size = new System.Drawing.Size(100, 30),
+                Size = new System.Drawing.Size(120, 35),
                 BackColor = System.Drawing.Color.SteelBlue,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right
             };
+            btnAtualizar.Location = new System.Drawing.Point(tab.Width - 140, tab.Height - 45);
             btnAtualizar.FlatAppearance.BorderSize = 0;
             btnAtualizar.Click += (s, e) => CarregarAtrasados();
             tab.Controls.Add(btnAtualizar);
@@ -178,13 +197,14 @@ namespace BibliotecaJK.Forms
             var btnAtualizar = new Button
             {
                 Text = "🔄 Atualizar",
-                Location = new System.Drawing.Point(930, 520),
-                Size = new System.Drawing.Size(100, 30),
+                Size = new System.Drawing.Size(120, 35),
                 BackColor = System.Drawing.Color.SteelBlue,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right
             };
+            btnAtualizar.Location = new System.Drawing.Point(tab.Width - 140, tab.Height - 45);
             btnAtualizar.FlatAppearance.BorderSize = 0;
             btnAtualizar.Click += (s, e) => CarregarHistorico();
             tab.Controls.Add(btnAtualizar);
@@ -194,46 +214,67 @@ namespace BibliotecaJK.Forms
 
         private void CriarAbaEstatisticas(TabPage tab)
         {
+            tab.AutoScroll = true;
+
             var lblTitulo = new Label
             {
                 Text = "ESTATÍSTICAS GERAIS",
                 Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold),
                 ForeColor = System.Drawing.Color.DarkSlateBlue,
-                Location = new System.Drawing.Point(20, 20),
-                Size = new System.Drawing.Size(1000, 30)
+                Dock = System.Windows.Forms.DockStyle.Top,
+                Height = 50,
+                Padding = new System.Windows.Forms.Padding(20, 15, 0, 0)
             };
             tab.Controls.Add(lblTitulo);
 
-            // Cards de estatísticas
-            int y = 70;
+            // TableLayoutPanel para cards de estatísticas
+            var layoutStats = new TableLayoutPanel
+            {
+                Dock = System.Windows.Forms.DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 4,
+                Padding = new System.Windows.Forms.Padding(20, 10, 20, 60),
+                AutoScroll = true
+            };
 
-            var pnl1 = CriarPanelEstatistica("Total de Empréstimos", "0", y, System.Drawing.Color.SteelBlue);
-            tab.Controls.Add(pnl1);
+            // Configurar linhas com altura automática
+            layoutStats.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            layoutStats.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            layoutStats.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            layoutStats.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            // Cards de estatísticas usando Dock.Fill
+            var pnl1 = CriarPanelEstatisticaResponsivo("Total de Empréstimos", "0", System.Drawing.Color.SteelBlue);
             this.lblStatTotal = pnl1.Controls.OfType<Label>().ElementAt(1);
+            layoutStats.Controls.Add(pnl1, 0, 0);
 
-            var pnl2 = CriarPanelEstatistica("Empréstimos Ativos", "0", y + 90, System.Drawing.Color.MediumSeaGreen);
-            tab.Controls.Add(pnl2);
+            var pnl2 = CriarPanelEstatisticaResponsivo("Empréstimos Ativos", "0", System.Drawing.Color.MediumSeaGreen);
             this.lblStatAtivos = pnl2.Controls.OfType<Label>().ElementAt(1);
+            layoutStats.Controls.Add(pnl2, 0, 1);
 
-            var pnl3 = CriarPanelEstatistica("Empréstimos Atrasados", "0", y + 180, System.Drawing.Color.OrangeRed);
-            tab.Controls.Add(pnl3);
+            var pnl3 = CriarPanelEstatisticaResponsivo("Empréstimos Atrasados", "0", System.Drawing.Color.OrangeRed);
             this.lblStatAtrasados = pnl3.Controls.OfType<Label>().ElementAt(1);
+            layoutStats.Controls.Add(pnl3, 0, 2);
 
-            var pnl4 = CriarPanelEstatistica("Multa Total Acumulada", "R$ 0,00", y + 270, System.Drawing.Color.Crimson);
-            tab.Controls.Add(pnl4);
+            var pnl4 = CriarPanelEstatisticaResponsivo("Multa Total Acumulada", "R$ 0,00", System.Drawing.Color.Crimson);
             this.lblStatMulta = pnl4.Controls.OfType<Label>().ElementAt(1);
+            layoutStats.Controls.Add(pnl4, 0, 3);
 
+            tab.Controls.Add(layoutStats);
+
+            // Botão atualizar - ancorado no canto inferior direito
             var btnAtualizar = new Button
             {
                 Text = "🔄 Atualizar Estatísticas",
                 Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
-                Location = new System.Drawing.Point(850, 510),
-                Size = new System.Drawing.Size(180, 35),
+                Size = new System.Drawing.Size(200, 40),
                 BackColor = System.Drawing.Color.DarkSlateBlue,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right
             };
+            btnAtualizar.Location = new System.Drawing.Point(tab.Width - 220, tab.Height - 50);
             btnAtualizar.FlatAppearance.BorderSize = 0;
             btnAtualizar.Click += (s, e) => CarregarEstatisticas();
             tab.Controls.Add(btnAtualizar);
@@ -248,10 +289,16 @@ namespace BibliotecaJK.Forms
 
         private DataGridView CriarDataGridView(TabPage tab, int y)
         {
+            // Criar container panel para o DataGridView com margem
+            var pnlContainer = new Panel
+            {
+                Dock = System.Windows.Forms.DockStyle.Fill,
+                Padding = new System.Windows.Forms.Padding(15, y, 15, 50)
+            };
+
             var dgv = new DataGridView
             {
-                Location = new System.Drawing.Point(15, y),
-                Size = new System.Drawing.Size(1020, 490),
+                Dock = System.Windows.Forms.DockStyle.Fill,
                 BackgroundColor = System.Drawing.Color.White,
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
@@ -260,7 +307,8 @@ namespace BibliotecaJK.Forms
                 MultiSelect = false,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
-            tab.Controls.Add(dgv);
+            pnlContainer.Controls.Add(dgv);
+            tab.Controls.Add(pnlContainer);
             return dgv;
         }
 
@@ -290,6 +338,45 @@ namespace BibliotecaJK.Forms
                 ForeColor = System.Drawing.Color.White,
                 Location = new System.Drawing.Point(15, 35),
                 Size = new System.Drawing.Size(970, 30)
+            };
+            pnl.Controls.Add(lblValor);
+
+            return pnl;
+        }
+
+        /// <summary>
+        /// Versão responsiva do panel de estatística para TableLayoutPanel
+        /// </summary>
+        private Panel CriarPanelEstatisticaResponsivo(string titulo, string valor, System.Drawing.Color cor)
+        {
+            var pnl = new Panel
+            {
+                Dock = System.Windows.Forms.DockStyle.Fill,
+                BackColor = cor,
+                Margin = new System.Windows.Forms.Padding(0, 5, 0, 5),
+                MinimumSize = new System.Drawing.Size(200, 70),
+                Padding = new System.Windows.Forms.Padding(15)
+            };
+
+            var lblTitulo = new Label
+            {
+                Text = titulo,
+                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
+                ForeColor = System.Drawing.Color.White,
+                Location = new System.Drawing.Point(15, 10),
+                AutoSize = true,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+            };
+            pnl.Controls.Add(lblTitulo);
+
+            var lblValor = new Label
+            {
+                Text = valor,
+                Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold),
+                ForeColor = System.Drawing.Color.White,
+                Location = new System.Drawing.Point(15, 35),
+                AutoSize = true,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
             };
             pnl.Controls.Add(lblValor);
 

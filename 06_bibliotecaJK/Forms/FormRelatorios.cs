@@ -40,30 +40,45 @@ namespace BibliotecaJK.Forms
         {
             this.SuspendLayout();
 
-            // FormRelatorios
-            this.ClientSize = new System.Drawing.Size(1200, 700);
+            // FormRelatorios - Adaptive sizing para diferentes resoluções
+            System.Drawing.Rectangle workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+
+            // Calcular tamanho ideal (90% da tela, mas não menor que mínimo)
+            int idealWidth = Math.Max(1000, (int)(workingArea.Width * 0.9));
+            int idealHeight = Math.Max(600, (int)(workingArea.Height * 0.9));
+
+            // Limitar ao máximo disponível
+            int formWidth = Math.Min(idealWidth, workingArea.Width - 50);
+            int formHeight = Math.Min(idealHeight, workingArea.Height - 50);
+
+            this.ClientSize = new System.Drawing.Size(formWidth, formHeight);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Relatórios Gerenciais - BibliotecaJK";
             this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.MinimumSize = new System.Drawing.Size(1000, 600);
+            this.AutoScroll = true;
 
-            // Título
+            // Título com Anchor responsivo
             var lblTitulo = new Label
             {
                 Text = "RELATÓRIOS GERENCIAIS",
                 Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
                 ForeColor = System.Drawing.Color.DarkSlateBlue,
                 Location = new System.Drawing.Point(20, 15),
-                Size = new System.Drawing.Size(1160, 30)
+                Size = new System.Drawing.Size(formWidth - 40, 30),
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
             this.Controls.Add(lblTitulo);
 
-            // Panel de Opções
+            // Panel de Opções - Responsivo
             var pnlOpcoes = new Panel
             {
                 Location = new System.Drawing.Point(20, 60),
-                Size = new System.Drawing.Size(250, 580),
+                Size = new System.Drawing.Size(Math.Max(220, (int)(formWidth * 0.2)), formHeight - 110),
                 BackColor = System.Drawing.Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left,
+                AutoScroll = true
             };
 
             pnlOpcoes.Controls.Add(new Label
@@ -72,50 +87,57 @@ namespace BibliotecaJK.Forms
                 Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
                 ForeColor = System.Drawing.Color.DarkSlateBlue,
                 Location = new System.Drawing.Point(10, 10),
-                Size = new System.Drawing.Size(230, 25)
+                Size = new System.Drawing.Size(pnlOpcoes.Width - 30, 25),
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             });
 
-            // Botões de relatórios
+            // Botões de relatórios - Responsivos
             int btnY = 50;
             int btnSpacing = 60;
+            int btnWidth = pnlOpcoes.Width - 30;
 
-            var btnEmprestimosPeriodo = CriarBotaoRelatorio("📅 Empréstimos por Período", btnY);
+            var btnEmprestimosPeriodo = CriarBotaoRelatorio("Empréstimos por Período", btnY, btnWidth);
             btnEmprestimosPeriodo.Click += (s, e) => GerarRelatorioEmprestimosPeriodo();
             pnlOpcoes.Controls.Add(btnEmprestimosPeriodo);
 
-            var btnLivrosMaisEmprestados = CriarBotaoRelatorio("📚 Livros Mais Emprestados", btnY + btnSpacing);
+            var btnLivrosMaisEmprestados = CriarBotaoRelatorio("Livros Mais Emprestados", btnY + btnSpacing, btnWidth);
             btnLivrosMaisEmprestados.Click += (s, e) => GerarRelatorioLivrosMaisEmprestados();
             pnlOpcoes.Controls.Add(btnLivrosMaisEmprestados);
 
-            var btnAlunosAtivos = CriarBotaoRelatorio("👥 Alunos Mais Ativos", btnY + btnSpacing * 2);
+            var btnAlunosAtivos = CriarBotaoRelatorio("Alunos Mais Ativos", btnY + btnSpacing * 2, btnWidth);
             btnAlunosAtivos.Click += (s, e) => GerarRelatorioAlunosAtivos();
             pnlOpcoes.Controls.Add(btnAlunosAtivos);
 
-            var btnMultas = CriarBotaoRelatorio("💰 Relatório de Multas", btnY + btnSpacing * 3);
+            var btnMultas = CriarBotaoRelatorio("Relatório de Multas", btnY + btnSpacing * 3, btnWidth);
             btnMultas.Click += (s, e) => GerarRelatorioMultas();
             pnlOpcoes.Controls.Add(btnMultas);
 
-            var btnAtrasos = CriarBotaoRelatorio("⚠️ Empréstimos Atrasados", btnY + btnSpacing * 4);
+            var btnAtrasos = CriarBotaoRelatorio("Empréstimos Atrasados", btnY + btnSpacing * 4, btnWidth);
             btnAtrasos.Click += (s, e) => GerarRelatorioAtrasos();
             pnlOpcoes.Controls.Add(btnAtrasos);
 
-            var btnReservas = CriarBotaoRelatorio("🔖 Relatório de Reservas", btnY + btnSpacing * 5);
+            var btnReservas = CriarBotaoRelatorio("Relatório de Reservas", btnY + btnSpacing * 5, btnWidth);
             btnReservas.Click += (s, e) => GerarRelatorioReservas();
             pnlOpcoes.Controls.Add(btnReservas);
 
-            var btnEstatisticas = CriarBotaoRelatorio("📊 Estatísticas Gerais", btnY + btnSpacing * 6);
+            var btnEstatisticas = CriarBotaoRelatorio("Estatísticas Gerais", btnY + btnSpacing * 6, btnWidth);
             btnEstatisticas.Click += (s, e) => GerarRelatorioEstatisticas();
             pnlOpcoes.Controls.Add(btnEstatisticas);
 
             this.Controls.Add(pnlOpcoes);
 
-            // Panel de Visualização
+            // Panel de Visualização - Responsivo
+            int pnlVisualizacaoX = pnlOpcoes.Width + 40;
+            int pnlVisualizacaoWidth = formWidth - pnlVisualizacaoX - 20;
+
             var pnlVisualizacao = new Panel
             {
-                Location = new System.Drawing.Point(280, 60),
-                Size = new System.Drawing.Size(900, 580),
+                Location = new System.Drawing.Point(pnlVisualizacaoX, 60),
+                Size = new System.Drawing.Size(pnlVisualizacaoWidth, formHeight - 110),
                 BackColor = System.Drawing.Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom |
+                         System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
 
             lblTituloRelatorio = new Label
@@ -124,30 +146,42 @@ namespace BibliotecaJK.Forms
                 Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold),
                 ForeColor = System.Drawing.Color.Gray,
                 Location = new System.Drawing.Point(20, 20),
-                Size = new System.Drawing.Size(860, 30),
-                TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+                Size = new System.Drawing.Size(pnlVisualizacao.Width - 40, 30),
+                TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
             pnlVisualizacao.Controls.Add(lblTituloRelatorio);
 
             dgvRelatorio = new DataGridView
             {
                 Location = new System.Drawing.Point(20, 60),
-                Size = new System.Drawing.Size(860, 460),
+                Size = new System.Drawing.Size(pnlVisualizacao.Width - 40, pnlVisualizacao.Height - 110),
                 BackgroundColor = System.Drawing.Color.White,
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 ReadOnly = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 MultiSelect = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom |
+                         System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
             pnlVisualizacao.Controls.Add(dgvRelatorio);
 
+            // FlowLayoutPanel para botões - Ancorado no canto inferior direito
+            var flowBotoes = new FlowLayoutPanel
+            {
+                Location = new System.Drawing.Point(20, pnlVisualizacao.Height - 50),
+                Size = new System.Drawing.Size(pnlVisualizacao.Width - 40, 40),
+                FlowDirection = FlowDirection.RightToLeft,
+                AutoSize = false,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right
+            };
+
             btnExportar = new Button
             {
-                Text = "💾 Exportar para CSV",
+                Text = "Exportar para CSV",
                 Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold),
-                Location = new System.Drawing.Point(720, 530),
                 Size = new System.Drawing.Size(160, 35),
                 BackColor = System.Drawing.Color.MediumSeaGreen,
                 ForeColor = System.Drawing.Color.White,
@@ -157,21 +191,24 @@ namespace BibliotecaJK.Forms
             };
             btnExportar.FlatAppearance.BorderSize = 0;
             btnExportar.Click += BtnExportar_Click;
-            pnlVisualizacao.Controls.Add(btnExportar);
+            flowBotoes.Controls.Add(btnExportar);
+
+            pnlVisualizacao.Controls.Add(flowBotoes);
 
             this.Controls.Add(pnlVisualizacao);
 
-            // Botão Fechar
+            // Botão Fechar - Ancorado no canto inferior direito
             var btnFechar = new Button
             {
                 Text = "Fechar",
-                Location = new System.Drawing.Point(1130, 655),
-                Size = new System.Drawing.Size(50, 30),
+                Size = new System.Drawing.Size(80, 35),
                 BackColor = System.Drawing.Color.Gray,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right
             };
+            btnFechar.Location = new System.Drawing.Point(formWidth - 100, formHeight - 45);
             btnFechar.FlatAppearance.BorderSize = 0;
             btnFechar.Click += (s, e) => this.Close();
             this.Controls.Add(btnFechar);
@@ -184,19 +221,20 @@ namespace BibliotecaJK.Forms
         private Button btnExportar = new Button();
         private string _relatorioAtual = "";
 
-        private Button CriarBotaoRelatorio(string texto, int y)
+        private Button CriarBotaoRelatorio(string texto, int y, int largura)
         {
             var btn = new Button
             {
                 Text = texto,
                 Location = new System.Drawing.Point(10, y),
-                Size = new System.Drawing.Size(230, 45),
+                Size = new System.Drawing.Size(largura, 45),
                 BackColor = System.Drawing.Color.DarkSlateBlue,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Cursor = Cursors.Hand,
                 TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
-                Padding = new System.Windows.Forms.Padding(10, 0, 0, 0)
+                Padding = new System.Windows.Forms.Padding(10, 0, 0, 0),
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
             btn.FlatAppearance.BorderSize = 0;
             return btn;

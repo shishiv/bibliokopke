@@ -31,11 +31,23 @@ namespace BibliotecaJK.Forms
         {
             this.SuspendLayout();
 
-            // FormCadastroLivro
-            this.ClientSize = new System.Drawing.Size(1100, 650);
+            // FormCadastroLivro - Adaptive sizing para diferentes resoluções
+            System.Drawing.Rectangle workingArea = System.Windows.Forms.Screen.PrimaryScreen?.WorkingArea ?? System.Windows.Forms.Screen.AllScreens[0].WorkingArea;
+
+            // Calcular tamanho ideal (90% da tela, mas não menor que mínimo)
+            int idealWidth = Math.Max(900, (int)(workingArea.Width * 0.9));
+            int idealHeight = Math.Max(550, (int)(workingArea.Height * 0.9));
+
+            // Limitar ao máximo disponível
+            int formWidth = Math.Min(idealWidth, workingArea.Width - 50);
+            int formHeight = Math.Min(idealHeight, workingArea.Height - 50);
+
+            this.ClientSize = new System.Drawing.Size(formWidth, formHeight);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Cadastro de Livros";
             this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.MinimumSize = new System.Drawing.Size(900, 550);
+            this.AutoScroll = true;
 
             // Título
             var lblTitulo = new Label
@@ -44,17 +56,19 @@ namespace BibliotecaJK.Forms
                 Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
                 ForeColor = System.Drawing.Color.DarkSlateBlue,
                 Location = new System.Drawing.Point(20, 15),
-                Size = new System.Drawing.Size(1060, 30)
+                Size = new System.Drawing.Size(formWidth - 40, 30),
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
             this.Controls.Add(lblTitulo);
 
-            // Panel de Formulário
+            // Panel de Formulário - responsivo com Anchor
             var pnlForm = new Panel
             {
                 Location = new System.Drawing.Point(20, 60),
-                Size = new System.Drawing.Size(1060, 200),
+                Size = new System.Drawing.Size(formWidth - 40, 200),
                 BackColor = System.Drawing.Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
 
             // Título
@@ -229,51 +243,66 @@ namespace BibliotecaJK.Forms
 
             this.Controls.Add(pnlForm);
 
-            // Grid de Livros
+            // Grid de Livros - responsivo com Anchor
             dgvLivros = new DataGridView
             {
                 Location = new System.Drawing.Point(20, 280),
-                Size = new System.Drawing.Size(1060, 320),
+                Size = new System.Drawing.Size(formWidth - 40, formHeight - 335),
                 BackgroundColor = System.Drawing.Color.White,
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 ReadOnly = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 MultiSelect = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom |
+                         System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
             dgvLivros.CellDoubleClick += DgvLivros_CellDoubleClick;
 
             this.Controls.Add(dgvLivros);
 
-            // Botões de Ação
+            // FlowLayoutPanel para botões de ação - ancorado no canto inferior direito
+            var flowButtons = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.LeftToRight,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right,
+                WrapContents = false,
+                Padding = new System.Windows.Forms.Padding(0)
+            };
+            flowButtons.Location = new System.Drawing.Point(formWidth - 270, formHeight - 45);
+
             var btnEditar = new Button
             {
                 Text = "Editar",
-                Location = new System.Drawing.Point(810, 610),
                 Size = new System.Drawing.Size(90, 30),
                 BackColor = System.Drawing.Color.SteelBlue,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Margin = new System.Windows.Forms.Padding(0, 0, 5, 0)
             };
             btnEditar.FlatAppearance.BorderSize = 0;
             btnEditar.Click += BtnEditar_Click;
-            this.Controls.Add(btnEditar);
+            flowButtons.Controls.Add(btnEditar);
 
             var btnFechar = new Button
             {
                 Text = "Fechar",
-                Location = new System.Drawing.Point(1010, 610),
                 Size = new System.Drawing.Size(70, 30),
                 BackColor = System.Drawing.Color.Gray,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Margin = new System.Windows.Forms.Padding(0)
             };
             btnFechar.FlatAppearance.BorderSize = 0;
             btnFechar.Click += (s, e) => this.Close();
-            this.Controls.Add(btnFechar);
+            flowButtons.Controls.Add(btnFechar);
+
+            this.Controls.Add(flowButtons);
 
             this.ResumeLayout(false);
         }

@@ -31,11 +31,23 @@ namespace BibliotecaJK.Forms
         {
             this.SuspendLayout();
 
-            // FormDevolucao
-            this.ClientSize = new System.Drawing.Size(1100, 650);
+            // FormDevolucao - Adaptive sizing para diferentes resoluções
+            System.Drawing.Rectangle workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+
+            // Calcular tamanho ideal (90% da tela, mas não menor que mínimo)
+            int idealWidth = Math.Max(900, (int)(workingArea.Width * 0.9));
+            int idealHeight = Math.Max(600, (int)(workingArea.Height * 0.9));
+
+            // Limitar ao máximo disponível
+            int formWidth = Math.Min(idealWidth, workingArea.Width - 50);
+            int formHeight = Math.Min(idealHeight, workingArea.Height - 50);
+
+            this.ClientSize = new System.Drawing.Size(formWidth, formHeight);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Devolução de Livros";
             this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.MinimumSize = new System.Drawing.Size(900, 600);
+            this.AutoScroll = true;
 
             // Título
             var lblTitulo = new Label
@@ -44,17 +56,19 @@ namespace BibliotecaJK.Forms
                 Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold),
                 ForeColor = System.Drawing.Color.DarkSlateBlue,
                 Location = new System.Drawing.Point(20, 15),
-                Size = new System.Drawing.Size(1060, 30)
+                Size = new System.Drawing.Size(formWidth - 40, 30),
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
             this.Controls.Add(lblTitulo);
 
-            // Panel de Busca
+            // Panel de Busca - responsivo com Anchor
             var pnlBusca = new Panel
             {
                 Location = new System.Drawing.Point(20, 60),
-                Size = new System.Drawing.Size(1060, 60),
+                Size = new System.Drawing.Size(formWidth - 40, 60),
                 BackColor = System.Drawing.Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
 
             pnlBusca.Controls.Add(new Label
@@ -99,31 +113,34 @@ namespace BibliotecaJK.Forms
 
             this.Controls.Add(pnlBusca);
 
-            // Grid de Empréstimos
+            // Grid de Empréstimos - responsivo com Anchor
             dgvEmprestimos = new DataGridView
             {
                 Location = new System.Drawing.Point(20, 140),
-                Size = new System.Drawing.Size(1060, 340),
+                Size = new System.Drawing.Size(formWidth - 40, formHeight - 310),
                 BackgroundColor = System.Drawing.Color.White,
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 ReadOnly = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 MultiSelect = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom |
+                         System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
             dgvEmprestimos.SelectionChanged += DgvEmprestimos_SelectionChanged;
 
             this.Controls.Add(dgvEmprestimos);
 
-            // Panel de Detalhes
+            // Panel de Detalhes - ancorado no bottom
             var pnlDetalhes = new Panel
             {
-                Location = new System.Drawing.Point(20, 500),
-                Size = new System.Drawing.Size(1060, 100),
+                Size = new System.Drawing.Size(formWidth - 40, 100),
                 BackColor = System.Drawing.Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
             };
+            pnlDetalhes.Location = new System.Drawing.Point(20, formHeight - 160);
 
             pnlDetalhes.Controls.Add(new Label
             {
@@ -171,36 +188,49 @@ namespace BibliotecaJK.Forms
 
             this.Controls.Add(pnlDetalhes);
 
-            // Botões
+            // FlowLayoutPanel para botões - ancorado no canto inferior direito
+            var flowButtons = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.LeftToRight,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right,
+                WrapContents = false,
+                Padding = new System.Windows.Forms.Padding(0)
+            };
+            flowButtons.Location = new System.Drawing.Point(formWidth - 240, formHeight - 45);
+
             btnRegistrarDevolucao = new Button
             {
                 Text = "Registrar Devolução",
                 Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
-                Location = new System.Drawing.Point(850, 610),
-                Size = new System.Drawing.Size(170, 30),
+                Size = new System.Drawing.Size(150, 35),
                 BackColor = System.Drawing.Color.MediumSeaGreen,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Cursor = Cursors.Hand,
-                Enabled = false
+                Enabled = false,
+                Margin = new System.Windows.Forms.Padding(0, 0, 5, 0)
             };
             btnRegistrarDevolucao.FlatAppearance.BorderSize = 0;
             btnRegistrarDevolucao.Click += BtnRegistrarDevolucao_Click;
-            this.Controls.Add(btnRegistrarDevolucao);
+            flowButtons.Controls.Add(btnRegistrarDevolucao);
 
             var btnFechar = new Button
             {
                 Text = "Fechar",
-                Location = new System.Drawing.Point(1030, 610),
-                Size = new System.Drawing.Size(50, 30),
+                Size = new System.Drawing.Size(80, 35),
                 BackColor = System.Drawing.Color.Gray,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Margin = new System.Windows.Forms.Padding(0)
             };
             btnFechar.FlatAppearance.BorderSize = 0;
             btnFechar.Click += (s, e) => this.Close();
-            this.Controls.Add(btnFechar);
+            flowButtons.Controls.Add(btnFechar);
+
+            this.Controls.Add(flowButtons);
 
             this.ResumeLayout(false);
         }

@@ -1,7 +1,20 @@
 {
   "permissions": {
     "allow": [
-      "Bash(if exist \"c:\\Repos\\BiblioKopke\\06_proto\\supabase\" move \"c:\\Repos\\BiblioKopke\\06_proto\\supabase\" \"c:\\Repos\\BiblioKopke\\06_proto\\database\")"
+      "Bash(if exist \"c:\\Repos\\BiblioKopke\\06_proto\\supabase\" move \"c:\\Repos\\BiblioKopke\\06_proto\\supabase\" \"c:\\Repos\\BiblioKopke\\06_proto\\database\")",
+      "SlashCommand(/openspec:proposal)",
+      "Bash(openspec list:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "Bash(openspec validate:*)",
+      "Bash(openspec show:*)",
+      "Bash(dir:*)",
+      "SlashCommand(/openspec:apply improve-ui-responsiveness)",
+      "SlashCommand(/openspec:apply:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet clean:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

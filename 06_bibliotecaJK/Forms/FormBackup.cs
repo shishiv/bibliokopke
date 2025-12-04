@@ -26,32 +26,36 @@ namespace BibliotecaJK.Forms
         {
             this.SuspendLayout();
 
-            // FormBackup
-            this.ClientSize = new System.Drawing.Size(700, 600);
+            // FormBackup - Responsivo
+            this.MinimumSize = new System.Drawing.Size(700, 500);
+            this.ClientSize = new System.Drawing.Size(900, 750);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Configuração de Backup - BibliotecaJK";
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
+            this.AutoScroll = true;
 
-            // Título
+            // Título - Ancorado Top | Left | Right
             var lblTitulo = new Label
             {
                 Text = "CONFIGURAÇÃO DE BACKUP AUTOMÁTICO",
                 Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold),
                 ForeColor = System.Drawing.Color.DarkSlateBlue,
                 Location = new System.Drawing.Point(20, 15),
-                Size = new System.Drawing.Size(660, 30)
+                Size = new System.Drawing.Size(860, 30),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             this.Controls.Add(lblTitulo);
 
-            // Panel Conexão PostgreSQL
+            // Panel Conexão PostgreSQL - Responsivo
             var pnlPostgreSQL = new Panel
             {
                 Location = new System.Drawing.Point(20, 60),
-                Size = new System.Drawing.Size(660, 200),
+                Size = new System.Drawing.Size(860, 210),
                 BackColor = System.Drawing.Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
             pnlPostgreSQL.Controls.Add(new Label
@@ -60,19 +64,19 @@ namespace BibliotecaJK.Forms
                 Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
                 ForeColor = System.Drawing.Color.DarkSlateBlue,
                 Location = new System.Drawing.Point(10, 10),
-                Size = new System.Drawing.Size(640, 20)
+                Size = new System.Drawing.Size(840, 20)
             });
 
             // Host
             pnlPostgreSQL.Controls.Add(new Label { Text = "Host:", Location = new System.Drawing.Point(20, 45), Size = new System.Drawing.Size(100, 20) });
-            txtHost = new TextBox { Location = new System.Drawing.Point(130, 43), Size = new System.Drawing.Size(200, 25) };
+            txtHost = new TextBox { Location = new System.Drawing.Point(130, 43), Size = new System.Drawing.Size(250, 25) };
             pnlPostgreSQL.Controls.Add(txtHost);
 
             // Porta
-            pnlPostgreSQL.Controls.Add(new Label { Text = "Porta:", Location = new System.Drawing.Point(350, 45), Size = new System.Drawing.Size(60, 20) });
+            pnlPostgreSQL.Controls.Add(new Label { Text = "Porta:", Location = new System.Drawing.Point(400, 45), Size = new System.Drawing.Size(60, 20) });
             nudPorta = new NumericUpDown
             {
-                Location = new System.Drawing.Point(420, 43),
+                Location = new System.Drawing.Point(470, 43),
                 Size = new System.Drawing.Size(100, 25),
                 Minimum = 1,
                 Maximum = 65535,
@@ -82,14 +86,14 @@ namespace BibliotecaJK.Forms
 
             // Usuário
             pnlPostgreSQL.Controls.Add(new Label { Text = "Usuário:", Location = new System.Drawing.Point(20, 80), Size = new System.Drawing.Size(100, 20) });
-            txtUsuario = new TextBox { Location = new System.Drawing.Point(130, 78), Size = new System.Drawing.Size(200, 25) };
+            txtUsuario = new TextBox { Location = new System.Drawing.Point(130, 78), Size = new System.Drawing.Size(250, 25) };
             pnlPostgreSQL.Controls.Add(txtUsuario);
 
             // Senha
-            pnlPostgreSQL.Controls.Add(new Label { Text = "Senha:", Location = new System.Drawing.Point(350, 80), Size = new System.Drawing.Size(60, 20) });
+            pnlPostgreSQL.Controls.Add(new Label { Text = "Senha:", Location = new System.Drawing.Point(400, 80), Size = new System.Drawing.Size(60, 20) });
             txtSenha = new TextBox
             {
-                Location = new System.Drawing.Point(420, 78),
+                Location = new System.Drawing.Point(470, 78),
                 Size = new System.Drawing.Size(200, 25),
                 PasswordChar = '●'
             };
@@ -97,14 +101,14 @@ namespace BibliotecaJK.Forms
 
             // Database
             pnlPostgreSQL.Controls.Add(new Label { Text = "Database:", Location = new System.Drawing.Point(20, 115), Size = new System.Drawing.Size(100, 20) });
-            txtDatabase = new TextBox { Location = new System.Drawing.Point(130, 113), Size = new System.Drawing.Size(200, 25) };
+            txtDatabase = new TextBox { Location = new System.Drawing.Point(130, 113), Size = new System.Drawing.Size(250, 25) };
             pnlPostgreSQL.Controls.Add(txtDatabase);
 
             // Botão Testar Conexão
             btnTestarConexao = new Button
             {
-                Text = "🔌 Testar Conexão",
-                Location = new System.Drawing.Point(350, 113),
+                Text = "Testar Conexao",
+                Location = new System.Drawing.Point(400, 113),
                 Size = new System.Drawing.Size(150, 30),
                 BackColor = System.Drawing.Color.SteelBlue,
                 ForeColor = System.Drawing.Color.White,
@@ -120,21 +124,24 @@ namespace BibliotecaJK.Forms
             {
                 Text = "",
                 Location = new System.Drawing.Point(20, 155),
-                Size = new System.Drawing.Size(620, 30),
+                Size = new System.Drawing.Size(820, 40),
                 ForeColor = System.Drawing.Color.Gray,
-                Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic)
+                Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic),
+                AutoSize = false,
+                TextAlign = System.Drawing.ContentAlignment.TopLeft
             };
             pnlPostgreSQL.Controls.Add(lblStatusConexao);
 
             this.Controls.Add(pnlPostgreSQL);
 
-            // Panel Configuração de Backup
+            // Panel Configuração de Backup - Responsivo
             var pnlBackup = new Panel
             {
-                Location = new System.Drawing.Point(20, 275),
-                Size = new System.Drawing.Size(660, 220),
+                Location = new System.Drawing.Point(20, 285),
+                Size = new System.Drawing.Size(860, 260),
                 BackColor = System.Drawing.Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
             pnlBackup.Controls.Add(new Label
@@ -143,18 +150,18 @@ namespace BibliotecaJK.Forms
                 Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
                 ForeColor = System.Drawing.Color.DarkSlateBlue,
                 Location = new System.Drawing.Point(10, 10),
-                Size = new System.Drawing.Size(640, 20)
+                Size = new System.Drawing.Size(840, 20)
             });
 
             // Caminho de Backup
             pnlBackup.Controls.Add(new Label { Text = "Pasta destino:", Location = new System.Drawing.Point(20, 45), Size = new System.Drawing.Size(100, 20) });
-            txtCaminhoBackup = new TextBox { Location = new System.Drawing.Point(130, 43), Size = new System.Drawing.Size(400, 25) };
+            txtCaminhoBackup = new TextBox { Location = new System.Drawing.Point(130, 43), Size = new System.Drawing.Size(600, 25) };
             pnlBackup.Controls.Add(txtCaminhoBackup);
 
             var btnProcurar = new Button
             {
                 Text = "...",
-                Location = new System.Drawing.Point(540, 43),
+                Location = new System.Drawing.Point(740, 43),
                 Size = new System.Drawing.Size(40, 25),
                 Cursor = Cursors.Hand
             };
@@ -216,59 +223,76 @@ namespace BibliotecaJK.Forms
             lblStatusAgendamento = new Label
             {
                 Text = "",
-                Location = new System.Drawing.Point(20, 180),
-                Size = new System.Drawing.Size(620, 25),
+                Location = new System.Drawing.Point(20, 190),
+                Size = new System.Drawing.Size(820, 60),
                 ForeColor = System.Drawing.Color.Green,
-                Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic)
+                Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic),
+                AutoSize = false,
+                TextAlign = System.Drawing.ContentAlignment.TopLeft
             };
             pnlBackup.Controls.Add(lblStatusAgendamento);
 
             this.Controls.Add(pnlBackup);
 
-            // Botões
-            btnSalvar = new Button
+            // FlowLayoutPanel Botões - Ancorado Bottom | Right
+            var pnlBotoes = new FlowLayoutPanel
             {
-                Text = "💾 Salvar Configurações",
-                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
-                Location = new System.Drawing.Point(20, 510),
-                Size = new System.Drawing.Size(200, 40),
-                BackColor = System.Drawing.Color.DarkSlateBlue,
-                ForeColor = System.Drawing.Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Location = new System.Drawing.Point(400, 560),
+                Size = new System.Drawing.Size(480, 50),
+                AutoSize = false,
+                FlowDirection = FlowDirection.RightToLeft,
+                WrapContents = false,
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
             };
-            btnSalvar.FlatAppearance.BorderSize = 0;
-            btnSalvar.Click += BtnSalvar_Click;
-            this.Controls.Add(btnSalvar);
 
-            btnBackupAgora = new Button
-            {
-                Text = "⚡ Fazer Backup Agora",
-                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
-                Location = new System.Drawing.Point(230, 510),
-                Size = new System.Drawing.Size(200, 40),
-                BackColor = System.Drawing.Color.MediumSeaGreen,
-                ForeColor = System.Drawing.Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            btnBackupAgora.FlatAppearance.BorderSize = 0;
-            btnBackupAgora.Click += BtnBackupAgora_Click;
-            this.Controls.Add(btnBackupAgora);
-
+            // Botão Fechar
             var btnFechar = new Button
             {
                 Text = "Fechar",
-                Location = new System.Drawing.Point(620, 510),
-                Size = new System.Drawing.Size(60, 40),
+                Size = new System.Drawing.Size(100, 40),
                 BackColor = System.Drawing.Color.Gray,
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Margin = new Padding(5, 5, 0, 5)
             };
             btnFechar.FlatAppearance.BorderSize = 0;
             btnFechar.Click += (s, e) => this.Close();
-            this.Controls.Add(btnFechar);
+            pnlBotoes.Controls.Add(btnFechar);
+
+            // Botão Fazer Backup Agora
+            btnBackupAgora = new Button
+            {
+                Text = "Fazer Backup Agora",
+                Size = new System.Drawing.Size(160, 40),
+                BackColor = System.Drawing.Color.MediumSeaGreen,
+                ForeColor = System.Drawing.Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold),
+                Margin = new Padding(5, 5, 0, 5)
+            };
+            btnBackupAgora.FlatAppearance.BorderSize = 0;
+            btnBackupAgora.Click += BtnBackupAgora_Click;
+            pnlBotoes.Controls.Add(btnBackupAgora);
+
+            // Botão Salvar Configurações
+            btnSalvar = new Button
+            {
+                Text = "Salvar Configuracoes",
+                Size = new System.Drawing.Size(160, 40),
+                BackColor = System.Drawing.Color.DarkSlateBlue,
+                ForeColor = System.Drawing.Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold),
+                Margin = new Padding(5, 5, 0, 5)
+            };
+            btnSalvar.FlatAppearance.BorderSize = 0;
+            btnSalvar.Click += BtnSalvar_Click;
+            pnlBotoes.Controls.Add(btnSalvar);
+
+            this.Controls.Add(pnlBotoes);
 
             this.ResumeLayout(false);
         }
